@@ -1,12 +1,12 @@
 import { Button } from 'antd';
 import React from 'react';
 
-const App = () => {
+const History = () => {
   return (
     <div>
-      <Button>hello world</Button>
+      <Button>History hello world</Button>
     </div>
   );
 };
 
-export default App;
+export default History;
