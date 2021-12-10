@@ -8801,7 +8801,7 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   resolved "https://registry.nlark.com/strip-json-comments/download/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha1-MfEoGzgyYwQ0gxwxDAHMzajL4AY=
 
-style-loader@^3.0.0:
+style-loader@^3.3.1:
   version "3.3.1"
   resolved "https://registry.npmmirror.com/style-loader/download/style-loader-3.3.1.tgz?cache=0&sync_timestamp=1634872439692&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fstyle-loader%2Fdownload%2Fstyle-loader-3.3.1.tgz#057dfa6b3d4d7c7064462830f9113ed417d38575"
   integrity sha1-BX36az1NfHBkRigw+RE+1BfThXU=

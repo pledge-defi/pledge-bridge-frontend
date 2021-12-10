@@ -58,7 +58,7 @@ const Header = () => {
           <div>
             <img src={require('@/assets/images/Ellipse 757.svg')} alt="" />
             <span>BSC</span>
-            <img src={require('@/assets/images/Icon.svg')} alt="" />
+            <img src={require('@/assets/images/dropDown.svg')} alt="" />
           </div>
           <span />
         </UserInfo>

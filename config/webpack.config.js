@@ -29,26 +29,36 @@ module.exports = {
         test: /\.less$/i,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader,
+            loader: 'style-loader',
           },
           {
             loader: 'css-loader',
+            // options: {
+            //   modules: {
+            //     localIdentName: '[path][name]__[local]--[hash:base64:5]',
+            //   },
+            // },
+          },
+          {
+            loader: 'less-loader',
             options: {
-              modules: {
-                localIdentName: '[path][name]__[local]--[hash:base64:5]',
+              lessOptions: {
+                modifyVars: {
+                  'primary-color': '#5D52FF',
+                  'border-radius-base': '10px',
+                  'border-color-base': '#e6e6eb',
+                },
+                javascriptEnabled: true,
               },
             },
           },
-          'postcss-loader',
-          'less-loader',
         ],
-        exclude: ['/node_modules/'],
       },
       {
         test: /\.css$/i,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader,
+            loader: 'style-loader',
           },
           'css-loader',
           'postcss-loader',
