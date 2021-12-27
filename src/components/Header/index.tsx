@@ -1,7 +1,12 @@
 import React from 'react';
-import logo from '@/assets/images/Vector.svg';
+import logo from '@/assets/images/bridgeLogo.svg';
 import styled from 'styled-components';
 import { ConnectWallet } from '..';
+import { Dropdown, Menu } from 'antd';
+import { useRecoilState } from 'recoil';
+import { currencyState } from '@/model/global';
+import currencyInfos from '@/constants/currencyInfos';
+import { get } from 'lodash';
 
 const HeaderDiv = styled.div`
   height: 92px;
@@ -48,6 +53,12 @@ const UserInfo = styled.div`
 `;
 
 const Header = () => {
+  const [currency, setCurrency] = useRecoilState(currencyState);
+
+  const handleClick = (v: any) => {
+    setCurrency(v.key);
+  };
+
   return (
     <HeaderDiv>
       <div>
@@ -56,11 +67,25 @@ const Header = () => {
           <span>Pledge Bridge</span>
         </Logo>
         <UserInfo>
-          <div>
-            <img src={require('@/assets/images/Ellipse 757.svg')} alt="" />
-            <span>BSC</span>
-            <img src={require('@/assets/images/dropDown.svg')} alt="" />
-          </div>
+          <Dropdown
+            overlay={
+              <Menu selectedKeys={[currency]} onClick={handleClick}>
+                <Menu.Item key={'BSC'}>BSC</Menu.Item>
+                <Menu.Item key={'Ethereum'}>Ethereum</Menu.Item>
+              </Menu>
+            }
+          >
+            <div>
+              <img
+                src={get(currencyInfos, [currency, 'chainImageAsset'])}
+                alt=""
+                width={24}
+                height={24}
+              />
+              <span>{currency}</span>
+              <img src={require('@/assets/images/dropDown.svg')} alt="" />
+            </div>
+          </Dropdown>
           <ConnectWallet />
         </UserInfo>
       </div>

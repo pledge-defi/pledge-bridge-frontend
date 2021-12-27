@@ -140,7 +140,7 @@ const Home = () => {
         <Label>Asset</Label>
         <SelectInput>
           <Coin>
-            <img src={require('@/assets/images/coin1.svg')} alt="" height={'24px'} />
+            <img src={require('@/assets/images/PLGR.svg')} alt="" height={'24px'} />
             <span>PLGR</span>
           </Coin>
           <img src={require('@/assets/images/dropDown.svg')} alt="" height={7} />
@@ -149,7 +149,7 @@ const Home = () => {
           <div>
             <Label>From</Label>
             <TransformerItem>
-              <img src={require('@/assets/images/Ellipse 757.svg')} alt="" height={40} />
+              <img src={require('@/assets/images/BSC.svg')} alt="" height={40} />
               <div>
                 <div>PLGR</div>
                 <span>BSC Network</span>
@@ -160,7 +160,7 @@ const Home = () => {
           <div>
             <Label>To</Label>
             <TransformerItem>
-              <img src={require('@/assets/images/rog2.svg')} alt="" height={40} />
+              <img src={require('@/assets/images/Ethereum.svg')} alt="" height={40} />
               <div>
                 <div>MPLGR</div>
                 <span>Ethereum Network</span>
