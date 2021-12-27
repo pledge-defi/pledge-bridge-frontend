@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from '@/assets/images/Vector.svg';
 import styled from 'styled-components';
+import { ConnectWallet } from '..';
 
 const HeaderDiv = styled.div`
   height: 92px;
@@ -36,14 +37,14 @@ const UserInfo = styled.div`
     border-radius: 22px;
     cursor: pointer;
   }
-  > span {
+  /* > span {
     width: 44px;
     height: 44px;
     margin-left: 44px;
     background: #ffffff;
     border: 1px solid #5d52ff;
     border-radius: 50%;
-  }
+  } */
 `;
 
 const Header = () => {
@@ -60,7 +61,7 @@ const Header = () => {
             <span>BSC</span>
             <img src={require('@/assets/images/dropDown.svg')} alt="" />
           </div>
-          <span />
+          <ConnectWallet />
         </UserInfo>
       </div>
     </HeaderDiv>

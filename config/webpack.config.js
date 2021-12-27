@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { ProvidePlugin } = require('webpack');
 
 module.exports = {
   entry: './src/index',
@@ -16,6 +17,10 @@ module.exports = {
       filename: '[name].[contenthash:8].bundle.css',
       chunkFilename: '[id].[contenthash:8].chunk.css',
       ignoreOrder: false, // Enable to remove warnings about conflicting order
+    }),
+    new ProvidePlugin({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
     }),
   ],
   module: {
@@ -75,6 +80,22 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js', 'jsx'],
     alias: {
       '@': path.resolve(__dirname, '../src'),
+    },
+    fallback: {
+      os: require.resolve('os-browserify/browser'),
+      https: require.resolve('https-browserify'),
+      http: require.resolve('stream-http'),
+      stream: require.resolve('stream-browserify'),
+      path: false,
+      assert: require.resolve('assert/'),
+      fs: false,
+      // net: false,
+      // tls: false,
+      // zlib: false,
+      // crypto: false,
+      buffer: require.resolve('buffer/'),
+      crypto: require.resolve('crypto-browserify'),
+      // zlib: require.resolve('browserify-zlib'),
     },
   },
 };
