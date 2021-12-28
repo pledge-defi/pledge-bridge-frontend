@@ -54,43 +54,47 @@ export interface MethodConstantReturnContext<TCallReturn> {
 export type MethodReturnContext = MethodPayableReturnContext;
 
 export type ContractContext = Web3ContractContext<
-  Erc20,
-  Erc20MethodNames,
-  Erc20EventsContext,
-  Erc20Events
+  PledgerBridgeETH,
+  PledgerBridgeETHMethodNames,
+  PledgerBridgeETHEventsContext,
+  PledgerBridgeETHEvents
 >;
-export type Erc20Events = 'Approval' | 'Transfer' | 'Deposit' | 'Withdrawal';
-export interface Erc20EventsContext {
-  Approval: (
+export type PledgerBridgeETHEvents =
+  | 'DebugDepositMPLGR'
+  | 'DepositMPLGR'
+  | 'DepositMPLGRBridge'
+  | 'WithdrawMPLGR';
+export interface PledgerBridgeETHEventsContext {
+  DebugDepositMPLGR: (
     parameters: {
-      filter?: { src?: string | string[]; guy?: string | string[] };
+      filter?: {};
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
     },
     callback?: (error: Error, event: EventData) => void,
   ) => EventResponse;
-  Transfer: (
+  DepositMPLGR: (
     parameters: {
-      filter?: { src?: string | string[]; dst?: string | string[] };
+      filter?: {};
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
     },
     callback?: (error: Error, event: EventData) => void,
   ) => EventResponse;
-  Deposit: (
+  DepositMPLGRBridge: (
     parameters: {
-      filter?: { dst?: string | string[] };
+      filter?: {};
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
     },
     callback?: (error: Error, event: EventData) => void,
   ) => EventResponse;
-  Withdrawal: (
+  WithdrawMPLGR: (
     parameters: {
-      filter?: { src?: string | string[] };
+      filter?: {};
       fromBlock?: number;
       toBlock?: 'latest' | number;
       topics?: string[];
@@ -98,51 +102,88 @@ export interface Erc20EventsContext {
     callback?: (error: Error, event: EventData) => void,
   ) => EventResponse;
 }
-export type Erc20MethodNames =
-  | 'name'
-  | 'decimals'
-  | 'balanceOf'
-  | 'symbol'
-  | 'allowance'
-  | 'deposit'
-  | 'withdraw'
-  | 'totalSupply'
-  | 'approve'
-  | 'transfer'
-  | 'transferFrom';
-export interface ApprovalEventEmittedResponse {
-  src: string;
-  guy: string;
-  wad: string;
+export type PledgerBridgeETHMethodNames =
+  | 'new'
+  | 'bridge_address'
+  | 'cb_ddid'
+  | 'cb_rid'
+  | 'handler_address'
+  | 'mplgr_address'
+  | 'mplgr_amounts'
+  | 'owner'
+  | 'admin_update_bridge'
+  | 'deposit_mplgr_bridge'
+  | 'widthdraw_mplgr'
+  | 'deposit_mplgr';
+export interface DebugDepositMPLGREventEmittedResponse {
+  data: string | number[];
 }
-export interface TransferEventEmittedResponse {
-  src: string;
-  dst: string;
-  wad: string;
+export interface DepositMPLGREventEmittedResponse {
+  owner: string;
+  amount: string;
 }
-export interface DepositEventEmittedResponse {
-  dst: string;
-  wad: string;
+export interface DepositMPLGRBridgeEventEmittedResponse {
+  owner: string;
+  amount: string;
 }
-export interface WithdrawalEventEmittedResponse {
-  src: string;
-  wad: string;
+export interface WithdrawMPLGREventEmittedResponse {
+  recipient: string;
+  amount: string;
 }
-export interface Erc20 {
+export interface PledgerBridgeETH {
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: constructor
+   * @param _bridge_address Type: address, Indexed: false
+   * @param _handler_address Type: address, Indexed: false
+   * @param _mplgr_address Type: address, Indexed: false
+   * @param _cb_ddid Type: uint8, Indexed: false
+   * @param _cb_rid Type: bytes32, Indexed: false
+   */
+  new: (
+    _bridge_address: string,
+    _handler_address: string,
+    _mplgr_address: string,
+    _cb_ddid: string | number,
+    _cb_rid: string | number[],
+  ) => MethodReturnContext;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  name: () => MethodConstantReturnContext<string>;
+  bridge_address: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  decimals: () => MethodConstantReturnContext<string>;
+  cb_ddid: () => MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  cb_rid: () => MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  handler_address: () => MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  mplgr_address: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
@@ -150,71 +191,53 @@ export interface Erc20 {
    * Type: function
    * @param parameter0 Type: address, Indexed: false
    */
-  balanceOf: (parameter0: string) => MethodConstantReturnContext<string>;
+  mplgr_amounts: (parameter0: string) => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  symbol: () => MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   * @param parameter0 Type: address, Indexed: false
-   * @param parameter1 Type: address, Indexed: false
-   */
-  allowance: (parameter0: string, parameter1: string) => MethodConstantReturnContext<string>;
-  /**
-   * Payable: true
-   * Constant: false
-   * StateMutability: payable
-   * Type: function
-   */
-  deposit: () => MethodPayableReturnContext;
+  owner: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param wad Type: uint256, Indexed: false
+   * @param _bridge_address Type: address, Indexed: false
+   * @param _handler_address Type: address, Indexed: false
+   * @param _cb_ddid Type: uint8, Indexed: false
+   * @param _cb_rid Type: bytes32, Indexed: false
    */
-  withdraw: (wad: string) => MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
-  totalSupply: () => MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param guy Type: address, Indexed: false
-   * @param wad Type: uint256, Indexed: false
-   */
-  approve: (guy: string, wad: string) => MethodReturnContext;
+  admin_update_bridge: (
+    _bridge_address: string,
+    _handler_address: string,
+    _cb_ddid: string | number,
+    _cb_rid: string | number[],
+  ) => MethodReturnContext;
   /**
    * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param dst Type: address, Indexed: false
-   * @param wad Type: uint256, Indexed: false
+   * @param data Type: bytes, Indexed: false
    */
-  transfer: (dst: string, wad: string) => MethodReturnContext;
+  deposit_mplgr_bridge: (data: string | number[]) => MethodReturnContext;
   /**
    * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param src Type: address, Indexed: false
-   * @param dst Type: address, Indexed: false
-   * @param wad Type: uint256, Indexed: false
+   * @param amount Type: uint256, Indexed: false
    */
-  transferFrom: (src: string, dst: string, wad: string) => MethodReturnContext;
+  widthdraw_mplgr: (amount: string) => MethodReturnContext;
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
+   * @param _owner Type: address, Indexed: false
+   * @param amount Type: uint256, Indexed: false
+   */
+  deposit_mplgr: (_owner: string, amount: string) => MethodReturnContext;
 }

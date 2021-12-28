@@ -11,6 +11,7 @@
     "analyze": "webpack --profile --json > stats.json --config ./config/webpack.prod.js && webpack-bundle-analyzer stats.json",
     "lint-staged:js": "eslint --ext .js,.jsx,.ts,.tsx ",
     "prepare": "husky install",
+    "web3-token-abi": "node ./config/web3TokenAbi.js",
     "rmdist": "rm -rf ./dist"
   },
   "repository": {
