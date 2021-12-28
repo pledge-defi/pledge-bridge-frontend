@@ -1,11 +1,18 @@
+import type { Erc20 } from '@/contracts/Erc20';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
-// import type { Contract } from 'web3-eth-contract';
+import type { Contract } from 'web3-eth-contract';
 
+const Erc20Abi = require('@/abis/Erc20.json');
 const web3 = new Web3(Web3.givenProvider);
-// interface SubContract<T> extends Contract {
-//   methods: T;
-// }
+
+interface SubContract<T> extends Contract {
+  methods: T;
+}
+
+const getErc20Contract = (address: string) => {
+  return new web3.eth.Contract(Erc20Abi, address) as SubContract<Erc20>;
+};
 
 const getDefaultAccount = async () => {
   const accounts = await web3.eth.getAccounts();
@@ -41,4 +48,4 @@ const createERCDepositData = (tokenAmount: string, recipientAddress: string) => 
   )}${recipientAddress.substr(2)}`;
 };
 
-export { web3, gasOptions, getDefaultAccount, createERCDepositData };
+export { web3, getErc20Contract, gasOptions, getDefaultAccount, createERCDepositData };
