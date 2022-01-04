@@ -1,5 +1,6 @@
 import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
+import { Dropdown, Menu } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
 import styled from 'styled-components';
@@ -15,6 +16,11 @@ const StyleAmountInput = styled(InputDiv)`
     background: none;
     border: none;
     outline: none;
+    ::placeholder {
+      color: #8b89a3;
+      font-weight: normal;
+      font-size: 14px;
+    }
   }
   input:focus {
     border: none;
@@ -41,24 +47,77 @@ const StyleAmountInput = styled(InputDiv)`
   }
 `;
 
-type AmountInputProps = {
+type AmountInputProps = React.DetailedHTMLProps<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+> & {
   currency?: CurrencyType;
-  onChange?: React.InputHTMLAttributes<HTMLInputElement>['onChange'];
-  value?: React.InputHTMLAttributes<HTMLInputElement>['value'];
   onClickMax?: () => void;
+  onChangeCurrency?: (v: CurrencyType) => void;
 };
 
-const AmountInput = ({ currency = 'BSC', onChange, value, onClickMax }: AmountInputProps) => {
+const AmountInput = ({
+  currency = 'BSC',
+  onClickMax,
+  onChangeCurrency,
+  ...inputProps
+}: AmountInputProps) => {
+  const coinElement = () => {
+    if (!onChangeCurrency) {
+      return (
+        <Coin>
+          <img src={get(currencyInfos, [currency, 'currencyImageAsset'])} alt="" height={'24px'} />
+          <span>{get(currencyInfos, [currency, 'currencyName'])}</span>
+        </Coin>
+      );
+    }
+    return (
+      <Dropdown
+        overlay={
+          <Menu selectedKeys={[currency]} onClick={(v) => onChangeCurrency(v.key as CurrencyType)}>
+            <Menu.Item key={'BSC'}>
+              <Coin>
+                <img
+                  src={get(currencyInfos, ['BSC', 'currencyImageAsset'])}
+                  alt=""
+                  height={'24px'}
+                />
+                <span>{get(currencyInfos, ['BSC', 'currencyName'])}</span>
+              </Coin>
+            </Menu.Item>
+            <Menu.Item key={'Ethereum'}>
+              <Coin>
+                <img
+                  src={get(currencyInfos, ['Ethereum', 'currencyImageAsset'])}
+                  alt=""
+                  height={'24px'}
+                />
+                <span>{get(currencyInfos, ['Ethereum', 'currencyName'])}</span>
+              </Coin>
+            </Menu.Item>
+          </Menu>
+        }
+      >
+        <Coin>
+          <img src={get(currencyInfos, [currency, 'currencyImageAsset'])} alt="" height={'24px'} />
+          <span>{get(currencyInfos, [currency, 'currencyName'])}</span>
+          <img
+            src={require('@/assets/images/dropDownGrey.svg')}
+            alt=""
+            style={{ paddingLeft: '8px' }}
+          />
+        </Coin>
+      </Dropdown>
+    );
+  };
+
   return (
     <StyleAmountInput>
-      <input type="text" onChange={onChange} value={value} />
+      <input type="text" {...inputProps} />
       <div className="max" onClick={onClickMax}>
         Max
       </div>
-      <Coin>
-        <img src={get(currencyInfos, [currency, 'currencyImageAsset'])} alt="" height={'24px'} />
-        <span>{get(currencyInfos, [currency, 'currencyName'])}</span>
-      </Coin>
+      {coinElement()}
     </StyleAmountInput>
   );
 };

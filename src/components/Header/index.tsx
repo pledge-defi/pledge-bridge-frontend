@@ -21,6 +21,14 @@ const HeaderDiv = styled.div`
   }
 `;
 
+const FlexDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  > img {
+    margin-right: 10px;
+  }
+`;
+
 const Logo = styled.div`
   display: flex;
   > span {
@@ -35,12 +43,15 @@ const UserInfo = styled.div`
     display: flex;
     justify-content: space-between;
     box-sizing: border-box;
-    width: 120px;
+    min-width: 120px;
     padding: 10px 20px;
     background: rgba(93, 82, 255, 0.1);
     border: 1px solid #5d52ff;
     border-radius: 22px;
     cursor: pointer;
+    > span {
+      padding: 0 6px 0 10px;
+    }
   }
   /* > span {
     width: 44px;
@@ -70,8 +81,28 @@ const Header = () => {
           <Dropdown
             overlay={
               <Menu selectedKeys={[currency]} onClick={handleClick}>
-                <Menu.Item key={'BSC'}>BSC</Menu.Item>
-                <Menu.Item key={'Ethereum'}>Ethereum</Menu.Item>
+                <Menu.Item key={'BSC'}>
+                  <FlexDiv>
+                    <img
+                      src={get(currencyInfos, ['BSC', 'chainImageAsset'])}
+                      alt=""
+                      width={24}
+                      height={24}
+                    />
+                    <span>BSC</span>
+                  </FlexDiv>
+                </Menu.Item>
+                <Menu.Item key={'Ethereum'}>
+                  <FlexDiv>
+                    <img
+                      src={get(currencyInfos, ['Ethereum', 'chainImageAsset'])}
+                      alt=""
+                      width={24}
+                      height={24}
+                    />
+                    <span>Ethereum</span>
+                  </FlexDiv>
+                </Menu.Item>
               </Menu>
             }
           >

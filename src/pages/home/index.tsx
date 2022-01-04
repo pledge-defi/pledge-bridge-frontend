@@ -37,7 +37,7 @@ const activeTabs = ['Bridge', 'Withdraw'] as const;
 type ActiveTabs = typeof activeTabs[number];
 
 const Home = () => {
-  const [activeTab, setActiveTab] = useState<ActiveTabs>('Bridge');
+  const [activeTab, setActiveTab] = useState<ActiveTabs>('Withdraw');
 
   const handleClickChangeActiveTab = (a: ActiveTabs) => {
     setActiveTab(a);
