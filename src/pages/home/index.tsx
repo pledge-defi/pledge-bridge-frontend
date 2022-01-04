@@ -1,7 +1,8 @@
 import { map } from 'lodash';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import Bridge from './Bridge';
+import Withdraw from './Withdraw';
 
 const HomeDiv = styled.div`
   padding-top: 40px;
@@ -42,6 +43,15 @@ const Home = () => {
     setActiveTab(a);
   };
 
+  const activeElement = useMemo(() => {
+    switch (activeTab) {
+      case 'Bridge':
+        return <Bridge />;
+      case 'Withdraw':
+        return <Withdraw />;
+    }
+  }, [activeTab]);
+
   return (
     <HomeDiv>
       <SelectTab>
@@ -55,7 +65,7 @@ const Home = () => {
           </div>
         ))}
       </SelectTab>
-      <Bridge />
+      {activeElement}
     </HomeDiv>
   );
 };
