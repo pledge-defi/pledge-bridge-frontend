@@ -8,8 +8,9 @@ import { get } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import AmountInput from './AmountInput';
+import Balance from './Balance';
 import LinkToDepoistHistory from './LinkToDepoistHistory';
-import { Balance, Footer, FormWapper, Label } from './styleComponents';
+import { Footer, FormWapper, Label } from './styleComponents';
 
 const WithdrawHeader = styled.div`
   align-items: center;
@@ -95,16 +96,22 @@ const WithdrawShowItem = styled.div<{ textAlign?: 'left' | 'right' }>`
 `;
 
 export default () => {
-  const [currency, setCurrency] = useState<CurrencyType>('BSC');
+  const [currency, setCurrency] = useState<CurrencyType>('Ethereum');
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
+
+  const [mplgrAmounts, setMplgrAmounts] = useState<string>();
+  const [plgrAmounts, setPlgrAmounts] = useState<string>();
+  const [lockedPlgr, setLockedPlgr] = useState<string>();
+  const [totalTransferAmount, setTotalTransferAmount] = useState<number>();
+
   const [canDeposit, setCanDeposit] = useState<boolean>(false);
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
   const [depositLoading, setDepositLoading] = useState<boolean>(false);
 
   const handleClickApprove = async () => {
     setApproveLoading(true);
-    const contractAmount = dealNumber_18(amount)!;
+    const contractAmount = dealNumber_18(amount!)!;
     try {
       await services.evmServer.approve(
         get(currencyInfos, [currency, 'contractAddress']),
@@ -120,16 +127,16 @@ export default () => {
 
   const handleClickDeposit = async () => {
     setDepositLoading(true);
-    const contractAmount = dealNumber_18(amount)!;
+    const contractAmount = dealNumber_18(amount!)!;
     if (currency === 'BSC') {
       try {
-        await services.evmServer.deposit_plgr(account as string, contractAmount);
+        await services.evmServer.widthdraw_plgr(contractAmount);
       } catch (error) {
         console.log(error);
       }
     } else {
       try {
-        await services.evmServer.deposit_mplgr(account as string, contractAmount);
+        await services.evmServer.widthdraw_mplgr(contractAmount);
       } catch (error) {
         console.log(error);
       }
@@ -145,10 +152,47 @@ export default () => {
     setCurrency(v);
   };
 
+  const fetchInitalData = async () => {
+    try {
+      const newMplgrAmounts = await services.evmServer.mplgr_amounts(account!);
+      setMplgrAmounts(newMplgrAmounts);
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      const newPlgrAmounts = await services.evmServer.plgr_amounts(account!);
+      setPlgrAmounts(newPlgrAmounts);
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      const locked_plgr_tx = await services.evmServer.locked_plgr_tx(account!);
+      setLockedPlgr(get(locked_plgr_tx, 'amount'));
+    } catch (error) {
+      console.log(error);
+    }
+
+    try {
+      const newTotalTransferAmount = await services.evmServer.totalTransferAmount();
+      setTotalTransferAmount(newTotalTransferAmount);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     setAmount(undefined);
     setCanDeposit(false);
   }, [currency]);
+
+  useEffect(() => {
+    if (account) {
+      fetchInitalData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account]);
 
   return (
     <>
@@ -162,7 +206,7 @@ export default () => {
         <WithdrawBar>
           <WithdrawBarItem>
             <span>Total Transfer Amount</span>
-            <div>100,000 PLGR</div>
+            <div>{totalTransferAmount} PLGR</div>
           </WithdrawBarItem>
           <div className="divider">
             <div />
@@ -180,15 +224,15 @@ export default () => {
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>
-            <div>1,220.1243 PLGR</div>
+            <div>{lockedPlgr} PLGR</div>
           </WithdrawShowItem>
           <WithdrawShowItem>
             <span>Withdrawal PLGR</span>
-            <div>2,220.1243 PLGR</div>
+            <div>{plgrAmounts} PLGR</div>
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Withdrawal MPLGR</span>
-            <div>20.1243 MPLGR</div>
+            <div>{mplgrAmounts} MPLGR</div>
           </WithdrawShowItem>
         </FlexDiv>
 
@@ -199,9 +243,7 @@ export default () => {
           onChange={handleChangeInput}
           onChangeCurrency={handleChangeCurrency}
         />
-        <Balance>
-          Balance:<span>1000.2334 PLGR</span>
-        </Balance>
+        <Balance currency={currency} />
 
         {!canDeposit && (
           <Button

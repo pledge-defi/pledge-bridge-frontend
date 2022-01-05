@@ -82,12 +82,49 @@
   },
   {
     "inputs": [],
+    "name": "base",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "bridge_address",
     "outputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "can_release",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -227,7 +264,46 @@
   },
   {
     "inputs": [],
+    "name": "totalLockedAmounts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "total_pledge",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "wait_time",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "x",
     "outputs": [
       {
         "internalType": "uint256",
@@ -247,6 +323,32 @@
       }
     ],
     "name": "admin_update_configure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_x",
+        "type": "uint256"
+      }
+    ],
+    "name": "set_x",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_base",
+        "type": "uint256"
+      }
+    ],
+    "name": "set_base",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -331,25 +433,6 @@
   },
   {
     "inputs": [],
-    "name": "check_upkeep",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "",
-        "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "int256",
-        "name": "index",
-        "type": "int256"
-      }
-    ],
     "name": "execute_upkeep",
     "outputs": [],
     "stateMutability": "nonpayable",

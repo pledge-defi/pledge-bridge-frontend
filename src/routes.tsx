@@ -7,8 +7,8 @@ import { HashRouter } from 'react-router-dom';
 
 const Routes = () => {
   return (
-    <BasicLayout>
-      <HashRouter>
+    <HashRouter>
+      <BasicLayout>
         <Switch>
           <Route exact path="/">
             <Home />
@@ -17,8 +17,8 @@ const Routes = () => {
             <History />
           </Route>
         </Switch>
-      </HashRouter>
-    </BasicLayout>
+      </BasicLayout>
+    </HashRouter>
   );
 };
 

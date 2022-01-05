@@ -7,6 +7,7 @@ import { useRecoilState } from 'recoil';
 import { currencyState } from '@/model/global';
 import currencyInfos from '@/constants/currencyInfos';
 import { get } from 'lodash';
+import { useHistory } from 'react-router-dom';
 
 const HeaderDiv = styled.div`
   height: 92px;
@@ -29,10 +30,11 @@ const FlexDiv = styled.div`
   }
 `;
 
-const Logo = styled.div`
+const Logo = styled.a`
   display: flex;
   > span {
     padding-left: 10px;
+    color: #181826;
     font-size: 28px;
   }
 `;
@@ -58,15 +60,20 @@ const UserInfo = styled.div`
 
 const Header = () => {
   const [currency, setCurrency] = useRecoilState(currencyState);
+  const history = useHistory();
 
   const handleClick = (v: any) => {
     setCurrency(v.key);
   };
 
+  const handleClickLinkToHome = () => {
+    history.push('/');
+  };
+
   return (
     <HeaderDiv>
       <div>
-        <Logo>
+        <Logo onClick={handleClickLinkToHome}>
           <img src={logo} alt="" />
           <span>Pledge Bridge</span>
         </Logo>

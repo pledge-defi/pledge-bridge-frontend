@@ -9,9 +9,9 @@ import { get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import AmountInput from './AmountInput';
+import Balance from './Balance';
 import LinkToDepoistHistory from './LinkToDepoistHistory';
 import {
-  Balance,
   Coin,
   Footer,
   FormWapper,
@@ -66,6 +66,7 @@ export default () => {
     if (currency === 'BSC') {
       try {
         await services.evmServer.deposit_plgr(account as string, contractAmount);
+        await services.evmServer.execute_upkeep();
       } catch (error) {
         console.log(error);
       }
@@ -119,10 +120,7 @@ export default () => {
         </InputDiv>
         <Label>Amount</Label>
         <AmountInput currency={currency} onChange={handleChangeInput} />
-        <Balance>
-          Balance:<span>1000.2334 PLGR</span>
-        </Balance>
-
+        <Balance currency={currency} />
         {!canDeposit && (
           <Button
             type="primary"

@@ -8,4 +8,4 @@ const _chainBridge: ChainBridgeConfig = {
 };
 const _chainIdList: number[] = _chainBridge.chains.map((item) => item.networkId) as number[];
 
-export const injected = new InjectedConnector({ supportedChainIds: _chainIdList });
+export const injected = new InjectedConnector({ supportedChainIds: [..._chainIdList, 3, 1] });

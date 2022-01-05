@@ -18,6 +18,33 @@ const EvmServer = {
     return await contract.methods.approve(approveAddress, amount).send(options);
   },
 
+  async balanceOf(ERC20Address: string, account: string) {
+    const contract = getNewERC20AbiContract(ERC20Address);
+    return await contract.methods.balanceOf(account).call();
+  },
+
+  async totalTransferAmount() {
+    const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
+    const x = await contract.methods.x().call();
+    const base = await contract.methods.base().call();
+    return +x * +base;
+  },
+
+  async mplgr_amounts(account: string) {
+    const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
+    return await contract.methods.mplgr_amounts(account).call();
+  },
+
+  async plgr_amounts(account: string) {
+    const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
+    return await contract.methods.plgr_amounts(account).call();
+  },
+
+  async locked_plgr_tx(account: string) {
+    const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
+    return await contract.methods.locked_plgr_tx(account).call();
+  },
+
   async deposit_plgr(_owner: string, amount: string) {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
     const options = await gasOptions();
@@ -30,15 +57,16 @@ const EvmServer = {
     return await contract.methods.widthdraw_plgr(amount).send(options);
   },
 
+  async execute_upkeep() {
+    const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
+    const options = await gasOptions();
+    return await contract.methods.execute_upkeep().send(options);
+  },
+
   async deposit_mplgr(_owner: string, amount: string) {
     const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
     const options = await gasOptions();
     return await contract.methods.deposit_mplgr(_owner, amount).send(options);
-  },
-
-  async mplgr_amounts(_owner: string) {
-    const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
-    return await contract.methods.mplgr_amounts(_owner).call();
   },
 
   async widthdraw_mplgr(amount: string) {

@@ -12,7 +12,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 const WalletConnectWapper = styled.div`
   margin-left: 24px;
   background-color: #fff !important;
-  padding: 0 20px 0 10px !important;
+  padding: 0 20px 0 20px !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -51,6 +51,7 @@ const ConnectWallet: React.FC<IConnectWallet> = () => {
       setActivatingConnector(undefined);
     } else {
       if (error instanceof UnsupportedChainIdError) {
+        console.log(error);
         const fraNetworkDefault = ChainBridge.chains
           .filter((item) => item.type === 'Ethereum')
           .find((item) => item.networkId === 525);

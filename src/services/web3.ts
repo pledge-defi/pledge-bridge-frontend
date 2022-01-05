@@ -17,7 +17,7 @@ interface SubContract<T> extends Contract {
   methods: T;
 }
 
-const getNewERC20AbiContract = (address: string) => {
+const getNewERC20AbiContract = (address?: string) => {
   return new web3.eth.Contract(NewERC20Abi, address) as SubContract<NewERC20>;
 };
 
