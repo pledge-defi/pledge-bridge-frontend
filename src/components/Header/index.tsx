@@ -45,6 +45,7 @@ const UserInfo = styled.div`
     box-sizing: border-box;
     min-width: 120px;
     padding: 10px 20px;
+    color: #5d52ff;
     background: rgba(93, 82, 255, 0.1);
     border: 1px solid #5d52ff;
     border-radius: 22px;
@@ -53,14 +54,6 @@ const UserInfo = styled.div`
       padding: 0 6px 0 10px;
     }
   }
-  /* > span {
-    width: 44px;
-    height: 44px;
-    margin-left: 44px;
-    background: #ffffff;
-    border: 1px solid #5d52ff;
-    border-radius: 50%;
-  } */
 `;
 
 const Header = () => {

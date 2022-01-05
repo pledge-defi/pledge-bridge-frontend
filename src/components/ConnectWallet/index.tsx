@@ -2,24 +2,49 @@ import ChainBridge from '@/constants/ChainBridge';
 import services from '@/services';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import type { InjectedConnector } from '@web3-react/injected-connector';
-import { notification } from 'antd';
-import classNames from 'classnames';
+import { Dropdown, Menu, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { injected } from './connector';
-import './index.less';
 import { useEagerConnect, useInactiveListener } from './WalletHooks';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-export interface IConnectWallet {
-  typeUI?: 'header' | 'metamask';
-  className?: string;
-  style?: React.CSSProperties;
-}
+const WalletConnectWapper = styled.div`
+  margin-left: 24px;
+  background-color: #fff !important;
+  padding: 0 20px 0 10px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const WalletInfo = styled.div`
+  width: 160px;
+  padding: 3px 8px;
+  > div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 0;
+    > div {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    *:first-child {
+      padding-right: 10px;
+    }
+  }
+`;
+const WalletConnected = styled.div``;
+const WalletConnecting = styled.div``;
+const WalletNoConnected = styled.div``;
 
-const ConnectWallet: React.FC<IConnectWallet> = ({ typeUI, className, style, children }) => {
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface IConnectWallet {}
+
+const ConnectWallet: React.FC<IConnectWallet> = () => {
   const triedEager = useEagerConnect();
   const { connector, chainId, account, activate, deactivate, error } = useWeb3React();
   const [activatingConnector, setActivatingConnector] = useState<InjectedConnector>();
-  console.log('====chainId', chainId);
 
   async function activatingConnectorFn() {
     if (activatingConnector && activatingConnector === connector) {
@@ -65,48 +90,44 @@ const ConnectWallet: React.FC<IConnectWallet> = ({ typeUI, className, style, chi
 
   function ButtonSwitchComponent() {
     if (connected && isDisconnect) {
-      //TODO: move `typeUI` outside
-      if (typeUI === 'header') {
-        return (
-          <div className="wallet-connected wallet-header" onClick={handleOnCLickConnectWallet}>
-            <img
-              src={require('@/assets/images/wallet.svg')}
-              alt=""
-              style={{ marginRight: '12px' }}
-            />
-            <span className="address">{`${account?.slice(0, 8)}···${account?.slice(-6)}`}</span>
-          </div>
-        );
-      }
-      return <div className="wallet-connected">{children}</div>;
+      return (
+        <Dropdown
+          overlay={
+            <Menu>
+              <WalletInfo>
+                <div>
+                  <img src={require('@/assets/images/meta-mask-border.svg')} alt="" />
+                  <span>MetaMask</span>
+                </div>
+                <div>
+                  <div>{`${account?.slice(0, 6)}···${account?.slice(-4)}`}</div>
+                  <CopyToClipboard text={account!}>
+                    <img
+                      src={require('@/assets/images/copy-icon.svg')}
+                      alt=""
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </CopyToClipboard>
+                </div>
+              </WalletInfo>
+            </Menu>
+          }
+        >
+          <WalletConnected onClick={handleOnCLickConnectWallet}>
+            <img src={require('@/assets/images/meta-mask.svg')} alt="" />
+            <span className="address">{`${account?.slice(0, 6)}···${account?.slice(-4)}`}</span>
+          </WalletConnected>
+        </Dropdown>
+      );
     }
-
     if (activating) {
-      return <div className="connect-no-connected">CONNECTING</div>;
+      return <WalletConnecting>CONNECTING</WalletConnecting>;
     }
     return (
-      <div className="connect-no-connected" onClick={handleOnCLickConnectWallet}>
-        {typeUI !== 'header' && (
-          <img style={{ marginRight: '12px' }} src={require('@/assets/images/wallet.svg')} />
-        )}
-        CONNECT WALLET
-      </div>
+      <WalletNoConnected onClick={handleOnCLickConnectWallet}>CONNECT WALLET</WalletNoConnected>
     );
   }
-  return (
-    <div
-      style={style}
-      className={classNames('components-connect-wallet', className, {
-        'header-wallet': typeUI === 'header',
-      })}
-    >
-      {ButtonSwitchComponent()}
-    </div>
-  );
-};
-
-ConnectWallet.defaultProps = {
-  typeUI: 'header',
+  return <WalletConnectWapper>{ButtonSwitchComponent()}</WalletConnectWapper>;
 };
 
 export default ConnectWallet;
