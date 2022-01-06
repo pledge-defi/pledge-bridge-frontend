@@ -1,4 +1,4 @@
-import type { AddEthereumChainParameter, BridgeConfigSimple } from '@/constants/ChainBridge.d';
+import type { AddEthereumChainParameter } from '@/constants/ChainBridge.d';
 import {
   PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
   PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS,
@@ -9,7 +9,6 @@ import {
   getNewERC20AbiContract,
   getPledgerBridgeBSC,
   getPledgerBridgeETH,
-  web3,
 } from './web3';
 
 const EvmServer = {
@@ -76,67 +75,26 @@ const EvmServer = {
     return await contract.methods.widthdraw_mplgr(amount).send(options);
   },
 
-  // async tokenBalance(contractAddress: string) {
-  //   const contract = getErc20Contract(contractAddress);
-  //   const destAddress = await getDefaultAccount();
-  //   const options = await gasOptions();
-  //   return await contract.methods.balanceOf(destAddress).call(options);
-  // },
-  // async approveToken(
-  //   tokenAddress: string,
-  //   erc20HandlerAddress: string,
-  //   erc20Decimals: string,
-  //   price: string,
-  // ) {
-  //   const contract = getErc20Contract(tokenAddress);
-  //   const options = await gasOptions();
-
-  //   const ten = new BigNumber(10);
-  //   const power = ten.exponentiatedBy(erc20Decimals);
-  //   const amount = new BigNumber(price).times(power).toString();
-
-  //   return await contract.methods.approve(erc20HandlerAddress, amount).send(options);
-  // },
-  // async deposit(
-  //   bridgeAddress: string,
-  //   destinationChainId: string,
-  //   tokenResourceId: string,
-  //   erc20Decimals: string,
-  //   tokenAmount: string,
-  //   recipientAddress: string,
-  // ) {
-  //   const contract = getPledgerBridgeBSC(bridgeAddress);
-  //   const options = await gasOptions();
-
-  //   const feePrice = await contract.methods._fee().call(options);
-  //   const ten = new BigNumber(10);
-  //   const power = ten.exponentiatedBy(erc20Decimals);
-  //   const feeAmount = new BigNumber(feePrice).times(power).toString();
-  //   const bridgeAmount = new BigNumber(tokenAmount).times(power).toString();
-
-  //   const data = createERCDepositData(bridgeAmount, recipientAddress);
-
-  //   await contract.methods
-  //     .deposit(destinationChainId, tokenResourceId, data)
-  //     .send({ ...options, value: feeAmount });
-  // },
-  async switchNetwork(value: BridgeConfigSimple) {
-    return await window.ethereum.request({
-      method: 'wallet_addEthereumChain',
-      params: [
-        {
-          chainId: web3.utils.toHex(value.networkId),
-          chainName: value.name,
-          nativeCurrency: {
-            name: value.nativeTokenSymbol,
-            symbol: value.nativeTokenSymbol,
-            decimals: value.decimals,
-          },
-          rpcUrls: [value.rpcUrl],
-          blockExplorerUrls: [value.explorerUrl],
-        } as AddEthereumChainParameter,
-      ],
-    });
+  async switchNetwork(value: AddEthereumChainParameter) {
+    try {
+      return await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: value.chainId }],
+      });
+    } catch (switchError: any) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        try {
+          return await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [value],
+          });
+        } catch (addError) {
+          // handle "add" error
+        }
+      }
+      // handle other "switch" errors
+    }
   },
 };
 

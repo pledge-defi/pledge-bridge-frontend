@@ -1,7 +1,6 @@
 import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
-import { balanceState } from '@/model/global';
-import { currencyState } from '@/model/global';
+import { balanceState, currencyState } from '@/model/global';
 import services from '@/services';
 import { multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
@@ -46,9 +45,14 @@ export default () => {
     [],
   );
 
+  const resetState = () => {
+    setAmount('');
+    setCanDeposit(false);
+  };
+
   const handleClickApprove = async () => {
     setApproveLoading(true);
-    const contractAmount = multiplied_18(amount)!;
+    const contractAmount = multiplied_18(amount!)!;
     try {
       await services.evmServer.approve(
         get(currencyInfos, [currency, 'contractAddress']),
@@ -64,17 +68,19 @@ export default () => {
 
   const handleClickDeposit = async () => {
     setDepositLoading(true);
-    const contractAmount = multiplied_18(amount)!;
+    const contractAmount = multiplied_18(amount!)!;
     if (currency === 'BSC') {
       try {
         await services.evmServer.deposit_plgr(account as string, contractAmount);
         await services.evmServer.execute_upkeep();
+        resetState();
       } catch (error) {
         console.log(error);
       }
     } else {
       try {
         await services.evmServer.deposit_mplgr(account as string, contractAmount);
+        resetState();
       } catch (error) {
         console.log(error);
       }

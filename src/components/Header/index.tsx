@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from '@/assets/images/bridgeLogo.svg';
 import styled from 'styled-components';
 import { ConnectWallet } from '..';
@@ -6,8 +6,10 @@ import { Dropdown, Menu } from 'antd';
 import { useRecoilState } from 'recoil';
 import { currencyState } from '@/model/global';
 import currencyInfos from '@/constants/currencyInfos';
-import { get } from 'lodash';
+import { find, get } from 'lodash';
 import { useHistory } from 'react-router-dom';
+import services from '@/services';
+import { useWeb3React } from '@web3-react/core';
 
 const HeaderDiv = styled.div`
   height: 92px;
@@ -61,14 +63,27 @@ const UserInfo = styled.div`
 const Header = () => {
   const [currency, setCurrency] = useRecoilState(currencyState);
   const history = useHistory();
+  const { chainId } = useWeb3React();
+  const [currentChainId, setCurrentChainId] = useState<number>();
 
-  const handleClick = (v: any) => {
+  const handleClick = async (v: any) => {
+    const netWorkInfo = get(currencyInfos, [v.key, 'netWorkInfo']);
+    await services.evmServer.switchNetwork(netWorkInfo);
     setCurrency(v.key);
   };
 
   const handleClickLinkToHome = () => {
     history.push('/');
   };
+
+  useEffect(() => {
+    if (chainId !== currentChainId && currentChainId === undefined) {
+      setCurrentChainId(chainId);
+      const chainName = find(Object.values(currencyInfos), { chainId })?.chainName;
+      setCurrency(chainName || 'BSC');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId]);
 
   return (
     <HeaderDiv>

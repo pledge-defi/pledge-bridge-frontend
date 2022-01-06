@@ -1,11 +1,13 @@
 import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
+import { currencyState } from '@/model/global';
 import services from '@/services';
 import { divided_18, multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button } from 'antd';
 import { get } from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import AmountInput from './AmountInput';
 import Balance from './Balance';
@@ -96,7 +98,7 @@ const WithdrawShowItem = styled.div<{ textAlign?: 'left' | 'right' }>`
 `;
 
 export default () => {
-  const [currency, setCurrency] = useState<CurrencyType>('Ethereum');
+  const [currency, setCurrency] = useRecoilState(currencyState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
 
@@ -108,57 +110,6 @@ export default () => {
   const [canDeposit, setCanDeposit] = useState<boolean>(false);
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
   const [depositLoading, setDepositLoading] = useState<boolean>(false);
-
-  const handleClickApprove = async () => {
-    setApproveLoading(true);
-    const contractAmount = multiplied_18(amount!)!;
-    try {
-      await services.evmServer.approve(
-        get(currencyInfos, [currency, 'contractAddress']),
-        get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
-        contractAmount,
-      );
-      setCanDeposit(true);
-    } catch (error) {
-      console.log(error);
-    }
-    setApproveLoading(false);
-  };
-
-  const handleClickDeposit = async () => {
-    setDepositLoading(true);
-    const contractAmount = multiplied_18(amount!)!;
-    if (currency === 'BSC') {
-      try {
-        await services.evmServer.widthdraw_plgr(contractAmount);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        await services.evmServer.widthdraw_mplgr(contractAmount);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    setDepositLoading(false);
-  };
-
-  const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
-    setAmount(v.target.value);
-  };
-
-  const handleChangeCurrency = (v: CurrencyType) => {
-    setCurrency(v);
-  };
-
-  const handleClickMax = () => {
-    if (currency === 'BSC') {
-      setAmount(plgrAmounts);
-    } else {
-      setAmount(mplgrAmounts);
-    }
-  };
 
   const fetchInitalData = async () => {
     try {
@@ -190,6 +141,67 @@ export default () => {
     }
   };
 
+  const resetState = () => {
+    setAmount('');
+    setCanDeposit(false);
+    fetchInitalData();
+  };
+
+  const handleClickApprove = async () => {
+    setApproveLoading(true);
+    const contractAmount = multiplied_18(amount!)!;
+    try {
+      await services.evmServer.approve(
+        get(currencyInfos, [currency, 'contractAddress']),
+        get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
+        contractAmount,
+      );
+      setCanDeposit(true);
+    } catch (error) {
+      console.log(error);
+    }
+    setApproveLoading(false);
+  };
+
+  const handleClickWithdraw = async () => {
+    setDepositLoading(true);
+    const contractAmount = multiplied_18(amount!)!;
+    if (currency === 'BSC') {
+      try {
+        await services.evmServer.widthdraw_plgr(contractAmount);
+        resetState();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await services.evmServer.widthdraw_mplgr(contractAmount);
+        resetState();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    setDepositLoading(false);
+  };
+
+  const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
+    setAmount(v.target.value);
+  };
+
+  const handleChangeCurrency = async (v: CurrencyType) => {
+    const netWorkInfo = get(currencyInfos, [v, 'netWorkInfo']);
+    await services.evmServer.switchNetwork(netWorkInfo);
+    setCurrency(v);
+  };
+
+  const handleClickMax = () => {
+    if (currency === 'BSC') {
+      setAmount(plgrAmounts);
+    } else {
+      setAmount(mplgrAmounts);
+    }
+  };
+
   useEffect(() => {
     setAmount('');
     setCanDeposit(false);
@@ -200,7 +212,7 @@ export default () => {
       fetchInitalData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
+  }, [account, currency]);
 
   return (
     <>
@@ -269,10 +281,10 @@ export default () => {
           <Button
             type="primary"
             style={{ height: 60, width: '100%', fontSize: '16px' }}
-            onClick={handleClickDeposit}
+            onClick={handleClickWithdraw}
             loading={depositLoading}
           >
-            Deposit
+            Withdraw
           </Button>
         )}
         <LinkToDepoistHistory />

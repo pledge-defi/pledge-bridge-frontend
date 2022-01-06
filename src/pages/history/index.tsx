@@ -1,12 +1,7 @@
-import { Button } from 'antd';
 import React from 'react';
 
 const History = () => {
-  return (
-    <div>
-      <Button>History hello world</Button>
-    </div>
-  );
+  return <div />;
 };
 
 export default History;

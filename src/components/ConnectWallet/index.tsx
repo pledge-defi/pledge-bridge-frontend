@@ -43,6 +43,7 @@ export interface IConnectWallet {}
 
 const ConnectWallet: React.FC<IConnectWallet> = () => {
   const triedEager = useEagerConnect();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { connector, chainId, account, activate, deactivate, error } = useWeb3React();
   const [activatingConnector, setActivatingConnector] = useState<InjectedConnector>();
 
@@ -85,7 +86,7 @@ const ConnectWallet: React.FC<IConnectWallet> = () => {
       setActivatingConnector(injected);
       activate(injected);
     } else {
-      deactivate();
+      // deactivate();
     }
   }
 

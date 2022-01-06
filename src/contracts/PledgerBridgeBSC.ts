@@ -93,8 +93,7 @@ export type PledgerBridgeBSCMethodNames =
   | 'owner'
   | 'plgr_address'
   | 'plgr_amounts'
-  | 'totalLockedAmounts'
-  | 'total_pledge'
+  | 'total_locked_amounts'
   | 'wait_time'
   | 'x'
   | 'admin_update_configure'
@@ -235,14 +234,7 @@ export interface PledgerBridgeBSC {
    * StateMutability: view
    * Type: function
    */
-  totalLockedAmounts: () => MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
-  total_pledge: () => MethodConstantReturnContext<string>;
+  total_locked_amounts: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
