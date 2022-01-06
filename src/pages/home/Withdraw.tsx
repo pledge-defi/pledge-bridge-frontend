@@ -1,7 +1,7 @@
 import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
 import services from '@/services';
-import { dealNumber_18 } from '@/utils/public';
+import { divided_18, multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button } from 'antd';
 import { get } from 'lodash';
@@ -111,7 +111,7 @@ export default () => {
 
   const handleClickApprove = async () => {
     setApproveLoading(true);
-    const contractAmount = dealNumber_18(amount!)!;
+    const contractAmount = multiplied_18(amount!)!;
     try {
       await services.evmServer.approve(
         get(currencyInfos, [currency, 'contractAddress']),
@@ -127,7 +127,7 @@ export default () => {
 
   const handleClickDeposit = async () => {
     setDepositLoading(true);
-    const contractAmount = dealNumber_18(amount!)!;
+    const contractAmount = multiplied_18(amount!)!;
     if (currency === 'BSC') {
       try {
         await services.evmServer.widthdraw_plgr(contractAmount);
@@ -152,24 +152,32 @@ export default () => {
     setCurrency(v);
   };
 
+  const handleClickMax = () => {
+    if (currency === 'BSC') {
+      setAmount(plgrAmounts);
+    } else {
+      setAmount(mplgrAmounts);
+    }
+  };
+
   const fetchInitalData = async () => {
     try {
       const newMplgrAmounts = await services.evmServer.mplgr_amounts(account!);
-      setMplgrAmounts(newMplgrAmounts);
+      setMplgrAmounts(divided_18(newMplgrAmounts));
     } catch (error) {
       console.log(error);
     }
 
     try {
       const newPlgrAmounts = await services.evmServer.plgr_amounts(account!);
-      setPlgrAmounts(newPlgrAmounts);
+      setPlgrAmounts(divided_18(newPlgrAmounts));
     } catch (error) {
       console.log(error);
     }
 
     try {
       const locked_plgr_tx = await services.evmServer.locked_plgr_tx(account!);
-      setLockedPlgr(get(locked_plgr_tx, 'amount'));
+      setLockedPlgr(divided_18(get(locked_plgr_tx, 'amount')));
     } catch (error) {
       console.log(error);
     }
@@ -183,7 +191,7 @@ export default () => {
   };
 
   useEffect(() => {
-    setAmount(undefined);
+    setAmount('');
     setCanDeposit(false);
   }, [currency]);
 
@@ -220,7 +228,7 @@ export default () => {
         <FlexDiv>
           <WithdrawShowItem>
             <span>Current unlock wait time</span>
-            <div>04:55:33</div>
+            {/* <div>04:55:33</div> */}
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>
@@ -238,10 +246,12 @@ export default () => {
 
         <Label>Amount</Label>
         <AmountInput
-          placeholder="Minimum amount is 0.1 PLGR"
+          placeholder={`Minimum amount is 0.1 ${get(currencyInfos, [currency, 'currencyName'])}`}
           currency={currency}
           onChange={handleChangeInput}
           onChangeCurrency={handleChangeCurrency}
+          onClickMax={handleClickMax}
+          value={amount}
         />
         <Balance currency={currency} />
 

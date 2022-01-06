@@ -1,8 +1,9 @@
 import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
+import { balanceState } from '@/model/global';
 import { currencyState } from '@/model/global';
 import services from '@/services';
-import { dealNumber_18 } from '@/utils/public';
+import { multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button } from 'antd';
 import { get } from 'lodash';
@@ -25,6 +26,7 @@ import {
 
 export default () => {
   const currency = useRecoilValue(currencyState);
+  const balance = useRecoilValue(balanceState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
   const [canDeposit, setCanDeposit] = useState<boolean>(false);
@@ -46,7 +48,7 @@ export default () => {
 
   const handleClickApprove = async () => {
     setApproveLoading(true);
-    const contractAmount = dealNumber_18(amount)!;
+    const contractAmount = multiplied_18(amount)!;
     try {
       await services.evmServer.approve(
         get(currencyInfos, [currency, 'contractAddress']),
@@ -62,7 +64,7 @@ export default () => {
 
   const handleClickDeposit = async () => {
     setDepositLoading(true);
-    const contractAmount = dealNumber_18(amount)!;
+    const contractAmount = multiplied_18(amount)!;
     if (currency === 'BSC') {
       try {
         await services.evmServer.deposit_plgr(account as string, contractAmount);
@@ -84,8 +86,12 @@ export default () => {
     setAmount(v.target.value);
   };
 
+  const handleClickMax = () => {
+    setAmount(get(balance, [currency]));
+  };
+
   useEffect(() => {
-    setAmount(undefined);
+    setAmount('');
     setCanDeposit(false);
   }, [currency]);
 
@@ -119,7 +125,12 @@ export default () => {
           <Key>{`${account?.slice(0, 8)}···${account?.slice(-6)}`}</Key>
         </InputDiv>
         <Label>Amount</Label>
-        <AmountInput currency={currency} onChange={handleChangeInput} />
+        <AmountInput
+          currency={currency}
+          onChange={handleChangeInput}
+          onClickMax={handleClickMax}
+          value={amount}
+        />
         <Balance currency={currency} />
         {!canDeposit && (
           <Button

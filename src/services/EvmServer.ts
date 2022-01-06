@@ -3,6 +3,7 @@ import {
   PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
   PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS,
 } from '@/utils/constants';
+import { divided_18 } from '@/utils/public';
 import {
   gasOptions,
   getNewERC20AbiContract,
@@ -27,7 +28,7 @@ const EvmServer = {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
     const x = await contract.methods.x().call();
     const base = await contract.methods.base().call();
-    return +x * +base;
+    return +x * +divided_18(base)!;
   },
 
   async mplgr_amounts(account: string) {

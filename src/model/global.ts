@@ -8,3 +8,12 @@ export const currencyState = atom<CurrencyType>({
   key: 'currencyState',
   default: 'BSC',
 });
+
+export type BalanceType = Record<CurrencyType, string>;
+export const balanceState = atom<BalanceType>({
+  key: 'balanceState',
+  default: {
+    BSC: '',
+    Ethereum: '',
+  },
+});
