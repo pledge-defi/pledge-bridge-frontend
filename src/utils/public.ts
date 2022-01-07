@@ -16,5 +16,5 @@ export const divided_18 = (num: BigNumber.Value) => {
 };
 
 export const numeralStandardFormat = (v: any) => {
-  return numeral(v).format('0,0.0000');
+  return numeral(v).format('0,0.0000', Math.floor);
 };

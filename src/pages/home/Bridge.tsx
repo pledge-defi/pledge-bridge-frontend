@@ -128,7 +128,7 @@ export default () => {
         </NormalFlexBox>
         <Label>Receiving address</Label>
         <InputDiv disabled>
-          <Key>{`${account?.slice(0, 8)}···${account?.slice(-6)}`}</Key>
+          {account && <Key>{`${account?.slice(0, 8)}···${account?.slice(-6)}`}</Key>}
         </InputDiv>
         <Label>Amount</Label>
         <AmountInput
