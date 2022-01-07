@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import numeral from 'numeral';
 
 export const multiplied_18 = (num: BigNumber.Value) => {
   if (!num) return undefined;
@@ -12,4 +13,8 @@ export const divided_18 = (num: BigNumber.Value) => {
   const x = new BigNumber(num);
   const y = new BigNumber(1e18);
   return x.dividedBy(y).toFixed();
+};
+
+export const numeralStandardFormat = (v: any) => {
+  return numeral(v).format('0,0.0000');
 };

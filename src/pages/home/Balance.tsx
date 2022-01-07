@@ -2,7 +2,7 @@ import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
 import { balanceState } from '@/model/global';
 import services from '@/services';
-import { divided_18 } from '@/utils/public';
+import { divided_18, numeralStandardFormat } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { get } from 'lodash';
 import React, { useEffect } from 'react';
@@ -50,7 +50,8 @@ const Balance = ({ currency = 'BSC' }: BalanceProps) => {
     <StyleBalance>
       Balance:{' '}
       <span>
-        {get(balance, [currency])} {get(currencyInfos, [currency, 'currencyName'])}
+        {numeralStandardFormat(get(balance, [currency]))}{' '}
+        {get(currencyInfos, [currency, 'currencyName'])}
       </span>
     </StyleBalance>
   );

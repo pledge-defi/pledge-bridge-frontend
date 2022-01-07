@@ -2,10 +2,11 @@ import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
 import { currencyState } from '@/model/global';
 import services from '@/services';
-import { divided_18, multiplied_18 } from '@/utils/public';
+import { divided_18, multiplied_18, numeralStandardFormat } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button } from 'antd';
 import { get } from 'lodash';
+import numeral from 'numeral';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
@@ -226,7 +227,7 @@ export default () => {
         <WithdrawBar>
           <WithdrawBarItem>
             <span>Total Transfer Amount</span>
-            <div>{totalTransferAmount} PLGR</div>
+            <div>{numeral(totalTransferAmount).format('0,0')} PLGR</div>
           </WithdrawBarItem>
           <div className="divider">
             <div />
@@ -244,15 +245,15 @@ export default () => {
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>
-            <div>{lockedPlgr} PLGR</div>
+            <div>{numeralStandardFormat(lockedPlgr)} PLGR</div>
           </WithdrawShowItem>
           <WithdrawShowItem>
             <span>Withdrawal PLGR</span>
-            <div>{plgrAmounts} PLGR</div>
+            <div>{numeralStandardFormat(plgrAmounts)} PLGR</div>
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Withdrawal MPLGR</span>
-            <div>{mplgrAmounts} MPLGR</div>
+            <div>{numeralStandardFormat(mplgrAmounts)} MPLGR</div>
           </WithdrawShowItem>
         </FlexDiv>
 
