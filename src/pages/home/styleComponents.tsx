@@ -46,7 +46,7 @@ export const TransformerItem = styled.div`
       line-height: 30px;
     }
     > span {
-      color: #5d52ff;
+      color: #4f4e66;
       font-weight: 300;
     }
   }
@@ -85,4 +85,10 @@ export const Coin = styled.div`
 
 export const Footer = styled.footer`
   height: 195px;
+`;
+
+export const FontWeightBoldDiv = styled.div`
+  font-weight: 600;
+  font-size: 20px;
+  color: #262533;
 `;

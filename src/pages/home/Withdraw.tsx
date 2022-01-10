@@ -12,6 +12,7 @@ import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import AmountInput from './AmountInput';
 import Balance from './Balance';
+import ConfirmDrawer from './ConfirmDrawer';
 import LinkToDepoistHistory from './LinkToDepoistHistory';
 import { Footer, FormWapper, Label } from './styleComponents';
 
@@ -107,10 +108,8 @@ export default () => {
   const [plgrAmounts, setPlgrAmounts] = useState<string>();
   const [lockedPlgr, setLockedPlgr] = useState<string>();
   const [totalTransferAmount, setTotalTransferAmount] = useState<number>();
-
-  const [canDeposit, setCanDeposit] = useState<boolean>(false);
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
-  const [depositLoading, setDepositLoading] = useState<boolean>(false);
+  const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
 
   const fetchInitalData = async () => {
     try {
@@ -144,8 +143,24 @@ export default () => {
 
   const resetState = () => {
     setAmount('');
-    setCanDeposit(false);
     fetchInitalData();
+  };
+
+  const handleCallback = () => {
+    resetState();
+  };
+
+  const showDrawerElement = () => {
+    setDrawerElement(
+      <ConfirmDrawer
+        key={new Date().getTime().toString()}
+        title="Deposit Confirm"
+        amount={amount}
+        account={account}
+        transferredType="withdraw"
+        callback={handleCallback}
+      />,
+    );
   };
 
   const handleClickApprove = async () => {
@@ -157,32 +172,11 @@ export default () => {
         get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
         contractAmount,
       );
-      setCanDeposit(true);
+      showDrawerElement();
     } catch (error) {
       console.log(error);
     }
     setApproveLoading(false);
-  };
-
-  const handleClickWithdraw = async () => {
-    setDepositLoading(true);
-    const contractAmount = multiplied_18(amount!)!;
-    if (currency === 'BSC') {
-      try {
-        await services.evmServer.widthdraw_plgr(contractAmount);
-        resetState();
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        await services.evmServer.widthdraw_mplgr(contractAmount);
-        resetState();
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    setDepositLoading(false);
   };
 
   const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
@@ -205,7 +199,6 @@ export default () => {
 
   useEffect(() => {
     setAmount('');
-    setCanDeposit(false);
   }, [currency]);
 
   useEffect(() => {
@@ -217,6 +210,7 @@ export default () => {
 
   return (
     <>
+      {drawerElement}
       <FormWapper>
         <WithdrawHeader>
           <span>Withdraw</span>
@@ -267,27 +261,14 @@ export default () => {
           value={amount}
         />
         <Balance currency={currency} />
-
-        {!canDeposit && (
-          <Button
-            type="primary"
-            style={{ height: 60, width: '100%', fontSize: '16px' }}
-            onClick={handleClickApprove}
-            loading={approveLoading}
-          >
-            Approve
-          </Button>
-        )}
-        {canDeposit && (
-          <Button
-            type="primary"
-            style={{ height: 60, width: '100%', fontSize: '16px' }}
-            onClick={handleClickWithdraw}
-            loading={depositLoading}
-          >
-            Withdraw
-          </Button>
-        )}
+        <Button
+          type="primary"
+          style={{ height: 60, width: '100%', fontSize: '16px' }}
+          onClick={handleClickApprove}
+          loading={approveLoading}
+        >
+          Approve
+        </Button>
         <LinkToDepoistHistory />
       </FormWapper>
       <Footer />

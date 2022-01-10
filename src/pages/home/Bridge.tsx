@@ -10,6 +10,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import AmountInput from './AmountInput';
 import Balance from './Balance';
+import ConfirmDrawer from './ConfirmDrawer';
 import LinkToDepoistHistory from './LinkToDepoistHistory';
 import {
   Coin,
@@ -28,9 +29,8 @@ export default () => {
   const balance = useRecoilValue(balanceState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
-  const [canDeposit, setCanDeposit] = useState<boolean>(false);
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
-  const [depositLoading, setDepositLoading] = useState<boolean>(false);
+  const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
 
   const getFromToCurrency = useCallback(
     (c: CurrencyType) => (
@@ -45,9 +45,21 @@ export default () => {
     [],
   );
 
-  const resetState = () => {
+  const handleCallback = () => {
     setAmount('');
-    setCanDeposit(false);
+  };
+
+  const showDrawerElement = () => {
+    setDrawerElement(
+      <ConfirmDrawer
+        key={new Date().getTime().toString()}
+        title="Deposit Confirm"
+        amount={amount}
+        account={account}
+        transferredType="deposit"
+        callback={handleCallback}
+      />,
+    );
   };
 
   const handleClickApprove = async () => {
@@ -59,33 +71,11 @@ export default () => {
         get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
         contractAmount,
       );
-      setCanDeposit(true);
+      showDrawerElement();
     } catch (error) {
       console.log(error);
     }
     setApproveLoading(false);
-  };
-
-  const handleClickDeposit = async () => {
-    setDepositLoading(true);
-    const contractAmount = multiplied_18(amount!)!;
-    if (currency === 'BSC') {
-      try {
-        await services.evmServer.deposit_plgr(account as string, contractAmount);
-        await services.evmServer.execute_upkeep();
-        resetState();
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        await services.evmServer.deposit_mplgr(account as string, contractAmount);
-        resetState();
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    setDepositLoading(false);
   };
 
   const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
@@ -98,11 +88,11 @@ export default () => {
 
   useEffect(() => {
     setAmount('');
-    setCanDeposit(false);
   }, [currency]);
 
   return (
     <>
+      {drawerElement}
       <FormWapper>
         <Label>Asset</Label>
         <SelectInput>
@@ -138,26 +128,14 @@ export default () => {
           value={amount}
         />
         <Balance currency={currency} />
-        {!canDeposit && (
-          <Button
-            type="primary"
-            style={{ height: 60, width: '100%', fontSize: '16px' }}
-            onClick={handleClickApprove}
-            loading={approveLoading}
-          >
-            Approve
-          </Button>
-        )}
-        {canDeposit && (
-          <Button
-            type="primary"
-            style={{ height: 60, width: '100%', fontSize: '16px' }}
-            onClick={handleClickDeposit}
-            loading={depositLoading}
-          >
-            Deposit
-          </Button>
-        )}
+        <Button
+          type="primary"
+          style={{ height: 60, width: '100%', fontSize: '16px' }}
+          onClick={handleClickApprove}
+          loading={approveLoading}
+        >
+          Approve
+        </Button>
         <LinkToDepoistHistory />
       </FormWapper>
       <Footer />
