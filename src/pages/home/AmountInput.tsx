@@ -1,8 +1,11 @@
 import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
+import { currencyState } from '@/model/global';
+import services from '@/services';
 import { Dropdown, Menu } from 'antd';
 import { get } from 'lodash';
 import React from 'react';
+import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { Coin, InputDiv } from './styleComponents';
 
@@ -51,30 +54,26 @@ type AmountInputProps = React.DetailedHTMLProps<
   React.InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 > & {
-  currency?: CurrencyType;
   onClickMax?: () => void;
-  onChangeCurrency?: (v: CurrencyType) => void;
 };
 
-const AmountInput = ({
-  currency = 'BSC',
-  onClickMax,
-  onChangeCurrency,
-  ...inputProps
-}: AmountInputProps) => {
+const AmountInput = ({ onClickMax, ...inputProps }: AmountInputProps) => {
+  const [currency, setCurrency] = useRecoilState(currencyState);
+
+  const handleChangeCurrency = async (v: CurrencyType) => {
+    const netWorkInfo = get(currencyInfos, [v, 'netWorkInfo']);
+    await services.evmServer.switchNetwork(netWorkInfo);
+    setCurrency(v);
+  };
+
   const coinElement = () => {
-    if (!onChangeCurrency) {
-      return (
-        <Coin>
-          <img src={get(currencyInfos, [currency, 'currencyImageAsset'])} alt="" height={'24px'} />
-          <span>{get(currencyInfos, [currency, 'currencyName'])}</span>
-        </Coin>
-      );
-    }
     return (
       <Dropdown
         overlay={
-          <Menu selectedKeys={[currency]} onClick={(v) => onChangeCurrency(v.key as CurrencyType)}>
+          <Menu
+            selectedKeys={[currency]}
+            onClick={(v) => handleChangeCurrency(v.key as CurrencyType)}
+          >
             <Menu.Item key={'BSC'}>
               <Coin>
                 <img

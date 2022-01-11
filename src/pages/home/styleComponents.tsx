@@ -1,5 +1,18 @@
 import styled from 'styled-components';
 
+export const FlexDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const FlexColumnDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+`;
+
 export const FormWapper = styled.div`
   width: 552px;
   background: #ffffff;
@@ -55,6 +68,14 @@ export const TransformerItem = styled.div`
 export const Key = styled.div`
   font-size: 14px;
   color: #8b89a3;
+`;
+
+export const GreyBackgroundDiv = styled.div<{ height?: string }>`
+  height: ${(props) => (props.height ? props.height : '44px')};
+  box-sizing: border-box;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #f5f5fa;
 `;
 
 export const InputDiv = styled.div<{ disabled?: boolean }>`

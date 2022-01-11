@@ -1,5 +1,4 @@
 import currencyInfos from '@/constants/currencyInfos';
-import type { CurrencyType } from '@/model/global';
 import { currencyState } from '@/model/global';
 import services from '@/services';
 import { divided_18, multiplied_18, numeralStandardFormat } from '@/utils/public';
@@ -8,7 +7,7 @@ import { Button } from 'antd';
 import { get } from 'lodash';
 import numeral from 'numeral';
 import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import AmountInput from './AmountInput';
 import Balance from './Balance';
@@ -100,7 +99,7 @@ const WithdrawShowItem = styled.div<{ textAlign?: 'left' | 'right' }>`
 `;
 
 export default () => {
-  const [currency, setCurrency] = useRecoilState(currencyState);
+  const currency = useRecoilValue(currencyState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
 
@@ -183,12 +182,6 @@ export default () => {
     setAmount(v.target.value);
   };
 
-  const handleChangeCurrency = async (v: CurrencyType) => {
-    const netWorkInfo = get(currencyInfos, [v, 'netWorkInfo']);
-    await services.evmServer.switchNetwork(netWorkInfo);
-    setCurrency(v);
-  };
-
   const handleClickMax = () => {
     if (currency === 'BSC') {
       setAmount(plgrAmounts);
@@ -254,16 +247,14 @@ export default () => {
         <Label>Amount</Label>
         <AmountInput
           placeholder={`Minimum amount is 0.1 ${get(currencyInfos, [currency, 'currencyName'])}`}
-          currency={currency}
           onChange={handleChangeInput}
-          onChangeCurrency={handleChangeCurrency}
           onClickMax={handleClickMax}
           value={amount}
         />
         <Balance currency={currency} />
         <Button
           type="primary"
-          style={{ height: 60, width: '100%', fontSize: '16px' }}
+          style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '24px' }}
           onClick={handleClickApprove}
           loading={approveLoading}
         >

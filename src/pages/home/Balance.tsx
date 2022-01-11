@@ -16,7 +16,7 @@ const StyleBalance = styled.div`
   > span {
     color: #000;
   }
-  padding: 10px 0 48px 0;
+  padding: 10px 0 24px 0;
 `;
 
 type BalanceProps = {

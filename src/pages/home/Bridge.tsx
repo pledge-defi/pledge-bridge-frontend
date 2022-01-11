@@ -4,7 +4,7 @@ import { balanceState, currencyState } from '@/model/global';
 import services from '@/services';
 import { multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import { get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -14,9 +14,11 @@ import ConfirmDrawer from './ConfirmDrawer';
 import LinkToDepoistHistory from './LinkToDepoistHistory';
 import {
   Coin,
+  FlexColumnDiv,
+  FlexDiv,
   Footer,
   FormWapper,
-  InputDiv,
+  GreyBackgroundDiv,
   Key,
   Label,
   NormalFlexBox,
@@ -117,20 +119,36 @@ export default () => {
           </div>
         </NormalFlexBox>
         <Label>Receiving address</Label>
-        <InputDiv disabled>
+        <GreyBackgroundDiv>
           {account && <Key>{`${account?.slice(0, 8)}···${account?.slice(-6)}`}</Key>}
-        </InputDiv>
+        </GreyBackgroundDiv>
         <Label>Amount</Label>
-        <AmountInput
-          currency={currency}
-          onChange={handleChangeInput}
-          onClickMax={handleClickMax}
-          value={amount}
-        />
+        <AmountInput onChange={handleChangeInput} onClickMax={handleClickMax} value={amount} />
         <Balance currency={currency} />
+        <GreyBackgroundDiv height="86px" style={{ marginBottom: '24px' }}>
+          <FlexColumnDiv>
+            <FlexDiv>
+              <FlexDiv>
+                <div style={{ color: '#8B89A3' }}>Gas Fee</div>{' '}
+                <Tooltip title="for your cross-chain transaction on destination chain">
+                  <img
+                    src={require('@/assets/images/help.svg')}
+                    alt=""
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Tooltip>
+              </FlexDiv>
+              <span>0.005 BNB</span>
+            </FlexDiv>
+            <FlexDiv>
+              <div style={{ color: '#8B89A3' }}>Estimated time of arrival</div>
+              <span>5-30 min</span>
+            </FlexDiv>
+          </FlexColumnDiv>
+        </GreyBackgroundDiv>
         <Button
           type="primary"
-          style={{ height: 60, width: '100%', fontSize: '16px' }}
+          style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '24px' }}
           onClick={handleClickApprove}
           loading={approveLoading}
         >
