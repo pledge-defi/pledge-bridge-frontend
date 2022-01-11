@@ -7,7 +7,7 @@ import { get } from 'lodash';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { Coin, InputDiv } from './styleComponents';
+import { Coin, InputDiv } from '@/components/styleComponents';
 
 const StyleAmountInput = styled(InputDiv)`
   display: flex;

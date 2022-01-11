@@ -13,7 +13,7 @@ import AmountInput from './AmountInput';
 import Balance from './Balance';
 import ConfirmDrawer from './ConfirmDrawer';
 import LinkToDepoistHistory from './LinkToDepoistHistory';
-import { Footer, FormWapper, Label } from './styleComponents';
+import { Footer, FormWapper, Label } from '@/components/styleComponents';
 
 const WithdrawHeader = styled.div`
   align-items: center;

@@ -12,11 +12,10 @@ import {
 } from './web3';
 
 const EvmServer = {
-  async estimateGas(ERC20Address: string, approveAddress: string, amount: string) {
+  async approveEstimateGas(ERC20Address: string, approveAddress: string, amount: string) {
     const contract = getNewERC20AbiContract(ERC20Address);
-    return await contract.methods
-      .approve(approveAddress, amount)
-      .estimateGas({ from: approveAddress, value: amount });
+    const options = await gasOptions();
+    return await contract.methods.approve(approveAddress, amount).estimateGas(options);
   },
 
   async approve(ERC20Address: string, approveAddress: string, amount: string) {
@@ -56,31 +55,31 @@ const EvmServer = {
   async deposit_plgr(_owner: string, amount: string) {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
     const options = await gasOptions();
-    return await contract.methods.deposit_plgr(_owner, amount).send(options);
+    return [contract.methods.deposit_plgr(_owner, amount), options];
   },
 
   async widthdraw_plgr(amount: string) {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
     const options = await gasOptions();
-    return await contract.methods.widthdraw_plgr(amount).send(options);
+    return [contract.methods.widthdraw_plgr(amount), options];
+  },
+
+  async deposit_mplgr(_owner: string, amount: string) {
+    const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
+    const options = await gasOptions();
+    return [contract.methods.deposit_mplgr(_owner, amount), options];
+  },
+
+  async widthdraw_mplgr(amount: string) {
+    const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
+    const options = await gasOptions();
+    return [contract.methods.widthdraw_mplgr(amount), options];
   },
 
   async execute_upkeep() {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
     const options = await gasOptions();
     return await contract.methods.execute_upkeep().send(options);
-  },
-
-  async deposit_mplgr(_owner: string, amount: string) {
-    const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
-    const options = await gasOptions();
-    return await contract.methods.deposit_mplgr(_owner, amount).send(options);
-  },
-
-  async widthdraw_mplgr(amount: string) {
-    const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
-    const options = await gasOptions();
-    return await contract.methods.widthdraw_mplgr(amount).send(options);
   },
 
   async switchNetwork(value: AddEthereumChainParameter) {

@@ -24,7 +24,7 @@ import {
   NormalFlexBox,
   SelectInput,
   TransformerItem,
-} from './styleComponents';
+} from '@/components/styleComponents';
 
 export default () => {
   const currency = useRecoilValue(currencyState);
@@ -38,7 +38,7 @@ export default () => {
   const getGasFee = async (a: string) => {
     const contractAmount = multiplied_18(a)!;
     try {
-      const newGasFee = await services.evmServer.estimateGas(
+      const newGasFee = await services.evmServer.approveEstimateGas(
         get(currencyInfos, [currency, 'contractAddress']),
         get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
         contractAmount,
@@ -99,7 +99,6 @@ export default () => {
   const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
     const value = v.target.value;
     setAmount(value);
-    getGasFee(value);
   };
 
   const handleClickMax = () => {
@@ -109,6 +108,11 @@ export default () => {
   useEffect(() => {
     setAmount('');
   }, [currency]);
+
+  useEffect(() => {
+    getGasFee(amount!);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount]);
 
   return (
     <>

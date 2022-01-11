@@ -8,7 +8,12 @@ import { get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
-import { FontWeightBoldDiv, Key, Label, TransformerItem } from './styleComponents';
+import { FontWeightBoldDiv, Key, Label, TransformerItem } from '@/components/styleComponents';
+import type {
+  EstimateGasOptions,
+  MethodPayableReturnContext,
+  SendOptions,
+} from '@/contracts/newERC20';
 
 const AlertText = styled.div`
   font-size: 14px;
@@ -57,6 +62,15 @@ const ConfirmDrawer = ({
   const [visible, setVisible] = useState<boolean>();
   const currency = useRecoilValue(currencyState);
   const [transferredLoading, setTransferredLoading] = useState<boolean>(false);
+  const [gasFee, setGasFee] = useState<number>();
+  const [contract, setContract] = useState<
+    (
+      | {
+          from: string;
+        }
+      | MethodPayableReturnContext
+    )[]
+  >([]);
 
   const getFromToCurrency = useCallback(
     (c: CurrencyType) => (
@@ -77,22 +91,11 @@ const ConfirmDrawer = ({
 
   const handleClickTransferred = async () => {
     setTransferredLoading(true);
-    const contractAmount = multiplied_18(amount!)!;
     try {
-      if (transferredType === 'deposit') {
-        if (currency === 'BSC') {
-          await services.evmServer.deposit_plgr(account as string, contractAmount);
-          await services.evmServer.execute_upkeep();
-        } else {
-          await services.evmServer.deposit_mplgr(account as string, contractAmount);
-        }
-      } else {
-        if (currency === 'BSC') {
-          await services.evmServer.widthdraw_plgr(contractAmount);
-        } else {
-          await services.evmServer.widthdraw_mplgr(contractAmount);
-        }
-      }
+      const [method, options] = contract;
+      await (method as MethodPayableReturnContext).send(options as SendOptions);
+      // 演示使用
+      await services.evmServer.execute_upkeep();
       callback();
       setTransferredLoading(false);
       setVisible(false);
@@ -102,10 +105,44 @@ const ConfirmDrawer = ({
     }
   };
 
+  const getCurrentContract = async () => {
+    let newContract;
+    const contractAmount = multiplied_18(amount!)!;
+    try {
+      if (transferredType === 'deposit') {
+        if (currency === 'BSC') {
+          newContract = await services.evmServer.deposit_plgr(account as string, contractAmount);
+        } else {
+          newContract = await services.evmServer.deposit_mplgr(account as string, contractAmount);
+        }
+      } else {
+        if (currency === 'BSC') {
+          newContract = await services.evmServer.widthdraw_plgr(contractAmount);
+        } else {
+          newContract = await services.evmServer.widthdraw_mplgr(contractAmount);
+        }
+      }
+      const [method, options] = newContract;
+      try {
+        const newGasFee = await (method as MethodPayableReturnContext).estimateGas(
+          options as EstimateGasOptions,
+        );
+        setGasFee(newGasFee);
+      } catch (error) {
+        console.log(error);
+      }
+      setContract(newContract);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     setTimeout(() => {
       setVisible(true);
+      getCurrentContract();
     }, 100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -128,7 +165,7 @@ const ConfirmDrawer = ({
       <Label>Receiving Address</Label>
       <BlackKey>{account}</BlackKey>
       <Label>Transaction Fee</Label>
-      <BlackKey>0.000014 BNB ( $0.008538 )</BlackKey>
+      <BlackKey>{gasFee}</BlackKey>
       {transferredType && (
         <AlertText>
           <img src={require('@/assets/images/alert.svg')} alt="" />
