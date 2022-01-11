@@ -2,7 +2,7 @@ import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
 import { balanceState, currencyState } from '@/model/global';
 import services from '@/services';
-import { multiplied_18 } from '@/utils/public';
+import { divided_18, multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button, Tooltip } from 'antd';
 import { get } from 'lodash';
@@ -161,7 +161,9 @@ export default () => {
                     />
                   </Tooltip>
                 </FlexDiv>
-                <span>0.005 BNB</span>
+                <span>
+                  {divided_18(gasFee)} {get(currencyInfos, [currency, 'symbol'])}
+                </span>
               </FlexDiv>
               <FlexDiv>
                 <div style={{ color: '#8B89A3' }}>Estimated time of arrival</div>

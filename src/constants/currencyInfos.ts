@@ -19,6 +19,7 @@ type CurrencyInfos = Record<
     chainDesc: string;
     currencyName: string;
     currencyImageAsset: string;
+    symbol: string;
     netWorkInfo: AddEthereumChainParameter;
   }
 >;
@@ -33,6 +34,7 @@ const currencyInfos: CurrencyInfos = {
     currencyName: 'PLGR',
     currencyImageAsset: require('@/assets/images/PLGR.svg'),
     chainId: 97,
+    symbol: 'tBNB',
     netWorkInfo: {
       chainId: web3.utils.toHex(97),
       chainName: 'Binance Smart Chain Testnet',
@@ -54,6 +56,7 @@ const currencyInfos: CurrencyInfos = {
     chainDesc: 'Ethereum Network',
     currencyName: 'MPLGR',
     currencyImageAsset: require('@/assets/images/MPLGR.svg'),
+    symbol: 'ETH',
     netWorkInfo: {
       chainId: web3.utils.toHex(3),
       chainName: 'Ropsten 测试网络',

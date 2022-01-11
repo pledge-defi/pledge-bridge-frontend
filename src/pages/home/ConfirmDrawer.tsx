@@ -2,7 +2,7 @@ import currencyInfos from '@/constants/currencyInfos';
 import type { CurrencyType } from '@/model/global';
 import { currencyState } from '@/model/global';
 import services from '@/services';
-import { multiplied_18 } from '@/utils/public';
+import { divided_18, multiplied_18 } from '@/utils/public';
 import { Button, Drawer } from 'antd';
 import { get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -165,7 +165,9 @@ const ConfirmDrawer = ({
       <Label>Receiving Address</Label>
       <BlackKey>{account}</BlackKey>
       <Label>Transaction Fee</Label>
-      <BlackKey>{gasFee}</BlackKey>
+      <BlackKey>
+        {divided_18(gasFee!)} {get(currencyInfos, [currency, 'symbol'])}
+      </BlackKey>
       {transferredType && (
         <AlertText>
           <img src={require('@/assets/images/alert.svg')} alt="" />
