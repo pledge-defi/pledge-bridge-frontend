@@ -10,6 +10,18 @@ import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { FontWeightBoldDiv, Key, Label, TransformerItem } from './styleComponents';
 
+const AlertText = styled.div`
+  font-size: 14px;
+  line-height: 22px;
+  color: #8b89a3;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  > img {
+    padding: 0px 5px 20px 0;
+  }
+`;
+
 const DrawerTitle = styled.div`
   font-weight: 600;
   font-size: 36px;
@@ -117,6 +129,15 @@ const ConfirmDrawer = ({
       <BlackKey>{account}</BlackKey>
       <Label>Transaction Fee</Label>
       <BlackKey>0.000014 BNB ( $0.008538 )</BlackKey>
+      {transferredType && (
+        <AlertText>
+          <img src={require('@/assets/images/alert.svg')} alt="" />
+          <span>
+            {get(currencyInfos, [currency, 'currencyName'])} will be released according to the
+            rules, please withdraw to your personal address by yourself
+          </span>
+        </AlertText>
+      )}
       <Button
         type="primary"
         style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '150px' }}

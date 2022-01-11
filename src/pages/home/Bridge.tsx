@@ -31,8 +31,24 @@ export default () => {
   const balance = useRecoilValue(balanceState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
+  const [gasFee, setGasFee] = useState<number>();
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
   const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
+
+  const getGasFee = async (a: string) => {
+    const contractAmount = multiplied_18(a)!;
+    try {
+      const newGasFee = await services.evmServer.estimateGas(
+        get(currencyInfos, [currency, 'contractAddress']),
+        get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
+        contractAmount,
+      );
+      setGasFee(newGasFee);
+    } catch (error) {
+      setGasFee(undefined);
+      console.log(error);
+    }
+  };
 
   const getFromToCurrency = useCallback(
     (c: CurrencyType) => (
@@ -81,7 +97,9 @@ export default () => {
   };
 
   const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
-    setAmount(v.target.value);
+    const value = v.target.value;
+    setAmount(value);
+    getGasFee(value);
   };
 
   const handleClickMax = () => {
@@ -125,27 +143,29 @@ export default () => {
         <Label>Amount</Label>
         <AmountInput onChange={handleChangeInput} onClickMax={handleClickMax} value={amount} />
         <Balance currency={currency} />
-        <GreyBackgroundDiv height="86px" style={{ marginBottom: '24px' }}>
-          <FlexColumnDiv>
-            <FlexDiv>
+        {gasFee && (
+          <GreyBackgroundDiv height="86px" style={{ marginBottom: '24px' }}>
+            <FlexColumnDiv>
               <FlexDiv>
-                <div style={{ color: '#8B89A3' }}>Gas Fee</div>{' '}
-                <Tooltip title="for your cross-chain transaction on destination chain">
-                  <img
-                    src={require('@/assets/images/help.svg')}
-                    alt=""
-                    style={{ cursor: 'pointer' }}
-                  />
-                </Tooltip>
+                <FlexDiv>
+                  <div style={{ color: '#8B89A3' }}>Gas Fee</div>{' '}
+                  <Tooltip title="for your cross-chain transaction on destination chain">
+                    <img
+                      src={require('@/assets/images/help.svg')}
+                      alt=""
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </Tooltip>
+                </FlexDiv>
+                <span>0.005 BNB</span>
               </FlexDiv>
-              <span>0.005 BNB</span>
-            </FlexDiv>
-            <FlexDiv>
-              <div style={{ color: '#8B89A3' }}>Estimated time of arrival</div>
-              <span>5-30 min</span>
-            </FlexDiv>
-          </FlexColumnDiv>
-        </GreyBackgroundDiv>
+              <FlexDiv>
+                <div style={{ color: '#8B89A3' }}>Estimated time of arrival</div>
+                <span>5-30 min</span>
+              </FlexDiv>
+            </FlexColumnDiv>
+          </GreyBackgroundDiv>
+        )}
         <Button
           type="primary"
           style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '24px' }}

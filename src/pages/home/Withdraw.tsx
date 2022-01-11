@@ -153,7 +153,7 @@ export default () => {
     setDrawerElement(
       <ConfirmDrawer
         key={new Date().getTime().toString()}
-        title="Deposit Confirm"
+        title="Withdraw Confirm"
         amount={amount}
         account={account}
         transferredType="withdraw"

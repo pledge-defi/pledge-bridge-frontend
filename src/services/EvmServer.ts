@@ -12,9 +12,17 @@ import {
 } from './web3';
 
 const EvmServer = {
+  async estimateGas(ERC20Address: string, approveAddress: string, amount: string) {
+    const contract = getNewERC20AbiContract(ERC20Address);
+    return await contract.methods
+      .approve(approveAddress, amount)
+      .estimateGas({ from: approveAddress, value: amount });
+  },
+
   async approve(ERC20Address: string, approveAddress: string, amount: string) {
     const contract = getNewERC20AbiContract(ERC20Address);
     const options = await gasOptions();
+    contract.methods.approve(approveAddress, amount).estimateGas({});
     return await contract.methods.approve(approveAddress, amount).send(options);
   },
 
