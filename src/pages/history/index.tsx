@@ -1,6 +1,11 @@
 import { Table } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import type { ColumnsType } from 'antd/lib/table/interface.d';
+import DetailDrawer from './DetailDrawer';
+import { DetailCoin } from '@/components/styleComponents';
+import currencyInfos from '@/constants/currencyInfos';
+import { get } from 'lodash';
 
 const dataSource = [
   {
@@ -17,37 +22,6 @@ const dataSource = [
   },
 ];
 
-const columns = [
-  {
-    title: 'Source Chain',
-    dataIndex: 'SourceChain',
-  },
-  {
-    title: 'Destination Chain',
-    dataIndex: 'SourceChain',
-  },
-  {
-    title: 'Assets',
-    dataIndex: 'SourceChain',
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'SourceChain',
-  },
-  {
-    title: 'Fee',
-    dataIndex: 'SourceChain',
-  },
-  {
-    title: 'Time',
-    dataIndex: 'SourceChain',
-  },
-  {
-    title: 'Status',
-    dataIndex: 'SourceChain',
-  },
-];
-
 const TableWapper = styled.div`
   margin: 0 auto;
   width: 1200px;
@@ -61,11 +35,73 @@ const TableWapper = styled.div`
 `;
 
 const History = () => {
+  const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
+
+  const handleClickShowDetail = () => {
+    setDrawerElement(<DetailDrawer key={new Date().getTime().toString()} title="Detail" />);
+  };
+
+  const columns: ColumnsType<any> = [
+    {
+      title: 'Source Chain',
+      dataIndex: 'SourceChain',
+      render: () => {
+        return (
+          <DetailCoin style={{ fontWeight: 500 }}>
+            <img src={get(currencyInfos, ['BSC', 'chainImageAsset'])} alt="" height={'24px'} />
+            BSC
+          </DetailCoin>
+        );
+      },
+    },
+    {
+      title: 'Destination Chain',
+      dataIndex: 'SourceChain',
+      render: () => {
+        return (
+          <DetailCoin style={{ fontWeight: 500 }}>
+            <img src={get(currencyInfos, ['Ethereum', 'chainImageAsset'])} alt="" height={'24px'} />
+            Ethereum
+          </DetailCoin>
+        );
+      },
+    },
+    {
+      title: 'Assets',
+      dataIndex: 'SourceChain',
+      render: () => 'PLGR',
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'SourceChain',
+      render: () => '10.34363467',
+    },
+    {
+      title: 'Fee',
+      dataIndex: 'SourceChain',
+      render: () => '0.34363467',
+    },
+    {
+      title: 'Time',
+      dataIndex: 'SourceChain',
+      render: () => '2021/11/01 12:10:00',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'SourceChain',
+      render: () => {
+        return <a onClick={handleClickShowDetail}>Processing</a>;
+      },
+    },
+  ];
   return (
-    <TableWapper>
-      <div className="title">Deposit History</div>
-      <Table dataSource={dataSource} columns={columns} />
-    </TableWapper>
+    <>
+      {drawerElement}
+      <TableWapper>
+        <div className="title">Deposit History</div>
+        <Table dataSource={dataSource} columns={columns} />
+      </TableWapper>
+    </>
   );
 };
 

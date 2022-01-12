@@ -8,12 +8,19 @@ import { get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
-import { FontWeightBoldDiv, Key, Label, TransformerItem } from '@/components/styleComponents';
+import {
+  DrawerTitle,
+  FontWeightBoldDiv,
+  Key,
+  Label,
+  TransformerItem,
+} from '@/components/styleComponents';
 import type {
   EstimateGasOptions,
   MethodPayableReturnContext,
   SendOptions,
 } from '@/contracts/newERC20';
+import { useHistory } from 'react-router-dom';
 
 const AlertText = styled.div`
   font-size: 14px;
@@ -25,13 +32,6 @@ const AlertText = styled.div`
   > img {
     padding: 0px 5px 20px 0;
   }
-`;
-
-const DrawerTitle = styled.div`
-  font-weight: 600;
-  font-size: 36px;
-  color: #262533;
-  padding-top: 100px;
 `;
 
 const BlackKey = styled(Key)`
@@ -59,6 +59,7 @@ const ConfirmDrawer = ({
   transferredType = 'deposit',
   callback = () => {},
 }: ConfirmDrawerProps) => {
+  const history = useHistory();
   const [visible, setVisible] = useState<boolean>();
   const currency = useRecoilValue(currencyState);
   const [transferredLoading, setTransferredLoading] = useState<boolean>(false);
@@ -96,6 +97,7 @@ const ConfirmDrawer = ({
       await (method as MethodPayableReturnContext).send(options as SendOptions);
       // 演示使用
       await services.evmServer.execute_upkeep();
+      history.push('/history');
       callback();
       setTransferredLoading(false);
       setVisible(false);

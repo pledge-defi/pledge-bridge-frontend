@@ -98,6 +98,7 @@ export const Coin = styled.div`
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  color: #262533 !important;
   > span {
     padding-left: 8px;
     font-weight: 600;
@@ -112,4 +113,20 @@ export const FontWeightBoldDiv = styled.div`
   font-weight: 600;
   font-size: 20px;
   color: #262533;
+`;
+
+export const DrawerTitle = styled.div`
+  font-weight: 600;
+  font-size: 36px;
+  color: #262533;
+  padding-top: 100px;
+`;
+
+export const DetailCoin = styled(Coin)`
+  justify-content: flex-start;
+  font-weight: 600;
+  font-size: 20px;
+  > img {
+    margin-right: 8px;
+  }
 `;
