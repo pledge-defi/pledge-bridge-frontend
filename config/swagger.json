@@ -3,7 +3,7 @@
   "info": {
     "description": "Pledge management backend Restful APIs",
     "version": "1.0.0",
-    "title": "Pledge",
+    "title": "Pledge Bridge",
     "contact": {
       "email": "zhouhui@findora.org"
     },
@@ -14,115 +14,28 @@
   },
   "host": "127.0.0.1:3000",
   "basePath": "/api/v2",
-  "tags": [
-    {
-      "name": "user",
-      "description": "Operations about user"
-    },
-    {
-      "name": "pool",
-      "description": "Operations about pool"
-    }
-  ],
   "schemes": ["http"],
   "paths": {
-    "/user/login": {
+    "/lockedCountdown": {
       "post": {
-        "tags": ["user"],
-        "summary": "Logs user into the system",
-        "description": "",
-        "operationId": "loginUser",
-        "produces": ["application/xml", "application/json"],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Pet object that needs to be added to the store",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LoginRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/LoginResponse"
-            }
-          },
-          "400": {
-            "description": "Invalid username/password supplied",
-            "schema": {
-              "$ref": "#/definitions/LoginError"
-            }
-          }
-        }
-      }
-    },
-    "/user/logout": {
-      "post": {
-        "tags": ["user"],
-        "summary": "Logs out current logged in user session",
-        "description": "",
-        "operationId": "logoutUser",
-        "produces": ["application/xml", "application/json"],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Pet object that needs to be added to the store",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/LogoutRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/LogoutResponse"
-            }
-          },
-          "400": {
-            "description": "Invalid username/password supplied",
-            "schema": {
-              "$ref": "#/definitions/LogoutResponse"
-            }
-          }
-        }
-      }
-    },
-    "/pool/debtTokenList": {
-      "post": {
-        "tags": ["pool"],
-        "description": "",
-        "operationId": "debtTokenList",
+        "operationId": "lockedCountdown",
         "produces": ["application/xml", "application/json"],
         "parameters": [],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/DebtTokenList"
-            }
-          },
-          "400": {
-            "description": "List not found",
-            "schema": {
-              "$ref": "#/definitions/DebtTokenError"
+              "$ref": "#/definitions/LockedCountdown"
             }
           }
         }
       }
     },
-    "/pool/search": {
+    "/txsHistory": {
       "post": {
-        "tags": ["pool"],
-        "summary": "Get pool by conditions",
+        "summary": "Get deposit history",
         "description": "",
-        "operationId": "getPoolByConditions",
+        "operationId": "txsHistory",
         "produces": ["application/xml", "application/json"],
         "parameters": [
           {
@@ -131,7 +44,7 @@
             "description": "Pet object that needs to be added to the store",
             "required": false,
             "schema": {
-              "$ref": "#/definitions/SearchRequest"
+              "$ref": "#/definitions/TxsHistoryRequest"
             }
           }
         ],
@@ -139,161 +52,52 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/SearchResponse"
-            }
-          },
-          "400": {
-            "description": "Pool not found",
-            "schema": {
-              "$ref": "#/definitions/SearchError"
+              "$ref": "#/definitions/TxsHistory"
             }
           }
         }
       }
     },
-    "/pool/poolList": {
+    "/addTx": {
       "post": {
-        "tags": ["pool"],
-        "summary": "Notice Server to get pool list",
+        "summary": "Add Tx",
         "description": "",
-        "operationId": "PoolList",
+        "operationId": "addTx",
         "produces": ["application/xml", "application/json"],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/AddTxRequest"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation"
-          },
-          "400": {
-            "description": "Pool List Error"
           }
         }
       }
     }
   },
   "definitions": {
-    "LoginRequest": {
+    "LockedCountdown": {
       "type": "object",
-      "required": ["name", "password"],
       "properties": {
-        "name": {
+        "time": {
           "type": "string"
         },
-        "password": {
+        "timestamp": {
           "type": "string"
         }
       }
     },
-    "LoginResponse": {
+    "TxsHistoryRequest": {
       "type": "object",
       "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        },
-        "data": {
-          "$ref": "#/definitions/LoginData"
-        }
-      }
-    },
-    "LoginError": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "LoginData": {
-      "type": "object",
-      "properties": {
-        "token_id": {
-          "type": "string"
-        }
-      }
-    },
-    "LogoutRequest": {
-      "type": "object",
-      "properties": {
-        "token_id": {
-          "type": "string"
-        }
-      }
-    },
-    "LogoutResponse": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "DebtTokenList": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        },
-        "data": {
-          "$ref": "#/definitions/DebtTokenData"
-        }
-      }
-    },
-    "DebtTokenData": {
-      "type": "object",
-      "properties": {
-        "count": {
-          "type": "integer"
-        },
-        "rows": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Symbol"
-          }
-        }
-      }
-    },
-    "DebtTokenError": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "Symbol": {
-      "type": "object",
-      "properties": {
-        "symbol": {
-          "type": "string"
-        },
-        "address": {
-          "type": "string"
-        }
-      }
-    },
-    "SearchRequest": {
-      "type": "object",
-      "properties": {
-        "poolID": {
-          "type": "integer"
-        },
-        "state": {
-          "type": "string"
-        },
         "page": {
           "type": "integer",
           "default": "1"
@@ -304,7 +108,7 @@
         }
       }
     },
-    "SearchResponse": {
+    "TxsHistory": {
       "type": "object",
       "properties": {
         "code": {
@@ -314,11 +118,11 @@
           "type": "string"
         },
         "data": {
-          "$ref": "#/definitions/SearchData"
+          "$ref": "#/definitions/HistoryData"
         }
       }
     },
-    "SearchData": {
+    "HistoryData": {
       "type": "object",
       "properties": {
         "count": {
@@ -327,86 +131,48 @@
         "rows": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/PoolInfo"
+            "$ref": "#/definitions/HistoryDetail"
           }
         }
       }
     },
-    "SearchError": {
+    "HistoryDetail": {
       "type": "object",
       "properties": {
-        "code": {
+        "srcChain": {
+          "type": "string"
+        },
+        "destChain": {
+          "type": "string"
+        },
+        "asset": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string"
+        },
+        "fee": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "AddTxRequest": {
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string"
+        },
+        "txHash": {
+          "type": "string"
+        },
+        "amount": {
           "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "PoolInfo": {
-      "type": "object",
-      "properties": {
-        "settleTime": {
-          "type": "string"
-        },
-        "endTime": {
-          "type": "string"
-        },
-        "interestRate": {
-          "type": "string"
-        },
-        "maxSupply": {
-          "type": "string"
-        },
-        "lendSupply": {
-          "type": "string"
-        },
-        "borrowSupply": {
-          "type": "string"
-        },
-        "martgageRate": {
-          "type": "string"
-        },
-        "lendToken": {
-          "type": "string"
-        },
-        "borrowToken": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
-        },
-        "spCoin": {
-          "type": "string"
-        },
-        "jpCoin": {
-          "type": "string"
-        },
-        "autoLiquidateThreshold": {
-          "type": "string"
-        },
-        "poolData": {
-          "type": "object",
-          "properties": {
-            "settleAmountLend": {
-              "type": "string"
-            },
-            "settleAmountBorrow": {
-              "type": "string"
-            },
-            "finishAmountLend": {
-              "type": "string"
-            },
-            "finishAmountBorrow": {
-              "type": "string"
-            },
-            "liquidationAmounLend": {
-              "type": "string"
-            },
-            "liquidationAmounBorrow": {
-              "type": "string"
-            }
-          }
         }
       }
     }
