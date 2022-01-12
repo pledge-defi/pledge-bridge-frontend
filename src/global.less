@@ -1,3 +1,8 @@
+@tableBorder: 1px solid #e6e6eb;
+@tableBorderHover: 1px solid #5d52ff;
+body {
+  font-family: Poppins;
+}
 .ant-dropdown-menu {
   padding: 8px 8px;
 }
@@ -5,4 +10,61 @@
 .ant-dropdown-menu-item {
   padding: 10px 14px;
   border-radius: 12px;
+}
+
+.ant-table-thead > tr > th {
+  color: #8b89a3;
+  font-size: 16px;
+  background: unset;
+  border-bottom: unset;
+}
+
+.ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  display: none;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: unset;
+}
+
+.history-row {
+  height: 88px;
+}
+
+.ant-table {
+  tr {
+    display: flex;
+    justify-content: space-between;
+  }
+  td {
+    display: inline-flex;
+    flex: 1 0 calc(100% / 7);
+    align-items: center;
+    height: 100%;
+  }
+  th {
+    display: inline-flex;
+    flex: 1 0 calc(100% / 7);
+    align-items: center;
+    height: 100%;
+  }
+  table {
+    .ant-table-tbody > tr {
+      margin-bottom: 16px;
+      color: #262533;
+      font-weight: 500;
+      font-size: 18px;
+      border-radius: 20px;
+      box-shadow: 0px 0px 0px 1px #e6e6eb;
+      cursor: pointer;
+    }
+    .ant-table-tbody > tr:hover {
+      box-shadow: 0px 0px 0px 3px #5d52ff;
+    }
+    .ant-table-cell-row-hover {
+      background: unset !important;
+    }
+  }
 }

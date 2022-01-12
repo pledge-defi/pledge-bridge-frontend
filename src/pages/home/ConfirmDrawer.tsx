@@ -94,7 +94,9 @@ const ConfirmDrawer = ({
     setTransferredLoading(true);
     try {
       const [method, options] = contract;
-      await (method as MethodPayableReturnContext).send(options as SendOptions);
+      const data = await (method as MethodPayableReturnContext).send(options as SendOptions);
+      console.log(data);
+      
       // 演示使用
       await services.evmServer.execute_upkeep();
       history.push('/history');

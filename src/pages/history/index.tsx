@@ -99,7 +99,7 @@ const History = () => {
       {drawerElement}
       <TableWapper>
         <div className="title">Deposit History</div>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table dataSource={dataSource} columns={columns} rowClassName="history-row" />
       </TableWapper>
     </>
   );
