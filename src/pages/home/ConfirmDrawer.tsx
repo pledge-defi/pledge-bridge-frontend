@@ -21,6 +21,7 @@ import type {
   SendOptions,
 } from '@/contracts/newERC20';
 import { useHistory } from 'react-router-dom';
+import { addTx } from '@/services/pledge/api/addTx';
 
 const AlertText = styled.div`
   font-size: 14px;
@@ -96,10 +97,19 @@ const ConfirmDrawer = ({
       const [method, options] = contract;
       const data = await (method as MethodPayableReturnContext).send(options as SendOptions);
       console.log(data);
-      
+
       // 演示使用
-      await services.evmServer.execute_upkeep();
-      history.push('/history');
+      // await services.evmServer.execute_upkeep();
+
+      if (transferredType === 'deposit') {
+        const contractAmount = multiplied_18(amount!)!;
+        addTx({
+          asset: get(currencyInfos, [currency, 'currencyName']),
+          txHash: get(data, 'transactionHash'),
+          amount: +contractAmount,
+        });
+        history.push('/history');
+      }
       callback();
       setTransferredLoading(false);
       setVisible(false);

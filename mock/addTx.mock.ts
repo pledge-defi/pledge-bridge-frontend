@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 export default {
   'POST /addTx': (req: Request, res: Response) => {

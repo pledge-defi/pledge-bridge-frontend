@@ -1,6 +1,9 @@
+import { Footer, FormWapper, Label } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
+import { useCountdown } from '@/hooks';
 import { currencyState } from '@/model/global';
 import services from '@/services';
+import { lockedCountdown } from '@/services/pledge/api/lockedCountdown';
 import { divided_18, multiplied_18, numeralStandardFormat } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button } from 'antd';
@@ -13,7 +16,6 @@ import AmountInput from './AmountInput';
 import Balance from './Balance';
 import ConfirmDrawer from './ConfirmDrawer';
 import LinkToDepoistHistory from './LinkToDepoistHistory';
-import { Footer, FormWapper, Label } from '@/components/styleComponents';
 
 const WithdrawHeader = styled.div`
   align-items: center;
@@ -102,13 +104,18 @@ export default () => {
   const currency = useRecoilValue(currencyState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
-
+  const [countdown, setCountdown] = useCountdown();
   const [mplgrAmounts, setMplgrAmounts] = useState<string>();
   const [plgrAmounts, setPlgrAmounts] = useState<string>();
   const [lockedPlgr, setLockedPlgr] = useState<string>();
   const [totalTransferAmount, setTotalTransferAmount] = useState<number>();
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
   const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
+
+  const fetchAndSetCountDown = async () => {
+    const result = await lockedCountdown();
+    setCountdown(get(result, ['timestamp', 0]));
+  };
 
   const fetchInitalData = async () => {
     try {
@@ -201,6 +208,11 @@ export default () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, currency]);
 
+  useEffect(() => {
+    fetchAndSetCountDown();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       {drawerElement}
@@ -228,7 +240,7 @@ export default () => {
         <FlexDiv>
           <WithdrawShowItem>
             <span>Current unlock wait time</span>
-            {/* <div>04:55:33</div> */}
+            <div>{numeral(countdown).format('00:00:00')}</div>
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>

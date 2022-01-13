@@ -1,26 +1,15 @@
 import { Table } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import type { ColumnsType } from 'antd/lib/table/interface.d';
+import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
 import DetailDrawer from './DetailDrawer';
 import { DetailCoin } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
 import { get } from 'lodash';
-
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号',
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
-  },
-];
+import { txsHistory } from '@/services/pledge/api/txsHistory';
+import { multiplied_18 } from '@/utils/public';
+import moment from 'moment';
+import { FORMAT_TIME_STANDARD } from '@/utils/constants';
 
 const TableWapper = styled.div`
   margin: 0 auto;
@@ -34,72 +23,117 @@ const TableWapper = styled.div`
   }
 `;
 
+const initialPageSetting = {
+  page: 1,
+  pageSize: 5,
+};
+
 const History = () => {
   const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [conditionData, setConditionData] = useState<API.TxsHistoryRequest>(initialPageSetting);
+  const [{ count = 0, rows = [] }, setData] = useState<API.HistoryData>({});
+
+  const fetch_data = async () => {
+    setLoading(true);
+    const response = await txsHistory(conditionData);
+    setLoading(false);
+    if (response) {
+      setData(response.data || {});
+    }
+  };
+
+  const handleChange = ({ current, pageSize }: TablePaginationConfig) => {
+    setConditionData({ page: current, pageSize });
+  };
 
   const handleClickShowDetail = () => {
     setDrawerElement(<DetailDrawer key={new Date().getTime().toString()} title="Detail" />);
   };
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<API.HistoryDetail> = [
     {
       title: 'Source Chain',
-      dataIndex: 'SourceChain',
-      render: () => {
+      dataIndex: 'srcChain',
+      render: (t: 'BSC' | 'ETH') => {
         return (
           <DetailCoin style={{ fontWeight: 500 }}>
-            <img src={get(currencyInfos, ['BSC', 'chainImageAsset'])} alt="" height={'24px'} />
-            BSC
+            <img
+              src={get(currencyInfos, [t === 'ETH' ? 'Ethereum' : t, 'chainImageAsset'])}
+              alt=""
+              height={'24px'}
+            />
+            {t === 'ETH' ? 'Ethereum' : t}
           </DetailCoin>
         );
       },
     },
     {
       title: 'Destination Chain',
-      dataIndex: 'SourceChain',
-      render: () => {
+      dataIndex: 'destChain',
+      render: (t) => {
         return (
           <DetailCoin style={{ fontWeight: 500 }}>
-            <img src={get(currencyInfos, ['Ethereum', 'chainImageAsset'])} alt="" height={'24px'} />
-            Ethereum
+            <img
+              src={get(currencyInfos, [t === 'ETH' ? 'Ethereum' : t, 'chainImageAsset'])}
+              alt=""
+              height={'24px'}
+            />
+            {t === 'ETH' ? 'Ethereum' : t}
           </DetailCoin>
         );
       },
     },
     {
       title: 'Assets',
-      dataIndex: 'SourceChain',
-      render: () => 'PLGR',
+      dataIndex: 'asset',
     },
     {
       title: 'Amount',
-      dataIndex: 'SourceChain',
-      render: () => '10.34363467',
+      dataIndex: 'amount',
+      render: (t) => multiplied_18(t),
     },
     {
       title: 'Fee',
-      dataIndex: 'SourceChain',
-      render: () => '0.34363467',
+      dataIndex: 'fee',
+      render: (t) => multiplied_18(t),
     },
     {
       title: 'Time',
-      dataIndex: 'SourceChain',
-      render: () => '2021/11/01 12:10:00',
+      dataIndex: 'time',
+      render: (t) => moment(t).format(FORMAT_TIME_STANDARD),
     },
     {
       title: 'Status',
-      dataIndex: 'SourceChain',
+      dataIndex: 'status',
       render: () => {
         return <a onClick={handleClickShowDetail}>Processing</a>;
       },
     },
   ];
+
+  useEffect(() => {
+    fetch_data();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conditionData]);
+
   return (
     <>
       {drawerElement}
       <TableWapper>
         <div className="title">Deposit History</div>
-        <Table dataSource={dataSource} columns={columns} rowClassName="history-row" />
+        <Table
+          loading={loading}
+          onChange={handleChange}
+          pagination={{
+            total: count,
+            pageSize: conditionData.pageSize,
+            current: conditionData.page,
+          }}
+          dataSource={rows}
+          columns={columns}
+          rowClassName="history-row"
+        />
       </TableWapper>
     </>
   );

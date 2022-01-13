@@ -50,21 +50,27 @@ body {
     align-items: center;
     height: 100%;
   }
+
   table {
     .ant-table-tbody > tr {
       margin-bottom: 16px;
       color: #262533;
       font-weight: 500;
       font-size: 18px;
-      border-radius: 20px;
       box-shadow: 0px 0px 0px 1px #e6e6eb;
-      cursor: pointer;
+      border-radius: 20px;
     }
     .ant-table-tbody > tr:hover {
       box-shadow: 0px 0px 0px 3px #5d52ff;
+    }
+    .ant-table-placeholder:hover {
+      box-shadow: 0px 0px 0px 1px #e6e6eb !important;
     }
     .ant-table-cell-row-hover {
       background: unset !important;
     }
   }
+}
+.ant-empty {
+  width: 100%;
 }

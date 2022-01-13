@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "mock": "node ./config/mockServer.js",
     "build": "yarn rmdist && webpack --config ./config/webpack.prod.js",
     "build:dev": "webpack --config ./config/webpack.dev.js",
     "start": "webpack serve --config ./config/webpack.dev.js",
@@ -79,6 +80,7 @@
     "ethers": "^5.5.2",
     "https-browserify": "^1.0.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "numeral": "^2.0.6",
     "os-browserify": "^0.3.0",
     "react": "^17.0.2",

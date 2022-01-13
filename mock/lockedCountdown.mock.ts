@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 export default {
   'POST /lockedCountdown': (req: Request, res: Response) => {
