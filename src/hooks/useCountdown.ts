@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 
 /** 倒计时 hooks */
 const useCountdown = () => {
-  const [countdown, setCountdown] = useState<number>(0);
+  const [countdown, setCountdown] = useState<number>();
 
   useEffect(() => {
-    if (countdown === 0) return;
+    if (countdown === 0 || !countdown) return;
 
     const timer = setTimeout(() => {
       const newCountdown = countdown - 1;

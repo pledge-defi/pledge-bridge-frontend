@@ -5,11 +5,13 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interfac
 import DetailDrawer from './DetailDrawer';
 import { DetailCoin } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
-import { get } from 'lodash';
+import { capitalize, get } from 'lodash';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
 import { multiplied_18 } from '@/utils/public';
 import moment from 'moment';
 import { FORMAT_TIME_STANDARD } from '@/utils/constants';
+import { useParams } from 'react-router-dom';
+import type { TransferredType } from '../typings';
 
 const TableWapper = styled.div`
   margin: 0 auto;
@@ -31,7 +33,11 @@ const initialPageSetting = {
 const History = () => {
   const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [conditionData, setConditionData] = useState<API.TxsHistoryRequest>(initialPageSetting);
+  const { type } = useParams<{ type: TransferredType }>();
+  const [conditionData, setConditionData] = useState<API.TxsHistoryRequest>({
+    ...initialPageSetting,
+    txType: type === 'deposit' ? 0 : 1,
+  });
   const [{ count = 0, rows = [] }, setData] = useState<API.HistoryData>({});
 
   const fetch_data = async () => {
@@ -121,7 +127,7 @@ const History = () => {
     <>
       {drawerElement}
       <TableWapper>
-        <div className="title">Deposit History</div>
+        <div className="title">{capitalize(type)} History</div>
         <Table
           loading={loading}
           onChange={handleChange}

@@ -22,6 +22,7 @@ import type {
 } from '@/contracts/newERC20';
 import { useHistory } from 'react-router-dom';
 import { addTx } from '@/services/pledge/api/addTx';
+import type { TransferredType } from '../typings';
 
 const AlertText = styled.div`
   font-size: 14px;
@@ -49,7 +50,7 @@ type ConfirmDrawerProps = {
   title?: string;
   amount?: string;
   account?: string | null;
-  transferredType: 'deposit' | 'withdraw';
+  transferredType: TransferredType;
   callback?: () => void;
 };
 
@@ -96,20 +97,18 @@ const ConfirmDrawer = ({
     try {
       const [method, options] = contract;
       const data = await (method as MethodPayableReturnContext).send(options as SendOptions);
-      console.log(data);
-
+      
       // 演示使用
       // await services.evmServer.execute_upkeep();
 
-      if (transferredType === 'deposit') {
-        const contractAmount = multiplied_18(amount!)!;
-        addTx({
-          asset: get(currencyInfos, [currency, 'currencyName']),
-          txHash: get(data, 'transactionHash'),
-          amount: +contractAmount,
-        });
-        history.push('/history');
-      }
+      const contractAmount = multiplied_18(amount!)!;
+      addTx({
+        txType: transferredType === 'deposit' ? 0 : 1,
+        asset: get(currencyInfos, [currency, 'currencyName']),
+        txHash: get(data, 'transactionHash'),
+        amount: +contractAmount,
+      });
+      history.push(`/history/${transferredType}`);
       callback();
       setTransferredLoading(false);
       setVisible(false);

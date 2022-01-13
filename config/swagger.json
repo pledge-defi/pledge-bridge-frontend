@@ -14,12 +14,17 @@
   },
   "host": "127.0.0.1:3000",
   "basePath": "/api/v2",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/lockedCountdown": {
       "post": {
         "operationId": "lockedCountdown",
-        "produces": ["application/xml", "application/json"],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -33,10 +38,12 @@
     },
     "/txsHistory": {
       "post": {
-        "summary": "Get deposit history",
         "description": "",
         "operationId": "txsHistory",
-        "produces": ["application/xml", "application/json"],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -63,7 +70,10 @@
         "summary": "Add Tx",
         "description": "",
         "operationId": "addTx",
-        "produces": ["application/xml", "application/json"],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
         "parameters": [
           {
             "in": "body",
@@ -98,6 +108,9 @@
     "TxsHistoryRequest": {
       "type": "object",
       "properties": {
+        "txType": {
+          "type": "integer"
+        },
         "page": {
           "type": "integer",
           "default": "1"
@@ -165,6 +178,9 @@
     "AddTxRequest": {
       "type": "object",
       "properties": {
+        "txType": {
+          "type": "integer"
+        },
         "asset": {
           "type": "string"
         },

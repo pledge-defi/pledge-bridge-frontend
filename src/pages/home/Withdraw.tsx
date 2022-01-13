@@ -15,7 +15,7 @@ import styled from 'styled-components';
 import AmountInput from './AmountInput';
 import Balance from './Balance';
 import ConfirmDrawer from './ConfirmDrawer';
-import LinkToDepoistHistory from './LinkToDepoistHistory';
+import LinkToHistory from './LinkToHistory';
 
 const WithdrawHeader = styled.div`
   align-items: center;
@@ -114,7 +114,10 @@ export default () => {
 
   const fetchAndSetCountDown = async () => {
     const result = await lockedCountdown();
-    setCountdown(get(result, ['timestamp', 0]));
+    const newCountDown = get(result, ['timestamp', 0]);
+    if (newCountDown) {
+      setCountdown(newCountDown);
+    }
   };
 
   const fetchInitalData = async () => {
@@ -209,6 +212,14 @@ export default () => {
   }, [account, currency]);
 
   useEffect(() => {
+    if (countdown === 0) {
+      fetchInitalData();
+      fetchAndSetCountDown();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countdown]);
+
+  useEffect(() => {
     fetchAndSetCountDown();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -272,7 +283,7 @@ export default () => {
         >
           Approve
         </Button>
-        <LinkToDepoistHistory />
+        <LinkToHistory type="withdraw" />
       </FormWapper>
       <Footer />
     </>

@@ -11,7 +11,7 @@ import { useRecoilValue } from 'recoil';
 import AmountInput from './AmountInput';
 import Balance from './Balance';
 import ConfirmDrawer from './ConfirmDrawer';
-import LinkToDepoistHistory from './LinkToDepoistHistory';
+import LinkToHistory from './LinkToHistory';
 import {
   Coin,
   FlexColumnDiv,
@@ -180,7 +180,7 @@ export default () => {
         >
           Approve
         </Button>
-        <LinkToDepoistHistory />
+        <LinkToHistory type="deposit" />
       </FormWapper>
       <Footer />
     </>
