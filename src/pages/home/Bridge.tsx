@@ -25,6 +25,7 @@ import {
   SelectInput,
   TransformerItem,
 } from '@/components/styleComponents';
+import { useFetchBalance } from '@/hooks';
 
 export default () => {
   const currency = useRecoilValue(currencyState);
@@ -34,6 +35,7 @@ export default () => {
   const [gasFee, setGasFee] = useState<number>();
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
   const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
+  const fetchBalance = useFetchBalance();
 
   const getGasFee = async (a: string) => {
     const contractAmount = multiplied_18(a)!;
@@ -65,6 +67,7 @@ export default () => {
 
   const handleCallback = () => {
     setAmount('');
+    fetchBalance();
   };
 
   const showDrawerElement = () => {
@@ -146,7 +149,7 @@ export default () => {
         </GreyBackgroundDiv>
         <Label>Amount</Label>
         <AmountInput onChange={handleChangeInput} onClickMax={handleClickMax} value={amount} />
-        <Balance currency={currency} />
+        <Balance />
         {gasFee && (
           <GreyBackgroundDiv height="86px" style={{ marginBottom: '24px' }}>
             <FlexColumnDiv>

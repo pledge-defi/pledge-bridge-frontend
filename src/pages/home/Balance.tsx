@@ -1,12 +1,9 @@
 import currencyInfos from '@/constants/currencyInfos';
-import type { CurrencyType } from '@/model/global';
-import { balanceState } from '@/model/global';
-import services from '@/services';
-import { divided_18, numeralStandardFormat } from '@/utils/public';
-import { useWeb3React } from '@web3-react/core';
+import { balanceState, currencyState } from '@/model/global';
+import { numeralStandardFormat } from '@/utils/public';
 import { get } from 'lodash';
-import React, { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import React from 'react';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 const StyleBalance = styled.div`
@@ -19,32 +16,9 @@ const StyleBalance = styled.div`
   padding: 10px 0 24px 0;
 `;
 
-type BalanceProps = {
-  currency: CurrencyType;
-};
-
-const Balance = ({ currency = 'BSC' }: BalanceProps) => {
-  const { account } = useWeb3React();
-  const [balance, setBalance] = useRecoilState(balanceState);
-
-  const fetchBalance = async () => {
-    try {
-      const newBalance = await services.evmServer.balanceOf(
-        get(currencyInfos, [currency, 'contractAddress']),
-        account!,
-      );
-      setBalance({ ...balance, [currency]: divided_18(newBalance) });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (account && currency) {
-      fetchBalance();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, currency]);
+const Balance = () => {
+  const balance = useRecoilValue(balanceState);
+  const currency = useRecoilValue(currencyState);
 
   return (
     <StyleBalance>

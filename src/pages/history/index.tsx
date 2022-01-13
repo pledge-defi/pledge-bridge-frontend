@@ -1,17 +1,17 @@
-import { Table } from 'antd';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
-import DetailDrawer from './DetailDrawer';
 import { DetailCoin } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
-import { capitalize, get } from 'lodash';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
-import { multiplied_18 } from '@/utils/public';
-import moment from 'moment';
 import { FORMAT_TIME_STANDARD } from '@/utils/constants';
+import { multiplied_18 } from '@/utils/public';
+import { Table } from 'antd';
+import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
+import { capitalize, get } from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import type { TransferredType } from '../typings';
+import DetailDrawer from './DetailDrawer';
 
 const TableWapper = styled.div`
   margin: 0 auto;
@@ -50,7 +50,7 @@ const History = () => {
   };
 
   const handleChange = ({ current, pageSize }: TablePaginationConfig) => {
-    setConditionData({ page: current, pageSize });
+    setConditionData({ ...conditionData, page: current, pageSize });
   };
 
   const handleClickShowDetail = () => {

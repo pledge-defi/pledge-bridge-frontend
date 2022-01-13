@@ -1,6 +1,6 @@
 import { Footer, FormWapper, Label } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
-import { useCountdown } from '@/hooks';
+import { useCountdown, useFetchBalance } from '@/hooks';
 import { currencyState } from '@/model/global';
 import services from '@/services';
 import { lockedCountdown } from '@/services/pledge/api/lockedCountdown';
@@ -111,6 +111,7 @@ export default () => {
   const [totalTransferAmount, setTotalTransferAmount] = useState<number>();
   const [approveLoading, setApproveLoading] = useState<boolean>(false);
   const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
+  const fetchBalance = useFetchBalance();
 
   const fetchAndSetCountDown = async () => {
     const result = await lockedCountdown();
@@ -153,6 +154,7 @@ export default () => {
   const resetState = () => {
     setAmount('');
     fetchInitalData();
+    fetchBalance();
   };
 
   const handleCallback = () => {
