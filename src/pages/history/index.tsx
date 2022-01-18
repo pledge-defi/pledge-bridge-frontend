@@ -3,7 +3,7 @@ import currencyInfos from '@/constants/currencyInfos';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
 import { web3 } from '@/services/web3';
 import { FORMAT_TIME_STANDARD } from '@/utils/constants';
-import { divided_18 } from '@/utils/public';
+import { divided_18, numeralStandardFormat_8 } from '@/utils/public';
 import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
 import { capitalize, get } from 'lodash';
@@ -154,17 +154,19 @@ const History = () => {
     {
       title: 'Amount',
       dataIndex: 'amount',
-      render: (t) => divided_18(t),
+      render: (t) => numeralStandardFormat_8(divided_18(t)),
     },
     {
       title: 'Fee',
       dataIndex: 'fee',
-      render: (t) => divided_18(t),
+      render: (t) => {
+        return numeralStandardFormat_8(t);
+      },
     },
     {
       title: 'Time',
-      dataIndex: 'time',
-      render: (t) => moment(t).format(FORMAT_TIME_STANDARD),
+      dataIndex: 'timestamp',
+      render: (t) => moment(+t).format(FORMAT_TIME_STANDARD),
     },
     {
       title: 'Status',

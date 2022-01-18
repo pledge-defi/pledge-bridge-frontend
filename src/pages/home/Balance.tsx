@@ -1,6 +1,6 @@
 import currencyInfos from '@/constants/currencyInfos';
 import { balanceState, currencyState } from '@/model/global';
-import { numeralStandardFormat } from '@/utils/public';
+import { numeralStandardFormat_4 } from '@/utils/public';
 import { get } from 'lodash';
 import React from 'react';
 import { useRecoilValue } from 'recoil';
@@ -24,7 +24,7 @@ const Balance = () => {
     <StyleBalance>
       Balance:{' '}
       <span>
-        {numeralStandardFormat(get(balance, [currency]))}{' '}
+        {numeralStandardFormat_4(get(balance, [currency]))}{' '}
         {get(currencyInfos, [currency, 'currencyName'])}
       </span>
     </StyleBalance>

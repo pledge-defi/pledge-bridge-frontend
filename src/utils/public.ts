@@ -15,6 +15,10 @@ export const divided_18 = (num: BigNumber.Value) => {
   return x.dividedBy(y).toFixed();
 };
 
-export const numeralStandardFormat = (v: any) => {
+export const numeralStandardFormat_4 = (v: any) => {
   return numeral(v).format('0,0.0000', Math.floor);
+};
+
+export const numeralStandardFormat_8 = (v: any) => {
+  return numeral(v).format('0,0.00000000', Math.floor);
 };

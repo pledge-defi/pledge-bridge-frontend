@@ -4,7 +4,7 @@ import { useCountdown, useFetchBalance } from '@/hooks';
 import { currencyState } from '@/model/global';
 import services from '@/services';
 import { lockedCountdown } from '@/services/pledge/api/lockedCountdown';
-import { divided_18, multiplied_18, numeralStandardFormat } from '@/utils/public';
+import { divided_18, multiplied_18, numeralStandardFormat_4 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button } from 'antd';
 import { get } from 'lodash';
@@ -257,15 +257,15 @@ export default () => {
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>
-            <div>{numeralStandardFormat(lockedPlgr)} PLGR</div>
+            <div>{numeralStandardFormat_4(lockedPlgr)} PLGR</div>
           </WithdrawShowItem>
           <WithdrawShowItem>
             <span>Withdrawal PLGR</span>
-            <div>{numeralStandardFormat(plgrAmounts)} PLGR</div>
+            <div>{numeralStandardFormat_4(plgrAmounts)} PLGR</div>
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Withdrawal MPLGR</span>
-            <div>{numeralStandardFormat(mplgrAmounts)} MPLGR</div>
+            <div>{numeralStandardFormat_4(mplgrAmounts)} MPLGR</div>
           </WithdrawShowItem>
         </FlexDiv>
 
