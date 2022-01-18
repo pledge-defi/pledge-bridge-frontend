@@ -20,12 +20,13 @@ const StyledHistory = styled.a`
 
 type LinkToHistoryProps = {
   type: TransferredType;
+  account: string;
 };
 
-const LinkToHistory = ({ type = 'deposit' }: LinkToHistoryProps) => {
+const LinkToHistory = ({ type = 'deposit', account }: LinkToHistoryProps) => {
   const history = useHistory();
   const handleClick = () => {
-    history.push(`/history/${type}`);
+    history.push(`/history/${type}/${account}`);
   };
   return (
     <StyledHistory onClick={handleClick}>

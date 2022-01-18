@@ -3,8 +3,9 @@ import { Request, Response } from 'express';
 
 export default {
   'POST /lockedCountdown': (req: Request, res: Response) => {
-    res
-      .status(200)
-      .send({ time: '龙华说己在眼价备面空极教回。', timestamp: '存发圆张平品约集图领质解红养。' });
+    res.status(200).send({
+      time: '天育万提委应合心重况改龙油为。',
+      timestamp: '干究将界要当便话所作化品报持术过斗展。',
+    });
   },
 };

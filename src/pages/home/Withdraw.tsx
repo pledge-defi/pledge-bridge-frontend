@@ -115,7 +115,7 @@ export default () => {
 
   const fetchAndSetCountDown = async () => {
     const result = await lockedCountdown();
-    const newCountDown = get(result, ['timestamp', 0]);
+    const newCountDown = get(result, ['timestamp'], 0);
     if (newCountDown) {
       setCountdown(newCountDown);
     }
@@ -137,7 +137,7 @@ export default () => {
     }
 
     try {
-      const locked_plgr_tx = await services.evmServer.locked_plgr_tx(account!);
+      const locked_plgr_tx = await services.evmServer.locked_plgr_tx();
       setLockedPlgr(divided_18(get(locked_plgr_tx, 'amount')));
     } catch (error) {
       console.log(error);
@@ -276,7 +276,7 @@ export default () => {
           onClickMax={handleClickMax}
           value={amount}
         />
-        <Balance currency={currency} />
+        <Balance />
         <Button
           type="primary"
           style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '24px' }}
@@ -285,7 +285,7 @@ export default () => {
         >
           Approve
         </Button>
-        <LinkToHistory type="withdraw" />
+        <LinkToHistory type="withdraw" account={account!} />
       </FormWapper>
       <Footer />
     </>

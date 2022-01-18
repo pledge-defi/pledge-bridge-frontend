@@ -4,6 +4,9 @@ import { Drawer, Progress, Steps } from 'antd';
 import { get } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import type { StatusType } from '.';
+import type { TransferredType } from '../typings';
+
 const { Step } = Steps;
 
 const Title = styled.span`
@@ -12,7 +15,7 @@ const Title = styled.span`
   color: #262533;
 `;
 
-const StepDetail = styled.div`
+const StyleStepDetail = styled.div`
   padding: 0 10px;
   padding-bottom: 50px;
   .progress {
@@ -27,15 +30,84 @@ const StepDetail = styled.div`
   }
 `;
 
-type DetailDrawerProps = {
-  title?: string;
+type StepDetailProps = {
+  chainName?: 'BSC' | 'ETH' | string;
+  hash?: string;
+  status: boolean;
 };
 
-const DetailDrawer = ({ title }: DetailDrawerProps) => {
+const StepDetail = ({ chainName, hash, status }: StepDetailProps) => {
+  const cName = chainName === 'BSC' ? 'BSC' : 'Ethereum';
+  const preUrl =
+    chainName === 'BSC' ? 'https://testnet.bscscan.com/tx/' : 'https://ropsten.etherscan.io/tx/';
+  return (
+    <StyleStepDetail>
+      <DetailCoin>
+        <img src={get(currencyInfos, [cName, 'chainImageAsset'])} alt="" height={'24px'} />
+        {cName}
+      </DetailCoin>
+      <div className="progress">
+        <Progress
+          percent={status ? 100 : 0}
+          style={{ width: 280 }}
+          strokeColor={'#5D52FF'}
+          showInfo={false}
+        />{' '}
+        <span>{status ? 1 : 0}/1 Confrimed</span>
+      </div>
+      <a href={`${preUrl}${hash}`} target={'_blank'}>
+        Check the hash
+      </a>
+    </StyleStepDetail>
+  );
+};
+
+type DetailDrawerProps = {
+  type: TransferredType;
+  detailData: API.HistoryDetail;
+  statusType: StatusType;
+};
+
+const DetailDrawer = ({ type, detailData, statusType }: DetailDrawerProps) => {
   const [visible, setVisible] = useState<boolean>();
 
   const onClose = () => {
     setVisible(false);
+  };
+
+  const getStep = () => {
+    const bridgeStatus = statusType.bridgeStatus;
+    const steps = [
+      <Step
+        title={
+          <StepDetail
+            status={statusType.transactionStatus}
+            chainName={type === 'deposit' ? detailData.srcChain : detailData.destChain}
+            hash={detailData.depositHash}
+          />
+        }
+      />,
+      <Step
+        title={
+          <StyleStepDetail>
+            <DetailCoin>
+              <img src={require('@/assets/images/bridgeLogo.svg')} alt="" height={'24px'} />
+              Pledge
+            </DetailCoin>
+            <div className="progress">
+              <Progress
+                percent={bridgeStatus ? 100 : 0}
+                style={{ width: 280 }}
+                strokeColor={'#5D52FF'}
+                showInfo={false}
+              />{' '}
+              <span>{bridgeStatus ? 1 : 0}/1 Confrimed</span>
+            </div>
+          </StyleStepDetail>
+        }
+      />,
+    ];
+    return type === 'deposit' ? steps : steps.reverse();
   };
 
   useEffect(() => {
@@ -46,99 +118,45 @@ const DetailDrawer = ({ title }: DetailDrawerProps) => {
 
   return (
     <Drawer
-      title={<DrawerTitle>{title}</DrawerTitle>}
+      title={<DrawerTitle>Detail</DrawerTitle>}
       placement="right"
       onClose={onClose}
       visible={visible}
       width={550}
       closable={false}
     >
-      <Steps direction="vertical" size="small" current={1}>
-        <Step
-          title={
-            <StepDetail>
-              <DetailCoin>
-                <img src={get(currencyInfos, ['BSC', 'chainImageAsset'])} alt="" height={'24px'} />
-                BSC
-              </DetailCoin>
-              <div className="progress">
-                <Progress
-                  percent={100}
-                  style={{ width: 280 }}
-                  strokeColor={'#5D52FF'}
-                  showInfo={false}
-                />{' '}
-                <span>1/1 Confrimed</span>
-              </div>
-              <a>Check the hash</a>
-            </StepDetail>
-          }
-        />
-        <Step
-          title={
-            <StepDetail>
-              <DetailCoin>
-                <img
-                  src={get(currencyInfos, ['Ethereum', 'chainImageAsset'])}
-                  alt=""
-                  height={'24px'}
-                />
-                Ethereum
-              </DetailCoin>
-              <div className="progress">
-                <Progress
-                  percent={0}
-                  style={{ width: 280 }}
-                  strokeColor={'#5D52FF'}
-                  showInfo={false}
-                />{' '}
-                <span>0/1 Confrimed</span>
-              </div>
-              <a>Check the hash</a>
-            </StepDetail>
-          }
-        />
-        <Step
-          title={
-            <StepDetail>
-              <DetailCoin>
-                <img src={require('@/assets/images/bridgeLogo.svg')} alt="" height={'24px'} />
-                Pledge
-              </DetailCoin>
-              <div className="progress">
-                <Progress
-                  percent={100}
-                  style={{ width: 280 }}
-                  strokeColor={'#5D52FF'}
-                  showInfo={false}
-                />{' '}
-                <span>1/1 Confrimed</span>
-              </div>
-              <a>Check the hash</a>
-            </StepDetail>
-          }
-        />
-        <Step
-          title={
-            <StepDetail>
-              <Title>Finsh</Title>
-              <div style={{ color: '#4F4E66', fontSize: 14 }}>
-                PLGR is now deposited into the contract,please click withdraw to personal address
-              </div>
-            </StepDetail>
-          }
-        />
-        <Step
-          title={
-            <StepDetail>
-              <Title>Finsh</Title>
-              <div>
-                <div style={{ color: '#8B89A3' }}>Receiving</div>
-                <div style={{ color: '#262533' }}>0x295e26495cef6f69dfa69911d9d8e4f3bbadb89b</div>
-              </div>
-            </StepDetail>
-          }
-        />
+      <Steps
+        direction="vertical"
+        size="small"
+        current={3}
+        status={statusType.status ? 'finish' : 'process'}
+      >
+        {getStep()}
+        {type === 'deposit' ? (
+          <Step
+            title={
+              <StyleStepDetail>
+                <Title>Finsh</Title>
+                <div style={{ color: '#4F4E66', fontSize: 14 }}>
+                  {detailData.srcChain === 'BSC' ? 'PLGR' : 'MPLGR'} is now deposited into the
+                  contract,please click withdraw to personal address
+                </div>
+              </StyleStepDetail>
+            }
+          />
+        ) : (
+          <Step
+            title={
+              <StyleStepDetail>
+                <Title>Finsh</Title>
+                <div>
+                  <div style={{ color: '#8B89A3' }}>Receiving</div>
+                  <div style={{ color: '#262533' }}>0x295e26495cef6f69dfa69911d9d8e4f3bbadb89b</div>
+                </div>
+              </StyleStepDetail>
+            }
+          />
+        )}
       </Steps>
     </Drawer>
   );

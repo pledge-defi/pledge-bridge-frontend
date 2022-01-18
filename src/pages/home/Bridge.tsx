@@ -26,6 +26,7 @@ import {
   TransformerItem,
 } from '@/components/styleComponents';
 import { useFetchBalance } from '@/hooks';
+import { web3 } from '@/services/web3';
 
 export default () => {
   const currency = useRecoilValue(currencyState);
@@ -117,6 +118,14 @@ export default () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount]);
 
+  useEffect(() => {
+    web3.eth
+      .getTransaction('0x2cefd4aa5be04b84c3e29148a9b799cab8dcdb6a3485b45e91eca728422325ec')
+      .then((res) => {
+        console.log(res);
+      });
+  }, []);
+
   return (
     <>
       {drawerElement}
@@ -151,7 +160,7 @@ export default () => {
         <AmountInput onChange={handleChangeInput} onClickMax={handleClickMax} value={amount} />
         <Balance />
         {gasFee && (
-          <GreyBackgroundDiv height="86px" style={{ marginBottom: '24px' }}>
+          <GreyBackgroundDiv height="118px" style={{ marginBottom: '24px' }}>
             <FlexColumnDiv>
               <FlexDiv>
                 <FlexDiv>
@@ -169,6 +178,12 @@ export default () => {
                 </span>
               </FlexDiv>
               <FlexDiv>
+                <FlexDiv>
+                  <div style={{ color: '#8B89A3' }}>Cross-chain fee</div>
+                </FlexDiv>
+                <span>0.05 {get(currencyInfos, [currency, 'symbol'])}</span>
+              </FlexDiv>
+              <FlexDiv>
                 <div style={{ color: '#8B89A3' }}>Estimated time of arrival</div>
                 <span>5-30 min</span>
               </FlexDiv>
@@ -183,7 +198,7 @@ export default () => {
         >
           Approve
         </Button>
-        <LinkToHistory type="deposit" />
+        <LinkToHistory type="deposit" account={account!} />
       </FormWapper>
       <Footer />
     </>

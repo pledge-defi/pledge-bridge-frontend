@@ -14,17 +14,12 @@
   },
   "host": "127.0.0.1:3000",
   "basePath": "/api/v2",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/lockedCountdown": {
       "post": {
         "operationId": "lockedCountdown",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/xml", "application/json"],
         "parameters": [],
         "responses": {
           "200": {
@@ -40,10 +35,7 @@
       "post": {
         "description": "",
         "operationId": "txsHistory",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/xml", "application/json"],
         "parameters": [
           {
             "in": "body",
@@ -70,10 +62,7 @@
         "summary": "Add Tx",
         "description": "",
         "operationId": "addTx",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/xml", "application/json"],
         "parameters": [
           {
             "in": "body",
@@ -108,6 +97,9 @@
     "TxsHistoryRequest": {
       "type": "object",
       "properties": {
+        "address": {
+          "type": "string"
+        },
         "txType": {
           "type": "integer"
         },
@@ -172,12 +164,21 @@
         },
         "status": {
           "type": "string"
+        },
+        "depositHash": {
+          "type": "string"
+        },
+        "bridgeHash": {
+          "type": "string"
         }
       }
     },
     "AddTxRequest": {
       "type": "object",
       "properties": {
+        "address": {
+          "type": "string"
+        },
         "txType": {
           "type": "integer"
         },

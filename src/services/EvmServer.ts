@@ -47,9 +47,10 @@ const EvmServer = {
     return await contract.methods.plgr_amounts(account).call();
   },
 
-  async locked_plgr_tx(account: string) {
+  async locked_plgr_tx() {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
-    return await contract.methods.locked_plgr_tx(account).call();
+    const result = await contract.methods.locked_infos('0').call();
+    return await contract.methods.locked_plgr_tx(result.txid).call();
   },
 
   async deposit_plgr(_owner: string, amount: string) {

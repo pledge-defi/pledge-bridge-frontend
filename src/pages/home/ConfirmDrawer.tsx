@@ -23,6 +23,7 @@ import type {
 import { useHistory } from 'react-router-dom';
 import { addTx } from '@/services/pledge/api/addTx';
 import type { TransferredType } from '../typings';
+import { web3 } from '@/services/web3';
 
 const AlertText = styled.div`
   font-size: 14px;
@@ -97,18 +98,19 @@ const ConfirmDrawer = ({
     try {
       const [method, options] = contract;
       const data = await (method as MethodPayableReturnContext).send(options as SendOptions);
-      
       // 演示使用
       // await services.evmServer.execute_upkeep();
-
       const contractAmount = multiplied_18(amount!)!;
       addTx({
+        address: account as string,
         txType: transferredType === 'deposit' ? 0 : 1,
         asset: get(currencyInfos, [currency, 'currencyName']),
         txHash: get(data, 'transactionHash'),
         amount: +contractAmount,
       });
-      history.push(`/history/${transferredType}`);
+      const result = await web3.eth.getTransactionReceipt(data.transactionHash);
+      console.log(result);
+      history.push(`/history/${transferredType}/${account}`);
       callback();
       setTransferredLoading(false);
       setVisible(false);
@@ -177,11 +179,15 @@ const ConfirmDrawer = ({
       {getFromToCurrency(currency === 'BSC' ? 'Ethereum' : 'BSC')}
       <Label>Receiving Address</Label>
       <BlackKey>{account}</BlackKey>
-      <Label>Transaction Fee</Label>
+      <Label>Gas Fee</Label>
       <BlackKey>
         {divided_18(gasFee!)} {get(currencyInfos, [currency, 'symbol'])}
       </BlackKey>
-      {transferredType && (
+      {transferredType === 'deposit' && <Label>Cross-Chain Fee</Label>}
+      {transferredType === 'deposit' && (
+        <BlackKey>0.05 {get(currencyInfos, [currency, 'symbol'])}</BlackKey>
+      )}
+      {transferredType === 'deposit' && (
         <AlertText>
           <img src={require('@/assets/images/alert.svg')} alt="" />
           <span>

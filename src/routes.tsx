@@ -13,7 +13,7 @@ const Routes = () => {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/history/:type">
+          <Route path="/history/:type/:account">
             <History />
           </Route>
         </Switch>

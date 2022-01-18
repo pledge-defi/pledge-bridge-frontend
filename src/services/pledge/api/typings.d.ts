@@ -5,6 +5,7 @@ declare namespace API {
   };
 
   type TxsHistoryRequest = {
+    address?: string;
     txType?: number;
     page?: number;
     pageSize?: number;
@@ -28,10 +29,13 @@ declare namespace API {
     amount?: string;
     fee?: string;
     time?: string;
-    status?: string;
+    status?: boolean;
+    depositHash?: string;
+    bridgeHash?: string;
   };
 
   type AddTxRequest = {
+    address?: string;
     txType?: number;
     asset?: string;
     txHash?: string;
