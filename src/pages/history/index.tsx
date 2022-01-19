@@ -110,6 +110,7 @@ const History = () => {
         type={type}
         detailData={r}
         statusType={v}
+        account={account}
       />,
     );
   };

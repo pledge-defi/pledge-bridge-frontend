@@ -2,7 +2,7 @@ import { DetailCoin, DrawerTitle } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
 import { Drawer, Progress, Steps } from 'antd';
 import { get } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import type { StatusType } from '.';
 import type { TransferredType } from '../typings';
@@ -66,9 +66,10 @@ type DetailDrawerProps = {
   type: TransferredType;
   detailData: API.HistoryDetail;
   statusType: StatusType;
+  account: string;
 };
 
-const DetailDrawer = ({ type, detailData, statusType }: DetailDrawerProps) => {
+const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerProps) => {
   const [visible, setVisible] = useState<boolean>();
 
   const onClose = () => {
@@ -110,6 +111,16 @@ const DetailDrawer = ({ type, detailData, statusType }: DetailDrawerProps) => {
     return type === 'deposit' ? steps : steps.reverse();
   };
 
+  const stepCurrent = useMemo(() => {
+    if (statusType.status) {
+      return 3;
+    }
+    if (statusType.transactionStatus) {
+      return type === 'deposit' ? 1 : 0;
+    }
+    return type === 'deposit' ? 0 : 1;
+  }, [statusType, type]);
+
   useEffect(() => {
     setTimeout(() => {
       setVisible(true);
@@ -128,7 +139,7 @@ const DetailDrawer = ({ type, detailData, statusType }: DetailDrawerProps) => {
       <Steps
         direction="vertical"
         size="small"
-        current={3}
+        current={stepCurrent}
         status={statusType.status ? 'finish' : 'process'}
       >
         {getStep()}
@@ -151,7 +162,7 @@ const DetailDrawer = ({ type, detailData, statusType }: DetailDrawerProps) => {
                 <Title>Finsh</Title>
                 <div>
                   <div style={{ color: '#8B89A3' }}>Receiving</div>
-                  <div style={{ color: '#262533' }}>0x295e26495cef6f69dfa69911d9d8e4f3bbadb89b</div>
+                  <div style={{ color: '#262533' }}>{account}</div>
                 </div>
               </StyleStepDetail>
             }
