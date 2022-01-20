@@ -1,17 +1,3 @@
-import currencyInfos from '@/constants/currencyInfos';
-import type { CurrencyType } from '@/model/global';
-import { balanceState, currencyState } from '@/model/global';
-import services from '@/services';
-import { divided_18, multiplied_18 } from '@/utils/public';
-import { useWeb3React } from '@web3-react/core';
-import { Button, Tooltip } from 'antd';
-import { get } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import AmountInput from './AmountInput';
-import Balance from './Balance';
-import ConfirmDrawer from './ConfirmDrawer';
-import LinkToHistory from './LinkToHistory';
 import {
   Coin,
   FlexColumnDiv,
@@ -26,12 +12,28 @@ import {
   SelectInput,
   TransformerItem,
 } from '@/components/styleComponents';
+import currencyInfos from '@/constants/currencyInfos';
 import { useFetchBalance } from '@/hooks';
+import type { CurrencyType } from '@/model/global';
+import { bridgeGasFeeState } from '@/model/global';
+import { balanceState, currencyState } from '@/model/global';
+import services from '@/services';
 import { web3 } from '@/services/web3';
+import { divided_18, multiplied_18 } from '@/utils/public';
+import { useWeb3React } from '@web3-react/core';
+import { Button, Tooltip } from 'antd';
+import { get } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import AmountInput from './AmountInput';
+import Balance from './Balance';
+import ConfirmDrawer from './ConfirmDrawer';
+import LinkToHistory from './LinkToHistory';
 
 export default () => {
   const currency = useRecoilValue(currencyState);
   const balance = useRecoilValue(balanceState);
+  const bridgeGasFee = useRecoilValue(bridgeGasFeeState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
   const [gasFee, setGasFee] = useState<number>();
@@ -189,7 +191,9 @@ export default () => {
                 <FlexDiv>
                   <div style={{ color: '#8B89A3' }}>Cross-chain fee</div>
                 </FlexDiv>
-                <span>0.05 {get(currencyInfos, [currency, 'symbol'])}</span>
+                <span>
+                  {get(bridgeGasFee, [currency])} {get(currencyInfos, [currency, 'symbol'])}
+                </span>
               </FlexDiv>
               <FlexDiv>
                 <div style={{ color: '#8B89A3' }}>Estimated time of arrival</div>

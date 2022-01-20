@@ -17,3 +17,12 @@ export const balanceState = atom<BalanceType>({
     Ethereum: '',
   },
 });
+
+export type BridgeGasFee = Record<CurrencyType, string>;
+export const bridgeGasFeeState = atom<BridgeGasFee>({
+  key: 'bridgeGasFeeState',
+  default: {
+    BSC: '',
+    Ethereum: '',
+  },
+});

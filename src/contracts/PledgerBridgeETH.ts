@@ -104,7 +104,9 @@ export interface PledgerBridgeETHEventsContext {
 }
 export type PledgerBridgeETHMethodNames =
   | 'new'
+  | 'balances'
   | 'bridge_address'
+  | 'bridge_gas_fee'
   | 'cb_ddid'
   | 'cb_rid'
   | 'handler_address'
@@ -112,6 +114,7 @@ export type PledgerBridgeETHMethodNames =
   | 'mplgr_amounts'
   | 'owner'
   | 'admin_update_bridge'
+  | 'set_bridge_gas_fee'
   | 'deposit_mplgr_bridge'
   | 'widthdraw_mplgr'
   | 'deposit_mplgr';
@@ -154,8 +157,23 @@ export interface PledgerBridgeETH {
    * Constant: true
    * StateMutability: view
    * Type: function
+   * @param parameter0 Type: address, Indexed: false
+   */
+  balances: (parameter0: string) => MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
    */
   bridge_address: () => MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  bridge_gas_fee: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
@@ -220,6 +238,14 @@ export interface PledgerBridgeETH {
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
+   * @param _bridge_gas_fee Type: uint256, Indexed: false
+   */
+  set_bridge_gas_fee: (_bridge_gas_fee: string) => MethodReturnContext;
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
    * @param data Type: bytes, Indexed: false
    */
   deposit_mplgr_bridge: (data: string | number[]) => MethodReturnContext;
@@ -232,12 +258,12 @@ export interface PledgerBridgeETH {
    */
   widthdraw_mplgr: (amount: string) => MethodReturnContext;
   /**
-   * Payable: false
+   * Payable: true
    * Constant: false
-   * StateMutability: nonpayable
+   * StateMutability: payable
    * Type: function
    * @param _owner Type: address, Indexed: false
    * @param amount Type: uint256, Indexed: false
    */
-  deposit_mplgr: (_owner: string, amount: string) => MethodReturnContext;
+  deposit_mplgr: (_owner: string, amount: string) => MethodPayableReturnContext;
 }

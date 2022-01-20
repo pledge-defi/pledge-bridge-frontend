@@ -82,27 +82,28 @@ export interface PledgerBridgeBSCEventsContext {
 }
 export type PledgerBridgeBSCMethodNames =
   | 'new'
-  | 'base'
+  | 'balances'
   | 'bridge_address'
+  | 'bridge_gas_fee'
   | 'can_release'
   | 'cb_ddid'
   | 'cb_rid'
+  | 'factor'
   | 'handler_address'
   | 'locked_infos'
   | 'locked_plgr_tx'
   | 'owner'
   | 'plgr_address'
   | 'plgr_amounts'
-  | 'total_locked_amounts'
-  | 'wait_time'
-  | 'x'
-  | 'admin_update_configure'
-  | 'set_x'
-  | 'set_base'
+  | 'total_mplgr_release'
+  | 'total_plgr_locked'
   | 'admin_update_bridge'
+  | 'set_bridge_gas_fee'
+  | 'set_total_release'
   | 'deposit_plgr'
   | 'widthdraw_plgr'
   | 'deposit_mplgr_bridge'
+  | 'is_release_all_locked_plgr'
   | 'execute_upkeep';
 export interface DepositPLGREventEmittedResponse {
   txid: string | number[];
@@ -119,8 +120,8 @@ export interface Can_releaseResponse {
   amount: string;
 }
 export interface Locked_infosResponse {
-  txid: string;
-  time: string;
+  owner: string;
+  amount: string;
 }
 export interface Locked_plgr_txResponse {
   owner: string;
@@ -150,8 +151,9 @@ export interface PledgerBridgeBSC {
    * Constant: true
    * StateMutability: view
    * Type: function
+   * @param parameter0 Type: address, Indexed: false
    */
-  base: () => MethodConstantReturnContext<string>;
+  balances: (parameter0: string) => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
@@ -164,9 +166,16 @@ export interface PledgerBridgeBSC {
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param parameter0 Type: bytes32, Indexed: false
    */
-  can_release: (parameter0: string | number[]) => MethodConstantReturnContext<Can_releaseResponse>;
+  bridge_gas_fee: () => MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   * @param parameter0 Type: address, Indexed: false
+   */
+  can_release: (parameter0: string) => MethodConstantReturnContext<Can_releaseResponse>;
   /**
    * Payable: false
    * Constant: true
@@ -187,6 +196,13 @@ export interface PledgerBridgeBSC {
    * StateMutability: view
    * Type: function
    */
+  factor: () => MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
   handler_address: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
@@ -201,11 +217,9 @@ export interface PledgerBridgeBSC {
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param parameter0 Type: bytes32, Indexed: false
+   * @param parameter0 Type: address, Indexed: false
    */
-  locked_plgr_tx: (
-    parameter0: string | number[],
-  ) => MethodConstantReturnContext<Locked_plgr_txResponse>;
+  locked_plgr_tx: (parameter0: string) => MethodConstantReturnContext<Locked_plgr_txResponse>;
   /**
    * Payable: false
    * Constant: true
@@ -234,45 +248,14 @@ export interface PledgerBridgeBSC {
    * StateMutability: view
    * Type: function
    */
-  total_locked_amounts: () => MethodConstantReturnContext<string>;
+  total_mplgr_release: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  wait_time: () => MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
-  x: () => MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param _wait_time Type: uint256, Indexed: false
-   */
-  admin_update_configure: (_wait_time: string) => MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param _x Type: uint256, Indexed: false
-   */
-  set_x: (_x: string) => MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param _base Type: uint256, Indexed: false
-   */
-  set_base: (_base: string) => MethodReturnContext;
+  total_plgr_locked: () => MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: false
@@ -294,10 +277,26 @@ export interface PledgerBridgeBSC {
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
+   * @param _bridge_gas_fee Type: uint256, Indexed: false
+   */
+  set_bridge_gas_fee: (_bridge_gas_fee: string) => MethodReturnContext;
+  /**
+   * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
+   * @param _total_mplgr_release Type: uint256, Indexed: false
+   */
+  set_total_release: (_total_mplgr_release: string) => MethodReturnContext;
+  /**
+   * Payable: true
+   * Constant: false
+   * StateMutability: payable
+   * Type: function
    * @param _owner Type: address, Indexed: false
    * @param amount Type: uint256, Indexed: false
    */
-  deposit_plgr: (_owner: string, amount: string) => MethodReturnContext;
+  deposit_plgr: (_owner: string, amount: string) => MethodPayableReturnContext;
   /**
    * Payable: false
    * Constant: false
@@ -314,6 +313,13 @@ export interface PledgerBridgeBSC {
    * @param data Type: bytes, Indexed: false
    */
   deposit_mplgr_bridge: (data: string | number[]) => MethodReturnContext;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  is_release_all_locked_plgr: () => MethodConstantReturnContext<boolean>;
   /**
    * Payable: false
    * Constant: false

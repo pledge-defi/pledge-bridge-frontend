@@ -1,4 +1,4 @@
-import { AlertText, Footer, FormWapper, Label, FormHeader } from '@/components/styleComponents';
+import { AlertText, Footer, FormHeader, FormWapper, Label } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
 import { useCountdown, useFetchBalance } from '@/hooks';
 import { currencyState } from '@/model/global';
@@ -120,7 +120,7 @@ export default () => {
     }
 
     try {
-      const locked_plgr_tx = await services.evmServer.locked_plgr_tx();
+      const locked_plgr_tx = await services.evmServer.locked_plgr_tx(account!);
       setLockedPlgr(divided_18(get(locked_plgr_tx, 'amount')));
     } catch (error) {
       console.log(error);
@@ -232,7 +232,7 @@ export default () => {
         <FlexDiv>
           <WithdrawShowItem>
             <span>APY</span>
-            <div>166.67%</div>
+            <div>166.67% {countdown}</div>
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>

@@ -1,13 +1,3 @@
-import currencyInfos from '@/constants/currencyInfos';
-import type { CurrencyType } from '@/model/global';
-import { currencyState } from '@/model/global';
-import services from '@/services';
-import { divided_18, multiplied_18 } from '@/utils/public';
-import { Button, Drawer } from 'antd';
-import { get } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import styled from 'styled-components';
 import {
   AlertText,
   DrawerTitle,
@@ -16,15 +6,25 @@ import {
   Label,
   TransformerItem,
 } from '@/components/styleComponents';
+import currencyInfos from '@/constants/currencyInfos';
 import type {
   EstimateGasOptions,
   MethodPayableReturnContext,
   SendOptions,
 } from '@/contracts/newERC20';
-import { useHistory } from 'react-router-dom';
+import type { CurrencyType } from '@/model/global';
+import { bridgeGasFeeState, currencyState } from '@/model/global';
+import services from '@/services';
 import { addTx } from '@/services/pledge/api/addTx';
-import type { TransferredType } from '../typings';
 import { web3 } from '@/services/web3';
+import { divided_18, multiplied_18 } from '@/utils/public';
+import { Button, Drawer } from 'antd';
+import { get } from 'lodash';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import styled from 'styled-components';
+import type { TransferredType } from '../typings';
 
 const BlackKey = styled(Key)`
   color: #262533;
@@ -53,6 +53,7 @@ const ConfirmDrawer = ({
 }: ConfirmDrawerProps) => {
   const history = useHistory();
   const [visible, setVisible] = useState<boolean>();
+  const bridgeGasFee = useRecoilValue(bridgeGasFeeState);
   const currency = useRecoilValue(currencyState);
   const [transferredLoading, setTransferredLoading] = useState<boolean>(false);
   const [gasFee, setGasFee] = useState<number>();
@@ -112,12 +113,21 @@ const ConfirmDrawer = ({
   const getCurrentContract = async () => {
     let newContract;
     const contractAmount = multiplied_18(amount!)!;
+    const gasFeeValue = multiplied_18(get(bridgeGasFee, [currency]));
     try {
       if (transferredType === 'deposit') {
         if (currency === 'BSC') {
-          newContract = await services.evmServer.deposit_plgr(account as string, contractAmount);
+          newContract = await services.evmServer.deposit_plgr(
+            account as string,
+            contractAmount,
+            gasFeeValue!,
+          );
         } else {
-          newContract = await services.evmServer.deposit_mplgr(account as string, contractAmount);
+          newContract = await services.evmServer.deposit_mplgr(
+            account as string,
+            contractAmount,
+            gasFeeValue!,
+          );
         }
       } else {
         if (currency === 'BSC') {
@@ -174,7 +184,9 @@ const ConfirmDrawer = ({
       </BlackKey>
       {transferredType === 'deposit' && <Label>Cross-Chain Fee</Label>}
       {transferredType === 'deposit' && (
-        <BlackKey>0.05 {get(currencyInfos, [currency, 'symbol'])}</BlackKey>
+        <BlackKey>
+          {get(bridgeGasFee, [currency])} {get(currencyInfos, [currency, 'symbol'])}
+        </BlackKey>
       )}
       {transferredType === 'deposit' && (
         <AlertText>

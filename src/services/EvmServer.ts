@@ -1,4 +1,5 @@
 import type { AddEthereumChainParameter } from '@/constants/ChainBridge.d';
+import { CurrencyType } from '@/model/global';
 import {
   PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
   PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS,
@@ -25,6 +26,14 @@ const EvmServer = {
     return await contract.methods.approve(approveAddress, amount).send(options);
   },
 
+  async bridge_gas_fee(currency: CurrencyType) {
+    const contract =
+      currency === 'BSC'
+        ? getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS)
+        : getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
+    return await contract.methods.bridge_gas_fee().call();
+  },
+
   async balanceOf(ERC20Address: string, account: string) {
     const contract = getNewERC20AbiContract(ERC20Address);
     return await contract.methods.balanceOf(account).call();
@@ -32,9 +41,8 @@ const EvmServer = {
 
   async totalTransferAmount() {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
-    const x = await contract.methods.x().call();
-    const base = await contract.methods.base().call();
-    return +x * +divided_18(base)!;
+    const base = await contract.methods.total_mplgr_release().call();
+    return 3 * +divided_18(base)!;
   },
 
   async mplgr_amounts(account: string) {
@@ -47,15 +55,14 @@ const EvmServer = {
     return await contract.methods.plgr_amounts(account).call();
   },
 
-  async locked_plgr_tx() {
+  async locked_plgr_tx(account: string) {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
-    const result = await contract.methods.locked_infos('0').call();
-    return await contract.methods.locked_plgr_tx(result.txid).call();
+    return await await contract.methods.locked_plgr_tx(account).call();
   },
 
-  async deposit_plgr(_owner: string, amount: string) {
+  async deposit_plgr(_owner: string, amount: string, gasFeeValue: string) {
     const contract = getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS);
-    const options = await gasOptions();
+    const options = await gasOptions({ value: gasFeeValue });
     return [contract.methods.deposit_plgr(_owner, amount), options];
   },
 
@@ -65,9 +72,9 @@ const EvmServer = {
     return [contract.methods.widthdraw_plgr(amount), options];
   },
 
-  async deposit_mplgr(_owner: string, amount: string) {
+  async deposit_mplgr(_owner: string, amount: string, gasFeeValue: string) {
     const contract = getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
-    const options = await gasOptions();
+    const options = await gasOptions({ value: gasFeeValue });
     return [contract.methods.deposit_mplgr(_owner, amount), options];
   },
 

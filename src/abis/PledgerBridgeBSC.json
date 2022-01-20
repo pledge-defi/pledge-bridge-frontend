@@ -81,8 +81,14 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "base",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "balances",
     "outputs": [
       {
         "internalType": "uint256",
@@ -109,11 +115,25 @@
     "constant": true
   },
   {
+    "inputs": [],
+    "name": "bridge_gas_fee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "address",
         "name": "",
-        "type": "bytes32"
+        "type": "address"
       }
     ],
     "name": "can_release",
@@ -163,6 +183,20 @@
   },
   {
     "inputs": [],
+    "name": "factor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
     "name": "handler_address",
     "outputs": [
       {
@@ -186,13 +220,13 @@
     "name": "locked_infos",
     "outputs": [
       {
-        "internalType": "bytes32",
-        "name": "txid",
-        "type": "bytes32"
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "time",
+        "name": "amount",
         "type": "uint256"
       }
     ],
@@ -203,9 +237,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "address",
         "name": "",
-        "type": "bytes32"
+        "type": "address"
       }
     ],
     "name": "locked_plgr_tx",
@@ -275,7 +309,7 @@
   },
   {
     "inputs": [],
-    "name": "total_locked_amounts",
+    "name": "total_mplgr_release",
     "outputs": [
       {
         "internalType": "uint256",
@@ -289,7 +323,7 @@
   },
   {
     "inputs": [],
-    "name": "wait_time",
+    "name": "total_plgr_locked",
     "outputs": [
       {
         "internalType": "uint256",
@@ -300,59 +334,6 @@
     "stateMutability": "view",
     "type": "function",
     "constant": true
-  },
-  {
-    "inputs": [],
-    "name": "x",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function",
-    "constant": true
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_wait_time",
-        "type": "uint256"
-      }
-    ],
-    "name": "admin_update_configure",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_x",
-        "type": "uint256"
-      }
-    ],
-    "name": "set_x",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_base",
-        "type": "uint256"
-      }
-    ],
-    "name": "set_base",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
   },
   {
     "inputs": [
@@ -385,6 +366,32 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_bridge_gas_fee",
+        "type": "uint256"
+      }
+    ],
+    "name": "set_bridge_gas_fee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_total_mplgr_release",
+        "type": "uint256"
+      }
+    ],
+    "name": "set_total_release",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_owner",
         "type": "address"
@@ -396,15 +403,10 @@
       }
     ],
     "name": "deposit_plgr",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
   },
   {
     "inputs": [
@@ -431,6 +433,20 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "is_release_all_locked_plgr",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
