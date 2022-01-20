@@ -1,4 +1,4 @@
-import { Footer, FormWapper, Label } from '@/components/styleComponents';
+import { AlertText, Footer, FormWapper, Label, FormHeader } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
 import { useCountdown, useFetchBalance } from '@/hooks';
 import { currencyState } from '@/model/global';
@@ -16,23 +16,6 @@ import AmountInput from './AmountInput';
 import Balance from './Balance';
 import ConfirmDrawer from './ConfirmDrawer';
 import LinkToHistory from './LinkToHistory';
-
-const WithdrawHeader = styled.div`
-  align-items: center;
-  border-bottom: 1px solid #e6e6eb;
-  display: flex;
-  justify-content: space-between;
-  height: 72px;
-  font-weight: 500;
-  > span {
-    font-size: 20px;
-  }
-  > a {
-    display: flex;
-    justify-content: space-between;
-    font-size: 16px;
-  }
-`;
 
 const WithdrawBar = styled.div`
   margin: 30px 0;
@@ -230,30 +213,26 @@ export default () => {
     <>
       {drawerElement}
       <FormWapper>
-        <WithdrawHeader>
+        <FormHeader>
           <span>Withdraw</span>
-          <a>
-            <span>Rule</span> <img src={require('@/assets/images/chevron-down.svg')} alt="" />
-          </a>
-        </WithdrawHeader>
+          <div>
+            <a>
+              <img src={require('@/assets/images/ic24-help.svg')} alt="" />
+            </a>
+            <LinkToHistory type="withdraw" account={account!} />
+          </div>
+        </FormHeader>
         <WithdrawBar>
           <WithdrawBarItem>
             <span>Total Transfer Amount</span>
             <div>{numeral(totalTransferAmount).format('0,0')} PLGR</div>
           </WithdrawBarItem>
-          <div className="divider">
-            <div />
-          </div>
-          <WithdrawBarItem>
-            <span>APY</span>
-            <div>166.67%</div>
-          </WithdrawBarItem>
         </WithdrawBar>
 
         <FlexDiv>
           <WithdrawShowItem>
-            <span>Current unlock wait time</span>
-            <div>{numeral(countdown).format('00:00:00')}</div>
+            <span>APY</span>
+            <div>166.67%</div>
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>
@@ -285,7 +264,10 @@ export default () => {
         >
           Approve
         </Button>
-        <LinkToHistory type="withdraw" account={account!} />
+        <AlertText>
+          <img src={require('@/assets/images/alert.svg')} alt="" />
+          <span>The bridge crossing time is 0:00 UTC every Sunday, please wait 30-60 min</span>
+        </AlertText>
       </FormWapper>
       <Footer />
     </>

@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import {
+  AlertText,
   DrawerTitle,
   FontWeightBoldDiv,
   Key,
@@ -24,18 +25,6 @@ import { useHistory } from 'react-router-dom';
 import { addTx } from '@/services/pledge/api/addTx';
 import type { TransferredType } from '../typings';
 import { web3 } from '@/services/web3';
-
-const AlertText = styled.div`
-  font-size: 14px;
-  line-height: 22px;
-  color: #8b89a3;
-  padding-top: 24px;
-  display: flex;
-  justify-content: space-between;
-  > img {
-    padding: 0px 5px 20px 0;
-  }
-`;
 
 const BlackKey = styled(Key)`
   color: #262533;

@@ -19,7 +19,7 @@ export const FormWapper = styled.div`
   border: 1px solid #e6e6eb;
   box-sizing: border-box;
   border-radius: 20px;
-  padding: 0 40px;
+  padding: 0 40px 40px;
   margin: 0 auto;
   margin-top: 28px;
 `;
@@ -128,5 +128,48 @@ export const DetailCoin = styled(Coin)`
   font-size: 20px;
   > img {
     margin-right: 8px;
+  }
+`;
+
+export const HeaderBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-width: 120px;
+  padding: 10px 20px;
+  color: #5d52ff;
+  background: rgba(93, 82, 255, 0.1);
+  border: 1px solid #5d52ff;
+  border-radius: 22px;
+  cursor: pointer;
+`;
+
+export const AlertText = styled.div`
+  font-size: 14px;
+  line-height: 22px;
+  color: #8b89a3;
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  > img {
+    padding: 0px 5px 20px 0;
+  }
+`;
+
+export const FormHeader = styled.div`
+  align-items: center;
+  border-bottom: 1px solid #e6e6eb;
+  display: flex;
+  justify-content: space-between;
+  height: 72px;
+  font-weight: 500;
+  > span {
+    font-size: 20px;
+  }
+  > div {
+    display: flex;
+    justify-content: space-between;
+    width: 70px;
+    font-size: 16px;
   }
 `;

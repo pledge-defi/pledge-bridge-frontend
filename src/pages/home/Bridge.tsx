@@ -17,6 +17,7 @@ import {
   FlexColumnDiv,
   FlexDiv,
   Footer,
+  FormHeader,
   FormWapper,
   GreyBackgroundDiv,
   Key,
@@ -130,6 +131,13 @@ export default () => {
     <>
       {drawerElement}
       <FormWapper>
+        <FormHeader>
+          <span>Bridge</span>
+          <div>
+            <a />
+            <LinkToHistory type="deposit" account={account!} />
+          </div>
+        </FormHeader>
         <Label>Asset</Label>
         <SelectInput>
           <Coin>
@@ -198,7 +206,6 @@ export default () => {
         >
           Approve
         </Button>
-        <LinkToHistory type="deposit" account={account!} />
       </FormWapper>
       <Footer />
     </>

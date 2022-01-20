@@ -8,8 +8,9 @@ import styled from 'styled-components';
 import { injected } from './connector';
 import { useEagerConnect, useInactiveListener } from './WalletHooks';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { HeaderBox } from '../styleComponents';
 
-const WalletConnectWapper = styled.div`
+const WalletConnectWapper = styled(HeaderBox)`
   margin-left: 24px;
   background-color: #fff !important;
   padding: 0 20px 0 20px !important;
