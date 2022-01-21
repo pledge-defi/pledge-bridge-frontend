@@ -232,7 +232,8 @@ export default () => {
         <FlexDiv>
           <WithdrawShowItem>
             <span>APY</span>
-            <div>166.67% {countdown}</div>
+            <div>166.67% </div>
+            {/* {countdown} */}
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>

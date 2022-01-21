@@ -1,5 +1,5 @@
 import type { AddEthereumChainParameter } from '@/constants/ChainBridge.d';
-import { CurrencyType } from '@/model/global';
+import type { CurrencyType } from '@/model/global';
 import {
   PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
   PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS,

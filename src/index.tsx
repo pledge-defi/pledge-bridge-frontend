@@ -7,7 +7,6 @@ import { RecoilRoot } from 'recoil';
 require('./global.less');
 
 function getLibrary(provider: any) {
-  console.log(provider, provider);
   const library = new Web3Provider(provider);
   library.pollingInterval = 5000;
   return library;

@@ -16,7 +16,6 @@ import type { CurrencyType } from '@/model/global';
 import { bridgeGasFeeState, currencyState } from '@/model/global';
 import services from '@/services';
 import { addTx } from '@/services/pledge/api/addTx';
-import { web3 } from '@/services/web3';
 import { divided_18, multiplied_18 } from '@/utils/public';
 import { Button, Drawer } from 'antd';
 import { get } from 'lodash';
@@ -98,8 +97,7 @@ const ConfirmDrawer = ({
         txHash: get(data, 'transactionHash'),
         amount: +contractAmount,
       });
-      const result = await web3.eth.getTransactionReceipt(data.transactionHash);
-      console.log(result);
+
       history.push(`/history/${transferredType}/${account}`);
       callback();
       setTransferredLoading(false);
