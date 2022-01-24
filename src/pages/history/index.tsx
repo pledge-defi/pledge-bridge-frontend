@@ -1,7 +1,6 @@
 import { DetailCoin } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
-import { web3 } from '@/services/web3';
 import { FORMAT_TIME_STANDARD } from '@/utils/constants';
 import { divided_18, numeralStandardFormat_8 } from '@/utils/public';
 import { Table } from 'antd';
@@ -43,7 +42,8 @@ const Status = ({ type, detailData, onClick }: StatusProps) => {
   const [bridgeStatus, setBridgeStatus] = useState<boolean>(false);
 
   const getStatus = async () => {
-    const { bridgeHash, depositHash } = detailData;
+    const { bridgeHash, depositHash, srcChain } = detailData;
+    const web3 = get(currencyInfos, [srcChain === 'BSC' ? srcChain : 'Ethereum', 'web3']);
     if (depositHash) {
       const transactionReceipt = await web3.eth.getTransactionReceipt(depositHash!);
       setTranscationStatus(transactionReceipt.status);

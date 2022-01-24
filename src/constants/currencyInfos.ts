@@ -6,6 +6,7 @@ import {
   PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS,
   PLGR_CONTRACT_ADDRESS,
 } from '@/utils/constants';
+import Web3 from 'web3';
 import type { AddEthereumChainParameter } from './ChainBridge.d';
 
 type CurrencyInfos = Record<
@@ -21,6 +22,7 @@ type CurrencyInfos = Record<
     currencyImageAsset: string;
     symbol: string;
     netWorkInfo: AddEthereumChainParameter;
+    web3: Web3;
   }
 >;
 
@@ -46,6 +48,7 @@ const currencyInfos: CurrencyInfos = {
       rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
       blockExplorerUrls: ['https://testnet.bscscan.com'],
     },
+    web3: new Web3('https://data-seed-prebsc-1-s1.binance.org:8545'),
   },
   Ethereum: {
     chainId: 3,
@@ -68,6 +71,7 @@ const currencyInfos: CurrencyInfos = {
       rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
       blockExplorerUrls: ['https://ropsten.etherscan.io'],
     },
+    web3: new Web3('https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'),
   },
 };
 
