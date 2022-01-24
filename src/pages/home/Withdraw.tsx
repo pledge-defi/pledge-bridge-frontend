@@ -96,6 +96,7 @@ export default () => {
   const [drawerElement, setDrawerElement] = useState<JSX.Element | undefined>();
   const fetchBalance = useFetchBalance();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fetchAndSetCountDown = async () => {
     const result = await lockedCountdown();
     const newCountDown = get(result, ['timestamp'], 0);
@@ -199,13 +200,13 @@ export default () => {
   useEffect(() => {
     if (countdown === 0) {
       fetchInitalData();
-      fetchAndSetCountDown();
+      // fetchAndSetCountDown();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown]);
 
   useEffect(() => {
-    fetchAndSetCountDown();
+    // fetchAndSetCountDown();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

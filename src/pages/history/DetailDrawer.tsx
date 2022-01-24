@@ -83,7 +83,7 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
         title={
           <StepDetail
             status={statusType.transactionStatus}
-            chainName={type === 'deposit' ? detailData.srcChain : detailData.destChain}
+            chainName={detailData.srcChain}
             hash={detailData.depositHash}
           />
         }

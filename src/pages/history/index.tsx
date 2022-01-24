@@ -48,10 +48,7 @@ const Status = ({ type, detailData, onClick }: StatusProps) => {
       const transactionReceipt = await web3.eth.getTransactionReceipt(depositHash!);
       setTranscationStatus(transactionReceipt.status);
     }
-    if (bridgeHash) {
-      const transactionReceipt = await web3.eth.getTransactionReceipt(bridgeHash!);
-      setBridgeStatus(transactionReceipt.status);
-    }
+    setBridgeStatus(!!bridgeHash);
   };
 
   const status = useMemo(() => {
@@ -167,7 +164,7 @@ const History = () => {
     {
       title: 'Time',
       dataIndex: 'timestamp',
-      render: (t) => moment(+t).format(FORMAT_TIME_STANDARD),
+      render: (t) => moment.unix(+t).format(FORMAT_TIME_STANDARD),
     },
     {
       title: 'Status',
