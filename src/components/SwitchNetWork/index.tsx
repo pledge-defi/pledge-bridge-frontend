@@ -15,6 +15,7 @@ const FlexDiv = styled.div`
 `;
 
 const SwitchNetWorkHeaderBox = styled(HeaderBox)`
+  line-height: 24px;
   > span {
     padding: 0 6px 0 10px;
   }

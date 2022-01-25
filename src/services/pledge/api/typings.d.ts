@@ -39,6 +39,6 @@ declare namespace API {
     txType?: number;
     asset?: string;
     txHash?: string;
-    amount?: number;
+    amount?: string;
   };
 }

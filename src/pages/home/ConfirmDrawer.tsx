@@ -89,13 +89,13 @@ const ConfirmDrawer = ({
       const data = await (method as MethodPayableReturnContext).send(options as SendOptions);
       // 演示使用
       // await services.evmServer.execute_upkeep();
-      const contractAmount = multiplied_18(amount!)!;
-      addTx({
+      const contractAmount = multiplied_18(amount!);
+      await addTx({
         address: account as string,
         txType: transferredType === 'deposit' ? 0 : 1,
         asset: get(currencyInfos, [currency, 'currencyName']),
         txHash: get(data, 'transactionHash'),
-        amount: +contractAmount,
+        amount: contractAmount,
       });
 
       history.push(`/history/${transferredType}/${account}`);
