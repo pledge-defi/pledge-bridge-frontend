@@ -7,6 +7,6 @@ module.exports = merge(common, {
   devServer: {
     port: '9000',
     hot: true,
-    // host:'192.168.199.132'
+    // host: '192.168.124.2',
   },
 });
