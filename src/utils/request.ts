@@ -73,7 +73,7 @@ const errorHandler = (error: ResponseError | { response: Response }) => {
 const request = extend({
   errorHandler, // 默认错误处理
   // credentials: 'include', // 默认请求是否带上cookie
-  prefix: '//54.67.12.175:7010/api/v2',
+  prefix: '/api/v2',
 });
 
 export default request;
