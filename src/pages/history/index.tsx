@@ -66,7 +66,7 @@ const Status = ({ type, detailData, onClick }: StatusProps) => {
 
   return (
     <a onClick={() => onClick({ transactionStatus, bridgeStatus, status })}>
-      <StyleStatus status={status}>{status ? 'Compleate' : 'Processing'}</StyleStatus>
+      <StyleStatus status={status}>{status ? 'Complete' : 'Processing'}</StyleStatus>
     </a>
   );
 };

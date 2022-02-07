@@ -73,7 +73,7 @@ const errorHandler = (error: ResponseError | { response: Response }) => {
 const request = extend({
   errorHandler, // 默认错误处理
   // credentials: 'include', // 默认请求是否带上cookie
-  prefix: '/api/v2',
+  prefix: 'https://dev-bridge-backend.pledger.finance/api/v2',
 });
 
 export default request;
