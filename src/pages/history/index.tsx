@@ -5,7 +5,7 @@ import { FORMAT_TIME_STANDARD } from '@/utils/constants';
 import { divided_18, numeralStandardFormat_8 } from '@/utils/public';
 import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
-import { capitalize, get } from 'lodash';
+import { capitalize, forEach, get, map, size } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -31,46 +31,6 @@ const StyleStatus = styled.div<{ status: boolean }>`
 
 export type StatusType = { transactionStatus: boolean; bridgeStatus: boolean; status: boolean };
 
-type StatusProps = {
-  type: TransferredType;
-  detailData: API.HistoryDetail;
-  onClick: (v: StatusType) => void;
-};
-
-const Status = ({ type, detailData, onClick }: StatusProps) => {
-  const [transactionStatus, setTranscationStatus] = useState<boolean>(false);
-  const [bridgeStatus, setBridgeStatus] = useState<boolean>(false);
-
-  const getStatus = async () => {
-    const { bridgeHash, depositHash, srcChain } = detailData;
-    const web3 = get(currencyInfos, [srcChain === 'BSC' ? srcChain : 'Ethereum', 'web3']);
-    if (depositHash) {
-      const transactionReceipt = await web3.eth.getTransactionReceipt(depositHash!);
-      setTranscationStatus(transactionReceipt.status);
-    }
-    setBridgeStatus(!!bridgeHash);
-  };
-
-  const status = useMemo(() => {
-    // console.log(type, detailData.srcChain, transactionStatus, bridgeStatus);
-    if (type === 'deposit' && detailData.srcChain === 'BSC') {
-      return transactionStatus && bridgeStatus;
-    }
-    return transactionStatus;
-  }, [type, detailData.srcChain, transactionStatus, bridgeStatus]);
-
-  useEffect(() => {
-    getStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <a onClick={() => onClick({ transactionStatus, bridgeStatus, status })}>
-      <StyleStatus status={status}>{status ? 'Complete' : 'Processing'}</StyleStatus>
-    </a>
-  );
-};
-
 const initialPageSetting = {
   page: 1,
   pageSize: 5,
@@ -86,6 +46,41 @@ const History = () => {
     address: account,
   });
   const [{ count = 0, rows = [] }, setData] = useState<API.HistoryData>({});
+  const [statusData, setStatusData] = useState<StatusType[]>();
+
+  const fetchStatus = async (data: API.HistoryDetail[] | undefined) => {
+    setStatusData(undefined);
+    if (size(data)) {
+      const promiseAllArray: Promise<StatusType>[] = [];
+      forEach(data, (d) => {
+        const p = new Promise<StatusType>(async (resolve) => {
+          const { bridgeHash, depositHash, srcChain } = d;
+          const web3 = get(currencyInfos, [srcChain === 'BSC' ? srcChain : 'Ethereum', 'web3']);
+          const bridgeStatus = !!bridgeHash;
+          let transactionStatus = false;
+          if (depositHash) {
+            const transactionReceipt = await web3.eth.getTransactionReceipt(depositHash!);
+            transactionStatus = transactionReceipt.status;
+          }
+          const status =
+            type === 'deposit' && d.srcChain === 'BSC'
+              ? transactionStatus && bridgeStatus
+              : transactionStatus;
+
+          resolve({
+            transactionStatus,
+            bridgeStatus,
+            status,
+          });
+        });
+        promiseAllArray.push(p);
+      });
+      setLoading(true);
+      const res = await Promise.all(promiseAllArray);
+      setLoading(false);
+      setStatusData(res);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -94,6 +89,7 @@ const History = () => {
     if (response) {
       setData(response.data || {});
     }
+    fetchStatus(response.data?.rows);
   };
 
   const handleChange = ({ current, pageSize }: TablePaginationConfig) => {
@@ -112,7 +108,7 @@ const History = () => {
     );
   };
 
-  const columns: ColumnsType<API.HistoryDetail> = [
+  const columns: ColumnsType<API.HistoryDetail & StatusType> = [
     {
       title: 'Source Chain',
       dataIndex: 'srcChain',
@@ -170,7 +166,9 @@ const History = () => {
       title: 'Status',
       dataIndex: 'status',
       render: (t, r) => {
-        return <Status type={type} detailData={r} onClick={(v) => handleClickShowDetail(r, v)} />;
+        return (
+          <StyleStatus status={!!r.status}>{!!r.status ? 'Complete' : 'Processing'}</StyleStatus>
+        );
       },
     },
   ];
@@ -179,6 +177,16 @@ const History = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionData]);
+
+  const dataSource: (API.HistoryDetail & StatusType)[] = useMemo(() => {
+    if (size(statusData)) {
+      return map(rows, (r, index) => ({
+        ...r,
+        ...statusData?.[index],
+      }));
+    }
+    return rows;
+  }, [rows, statusData]);
 
   return (
     <>
@@ -193,8 +201,16 @@ const History = () => {
             pageSize: conditionData.pageSize,
             current: conditionData.page,
           }}
-          dataSource={rows}
+          dataSource={dataSource}
           columns={columns}
+          onRow={(r) => {
+            const { transactionStatus, bridgeStatus, status, ...detail } = r;
+            return {
+              onClick: () => {
+                handleClickShowDetail(detail, { transactionStatus, bridgeStatus, status });
+              }, // 点击行
+            };
+          }}
           rowClassName="history-row"
         />
       </TableWapper>
