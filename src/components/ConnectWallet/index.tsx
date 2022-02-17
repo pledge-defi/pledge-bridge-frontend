@@ -10,14 +10,6 @@ import { useEagerConnect, useInactiveListener } from './WalletHooks';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { HeaderBox } from '../styleComponents';
 
-const WalletConnectWapper = styled(HeaderBox)`
-  margin-left: 24px;
-  background-color: #fff !important;
-  padding: 0 20px 0 20px !important;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
 const WalletInfo = styled.div`
   width: 160px;
   padding: 3px 8px;
@@ -35,9 +27,25 @@ const WalletInfo = styled.div`
     }
   }
 `;
-const WalletConnected = styled.div``;
-const WalletConnecting = styled.div``;
-const WalletNoConnected = styled.div``;
+const WalletConnected = styled(HeaderBox)`
+  margin-left: 24px;
+  background-color: #fff !important;
+  padding: 0 20px 0 20px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+// const WalletConnecting = styled(HeaderBox)``;
+
+const WalletNoConnected = styled(HeaderBox)`
+  margin-left: 24px;
+  background: #5d52ff;
+  border-radius: 21px 21px 21px 0px;
+  color: #fff;
+  font-style: normal;
+  font-weight: 600;
+`;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IConnectWallet {}
@@ -124,13 +132,13 @@ const ConnectWallet: React.FC<IConnectWallet> = () => {
       );
     }
     if (activating) {
-      return <WalletConnecting>CONNECTING</WalletConnecting>;
+      return <WalletNoConnected>Connecting</WalletNoConnected>;
     }
     return (
-      <WalletNoConnected onClick={handleOnCLickConnectWallet}>CONNECT WALLET</WalletNoConnected>
+      <WalletNoConnected onClick={handleOnCLickConnectWallet}>Connect Wallet</WalletNoConnected>
     );
   }
-  return <WalletConnectWapper>{ButtonSwitchComponent()}</WalletConnectWapper>;
+  return <>{ButtonSwitchComponent()}</>;
 };
 
 export default ConnectWallet;

@@ -1,6 +1,7 @@
 import Header from '@/components/Header';
+import { useMatchBreakpoints } from '@/hooks';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
 const BasicLayoutDiv = styled.div``;
 
@@ -9,11 +10,15 @@ type Props = {
 };
 
 const BasicLayout = ({ children }: Props) => {
+  const breakpointChecks = useMatchBreakpoints();
+
   return (
-    <BasicLayoutDiv>
-      <Header />
-      {children}
-    </BasicLayoutDiv>
+    <ThemeProvider theme={{ breakpointChecks }}>
+      <BasicLayoutDiv>
+        <Header />
+        {children}
+      </BasicLayoutDiv>
+    </ThemeProvider>
   );
 };
 

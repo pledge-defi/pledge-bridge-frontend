@@ -4,7 +4,7 @@ import { currencyState } from '@/model/global';
 import services from '@/services';
 import { useWeb3React } from '@web3-react/core';
 import { find, get } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
