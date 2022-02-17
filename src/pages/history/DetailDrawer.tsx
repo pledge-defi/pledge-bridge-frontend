@@ -92,7 +92,7 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
         title={
           <StyleStepDetail>
             <DetailCoin>
-              <img src={require('@/assets/images/bridgeLogo.svg')} alt="" height={'24px'} />
+              <img src={require('@/assets/images/logo.svg')} alt="" height={'24px'} />
               Pledge
             </DetailCoin>
             <div className="progress">

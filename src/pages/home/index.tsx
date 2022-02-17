@@ -1,11 +1,16 @@
 import { map } from 'lodash';
 import React, { useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Bridge from './Bridge';
 import Withdraw from './Withdraw';
 
 const HomeDiv = styled.div`
   padding-top: 40px;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      padding: 30px 16px 0;
+    `};
 `;
 
 const SelectTab = styled.div`

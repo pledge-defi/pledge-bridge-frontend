@@ -4,7 +4,7 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import type { InjectedConnector } from '@web3-react/injected-connector';
 import { Dropdown, Menu, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { injected } from './connector';
 import { useEagerConnect, useInactiveListener } from './WalletHooks';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -29,6 +29,11 @@ const WalletInfo = styled.div`
 `;
 const WalletConnected = styled(HeaderBox)`
   margin-left: 24px;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      margin-left: 8px;
+    `};
   background-color: #fff !important;
   padding: 0 20px 0 20px !important;
   display: flex;
@@ -40,6 +45,11 @@ const WalletConnected = styled(HeaderBox)`
 
 const WalletNoConnected = styled(HeaderBox)`
   margin-left: 24px;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      margin-left: 8px;
+    `};
   background: #5d52ff;
   border-radius: 21px 21px 21px 0px;
   color: #fff;

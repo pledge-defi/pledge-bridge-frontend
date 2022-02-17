@@ -26,6 +26,7 @@
         "camel2DashComponentName": false // default: true
       },
       "lodash"
-    ]
+    ],
+    ["babel-plugin-styled-components"]
   ]
 }

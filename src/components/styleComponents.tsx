@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const FlexDiv = styled.div`
   display: flex;
@@ -22,6 +22,12 @@ export const FormWapper = styled.div`
   padding: 0 40px 40px;
   margin: 0 auto;
   margin-top: 28px;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      width: 100%;
+      padding: 0 20px 30px;
+    `};
 `;
 
 export const Label = styled.div`
@@ -39,7 +45,6 @@ export const NormalFlexBox = styled.div`
 `;
 
 export const TransformerItem = styled.div`
-  width: 210;
   width: 210px;
   height: 92px;
   background: #f5f5fa;
@@ -48,6 +53,11 @@ export const TransformerItem = styled.div`
   justify-content: flex-start;
   display: flex;
   align-items: center;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      width: 100%;
+    `};
   > div {
     display: flex;
     flex-direction: column;
@@ -137,6 +147,12 @@ export const HeaderBox = styled.div`
   box-sizing: border-box;
   min-width: 120px;
   padding: 8px 20px;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      min-width: 100px;
+      padding: 4px 12px;
+    `};
   color: #5d52ff;
   background: rgba(93, 82, 255, 0.1);
   border: 1px solid #5d52ff;

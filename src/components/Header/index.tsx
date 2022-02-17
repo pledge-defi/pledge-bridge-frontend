@@ -1,4 +1,6 @@
-import logo from '@/assets/images/bridgeLogo.svg';
+import React from 'react';
+import logo from '@/assets/images/logo.svg';
+import logoWithText from '@/assets/images/logoWithText.svg';
 import currencyInfos from '@/constants/currencyInfos';
 import { currencyState } from '@/model/global';
 import services from '@/services';
@@ -7,31 +9,49 @@ import { find, get } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ConnectWallet } from '..';
 import SwitchNetWork from '../SwitchNetWork';
 
 const HeaderDiv = styled.div`
   height: 92px;
   border-bottom: 1px solid #e7e3eb;
+  padding: 0 20px;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      height: 65px;
+    `};
   > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 1120px;
+    max-width: 1120px;
     height: 100%;
     margin: 0 auto;
   }
 `;
 
 const Logo = styled.a`
-  display: flex;
-  > span {
-    padding-left: 10px;
-    color: #181826;
-    font-size: 28px;
+  .mobile-icon {
+    display: none;
+    ${({ theme }) =>
+      theme.breakpointChecks.isMobile &&
+      css`
+        width: 32px;
+        display: block;
+      `};
+  }
+  .desktop-icon {
+    display: none;
+    ${({ theme }) =>
+      !theme.breakpointChecks.isMobile &&
+      css`
+        display: block;
+      `};
   }
 `;
+
 const UserInfo = styled.div`
   display: flex;
   justify-content: space-between;
@@ -66,8 +86,8 @@ const Header = () => {
     <HeaderDiv>
       <div>
         <Logo onClick={handleClickLinkToHome}>
-          <img src={logo} alt="" />
-          <span>Pledge Bridge</span>
+          <img src={logo} alt="" className="mobile-icon" />
+          <img src={logoWithText} alt="" className="desktop-icon" />
         </Logo>
         <UserInfo>
           <SwitchNetWork currency={currency} onClick={handleClick} />
