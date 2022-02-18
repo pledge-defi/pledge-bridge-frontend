@@ -15,6 +15,7 @@ const StyleAmountInput = styled(InputDiv)`
   padding: 8px 16px;
   input {
     flex: 1;
+    min-width: 0;
     font-weight: bold;
     background: none;
     border: none;
@@ -27,6 +28,10 @@ const StyleAmountInput = styled(InputDiv)`
   }
   input:focus {
     border: none;
+  }
+  > div {
+    display: flex;
+    justify-content: space-between;
   }
   .max {
     position: relative;
@@ -113,10 +118,12 @@ const AmountInput = ({ onClickMax, ...inputProps }: AmountInputProps) => {
   return (
     <StyleAmountInput>
       <input type="text" {...inputProps} />
-      <div className="max" onClick={onClickMax}>
-        Max
+      <div>
+        <div className="max" onClick={onClickMax}>
+          Max
+        </div>
+        {coinElement()}
       </div>
-      {coinElement()}
     </StyleAmountInput>
   );
 };

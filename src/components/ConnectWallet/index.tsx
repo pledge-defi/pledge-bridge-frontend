@@ -29,16 +29,24 @@ const WalletInfo = styled.div`
 `;
 const WalletConnected = styled(HeaderBox)`
   margin-left: 24px;
-  ${({ theme }) =>
-    theme.breakpointChecks.isMobile &&
-    css`
-      margin-left: 8px;
-    `};
   background-color: #fff !important;
   padding: 0 20px 0 20px !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      margin-left: 8px;
+      min-width: unset;
+      padding: 0 !important;
+      > span {
+        display: none;
+      }
+      > img {
+        width: 32px;
+      }
+    `};
 `;
 
 // const WalletConnecting = styled(HeaderBox)``;

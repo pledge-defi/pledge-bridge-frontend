@@ -59,7 +59,7 @@ export default () => {
   const getFromToCurrency = useCallback(
     (c: CurrencyType) => (
       <TransformerItem>
-        <img src={get(currencyInfos, [c, 'chainImageAsset'])} alt="" height={40} />
+        <img src={get(currencyInfos, [c, 'chainImageAsset'])} alt="" />
         <div>
           <div>{get(currencyInfos, [c, 'currencyName'])}</div>
           <span>{get(currencyInfos, [c, 'chainDesc'])}</span>
@@ -140,7 +140,7 @@ export default () => {
             <LinkToHistory type="deposit" account={account!} />
           </div>
         </FormHeader>
-        <Label>Asset</Label>
+        <Label />
         <SelectInput>
           <Coin>
             <img
@@ -170,7 +170,7 @@ export default () => {
         <AmountInput onChange={handleChangeInput} onClickMax={handleClickMax} value={amount} />
         <Balance />
         {gasFee && (
-          <GreyBackgroundDiv height="118px" style={{ marginBottom: '24px' }}>
+          <GreyBackgroundDiv height="118px">
             <FlexColumnDiv>
               <FlexDiv>
                 <FlexDiv>
@@ -203,8 +203,8 @@ export default () => {
           </GreyBackgroundDiv>
         )}
         <Button
+          className="submitButton"
           type="primary"
-          style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '24px' }}
           onClick={handleClickApprove}
           loading={approveLoading}
         >

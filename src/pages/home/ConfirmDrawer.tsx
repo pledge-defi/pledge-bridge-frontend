@@ -6,6 +6,7 @@ import {
   Label,
   TransformerItem,
 } from '@/components/styleComponents';
+import CloseIcon from '@/components/Svg/CloseIcon';
 import currencyInfos from '@/constants/currencyInfos';
 import type {
   EstimateGasOptions,
@@ -22,7 +23,7 @@ import { get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import type { TransferredType } from '../typings';
 
 const BlackKey = styled(Key)`
@@ -51,6 +52,7 @@ const ConfirmDrawer = ({
   callback = () => {},
 }: ConfirmDrawerProps) => {
   const history = useHistory();
+  const theme = useTheme();
   const [visible, setVisible] = useState<boolean>();
   const bridgeGasFee = useRecoilValue(bridgeGasFeeState);
   const currency = useRecoilValue(currencyState);
@@ -159,11 +161,19 @@ const ConfirmDrawer = ({
 
   return (
     <Drawer
-      title={<DrawerTitle>{title}</DrawerTitle>}
+      title={
+        <DrawerTitle>
+          {title}
+          <a onClick={onClose}>
+            <CloseIcon fill={theme.breakpointChecks.isMobile ? '#5D52FF' : '#fff'} />
+          </a>
+        </DrawerTitle>
+      }
       placement="right"
       onClose={onClose}
       visible={visible}
-      width={550}
+      width={theme.breakpointChecks.isMobile ? '100%' : 550}
+      maskClosable={false}
       closable={false}
     >
       <Label>Amount</Label>

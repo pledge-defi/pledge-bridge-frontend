@@ -64,7 +64,7 @@ function SwitchNetWork({ currency, onClick = () => {} }: SwitchNetWorkProps) {
           height={24}
         />
         <span>{currency}</span>
-        <img src={require('@/assets/images/dropDown.svg')} alt="" />
+        <img src={require('@/assets/images/dropDown.svg')} alt="" width={12} />
       </SwitchNetWorkHeaderBox>
     </Dropdown>
   );

@@ -36,6 +36,17 @@ const SelectTab = styled.div`
     color: #000;
     background: #ffffff;
   }
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      width: 174px;
+      height: 38px;
+      > div {
+        font-size: 14px;
+        line-height: 30px;
+        border-radius: 10px;
+      }
+    `};
 `;
 
 const activeTabs = ['Bridge', 'Withdraw'] as const;

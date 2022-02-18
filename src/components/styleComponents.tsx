@@ -22,11 +22,23 @@ export const FormWapper = styled.div`
   padding: 0 40px 40px;
   margin: 0 auto;
   margin-top: 28px;
+  .submitButton {
+    width: 100%;
+    height: 60px;
+    margin-top: 24px;
+    font-size: 16px;
+  }
   ${({ theme }) =>
     theme.breakpointChecks.isMobile &&
     css`
       width: 100%;
       padding: 0 20px 30px;
+      .submitButton {
+        width: 100%;
+        height: 40px;
+        margin-top: 20px;
+        font-size: 16px;
+      }
     `};
 `;
 
@@ -36,6 +48,11 @@ export const Label = styled.div`
   line-height: 22px;
   color: #8b89a3;
   padding: 24px 0 10px 0;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      padding: 20px 0 6px 0;
+    `};
 `;
 
 export const NormalFlexBox = styled.div`
@@ -53,16 +70,16 @@ export const TransformerItem = styled.div`
   justify-content: flex-start;
   display: flex;
   align-items: center;
-  ${({ theme }) =>
-    theme.breakpointChecks.isMobile &&
-    css`
-      width: 100%;
-    `};
+  box-sizing: border-box;
+  > img {
+    width: 40px;
+  }
   > div {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding-left: 8px;
+
     > div {
       font-weight: bold;
       font-size: 20px;
@@ -73,6 +90,29 @@ export const TransformerItem = styled.div`
       font-weight: 300;
     }
   }
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      width: 100%;
+      padding: 16px;
+      flex-direction: column;
+      height: 124px;
+      justify-content: space-between;
+      align-items: flex-start;
+      min-width: 130px;
+      > img {
+        width: 32px;
+      }
+      > div {
+        padding: unset;
+        > div {
+          font-size: 16px;
+        }
+        > span {
+          font-size: 12px;
+        }
+      }
+    `};
 `;
 
 export const Key = styled.div`
@@ -86,6 +126,12 @@ export const GreyBackgroundDiv = styled.div<{ height?: string }>`
   border-radius: 10px;
   padding: 10px 16px;
   background: #f5f5fa;
+  margin-bottom: 24px;
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      margin-bottom: 20px;
+    `};
 `;
 
 export const InputDiv = styled.div<{ disabled?: boolean }>`
@@ -130,6 +176,28 @@ export const DrawerTitle = styled.div`
   font-size: 36px;
   color: #262533;
   padding-top: 100px;
+  position: relative;
+  > a {
+    position: absolute;
+    top: 0;
+    left: -60px;
+  }
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      font-size: 20px;
+      padding-top: 80px;
+      > a {
+        position: absolute;
+        top: unset;
+        right: 0;
+        bottom: 0;
+        left: unset;
+        > img {
+          color: #ccc;
+        }
+      }
+    `};
 `;
 
 export const DetailCoin = styled(Coin)`
@@ -188,4 +256,9 @@ export const FormHeader = styled.div`
     width: 70px;
     font-size: 16px;
   }
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      height: 62px;
+    `};
 `;

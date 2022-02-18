@@ -252,7 +252,7 @@ export default () => {
 
         <Label>Amount</Label>
         <AmountInput
-          placeholder={`Minimum amount is 0.1 ${get(currencyInfos, [currency, 'currencyName'])}`}
+          // placeholder={`Minimum amount is 0.1 ${get(currencyInfos, [currency, 'currencyName'])}`}
           onChange={handleChangeInput}
           onClickMax={handleClickMax}
           value={amount}
@@ -260,7 +260,7 @@ export default () => {
         <Balance />
         <Button
           type="primary"
-          style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '24px' }}
+          className='submitButton'
           onClick={handleClickApprove}
           loading={approveLoading}
         >
