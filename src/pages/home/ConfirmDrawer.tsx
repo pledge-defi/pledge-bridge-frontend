@@ -4,6 +4,7 @@ import {
   FontWeightBoldDiv,
   Key,
   Label,
+  SubmitButtonWapper,
   TransformerItem,
 } from '@/components/styleComponents';
 import CloseIcon from '@/components/Svg/CloseIcon';
@@ -205,14 +206,16 @@ const ConfirmDrawer = ({
           </span>
         </AlertText>
       )}
-      <Button
-        type="primary"
-        style={{ height: 60, width: '100%', fontSize: '16px', marginTop: '150px' }}
-        onClick={handleClickTransferred}
-        loading={transferredLoading}
-      >
-        Transferred
-      </Button>
+      <SubmitButtonWapper>
+        <Button
+          className="submitButton"
+          type="primary"
+          onClick={handleClickTransferred}
+          loading={transferredLoading}
+        >
+          Transferred
+        </Button>
+      </SubmitButtonWapper>
     </Drawer>
   );
 };

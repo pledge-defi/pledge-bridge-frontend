@@ -10,6 +10,7 @@ import {
   Label,
   NormalFlexBox,
   SelectInput,
+  SubmitButtonWapper,
   TransformerItem,
 } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
@@ -202,14 +203,16 @@ export default () => {
             </FlexColumnDiv>
           </GreyBackgroundDiv>
         )}
-        <Button
-          className="submitButton"
-          type="primary"
-          onClick={handleClickApprove}
-          loading={approveLoading}
-        >
-          Approve
-        </Button>
+        <SubmitButtonWapper>
+          <Button
+            className="submitButton"
+            type="primary"
+            onClick={handleClickApprove}
+            loading={approveLoading}
+          >
+            Approve
+          </Button>
+        </SubmitButtonWapper>
       </FormWapper>
       <Footer />
     </>

@@ -1,7 +1,7 @@
 import { DetailCoin } from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
-import { FORMAT_TIME_STANDARD } from '@/utils/constants';
+import { FORMAT_TIME_MOBILE, FORMAT_TIME_STANDARD } from '@/utils/constants';
 import { divided_18, numeralStandardFormat_8 } from '@/utils/public';
 import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
@@ -9,13 +9,14 @@ import { capitalize, forEach, get, map, size } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import type { TransferredType } from '../typings';
 import DetailDrawer from './DetailDrawer';
 
 const TableWapper = styled.div`
   margin: 0 auto;
-  width: 1200px;
+  max-width: 1150px;
+  padding: 0 16px;
   .title {
     padding: 120px 0 48px 0;
     color: #262533;
@@ -23,11 +24,140 @@ const TableWapper = styled.div`
     font-size: 36px;
     line-height: 58px;
   }
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      .title {
+        padding: 30px 0 24px 0;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 22px;
+      }
+      .ant-table-thead {
+        display: none;
+      }
+      .history-row {
+        height: 174px;
+        border-radius: 10px !important;
+      }
+    `};
 `;
 
 const StyleStatus = styled.div<{ status: boolean }>`
   color: ${(props) => (props.status ? '#5D52FF' : '#FFA011')};
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      font-weight: 500;
+      font-size: 12px;
+    `};
 `;
+
+const StyledDetailCoinComponent = styled(DetailCoin)`
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      flex: 3;
+      padding: 10px 16px;
+      background: #f5f5fa;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+    `};
+`;
+
+const DetailCoinComponent = ({ chainName }: { chainName: string }) => {
+  return (
+    <StyledDetailCoinComponent style={{ fontWeight: 500 }}>
+      <img
+        src={get(currencyInfos, [chainName === 'ETH' ? 'Ethereum' : chainName, 'chainImageAsset'])}
+        alt=""
+        height={'24px'}
+      />
+      {chainName === 'ETH' ? 'Ethereum' : chainName}
+    </StyledDetailCoinComponent>
+  );
+};
+
+const LabelItem = styled.div<{ textAlign: 'right' | 'center' | 'left' }>`
+  flex: 1;
+  text-align: ${(props) => props.textAlign};
+  .name {
+    color: #8b89a3;
+    font-size: 12px;
+    line-height: 22px;
+  }
+  .value {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 18px;
+  }
+`;
+
+const StyledHisotryMobileCardItem = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .time {
+    font-weight: 500;
+    font-size: 12px;
+  }
+  .arrow {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    > img {
+      width: 12px;
+    }
+  }
+  > div {
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
+const HisotryMobileCardItem = ({
+  srcChain,
+  destChain,
+  asset,
+  amount,
+  timestamp,
+  fee,
+  status,
+}: API.HistoryDetail & StatusType) => {
+  return (
+    <StyledHisotryMobileCardItem>
+      <div>
+        <div className="time">{moment.unix(+timestamp!).format(FORMAT_TIME_MOBILE)}</div>
+        <StyleStatus status={!!status}>{!!status ? 'Complete' : 'Processing'}</StyleStatus>
+      </div>
+      <div>
+        <DetailCoinComponent chainName={srcChain!} />
+        <div className="arrow">
+          <img src={require('@/assets/images/arrow_mobile.svg')} alt="" />
+        </div>
+        <DetailCoinComponent chainName={destChain!} />
+      </div>
+      <div>
+        <LabelItem textAlign="left">
+          <div className="name">Asset</div>
+          <div className="value">{asset}</div>
+        </LabelItem>
+        <LabelItem textAlign="center">
+          <div className="name">Amount</div>
+          <div className="value">{numeralStandardFormat_8(divided_18(amount!))}</div>
+        </LabelItem>
+        <LabelItem textAlign="right">
+          <div className="name">Fee</div>
+          <div className="value">{numeralStandardFormat_8(fee)}</div>
+        </LabelItem>
+      </div>
+    </StyledHisotryMobileCardItem>
+  );
+};
 
 export type StatusType = { transactionStatus: boolean; bridgeStatus: boolean; status: boolean };
 
@@ -47,6 +177,7 @@ const History = () => {
   });
   const [{ count = 0, rows = [] }, setData] = useState<API.HistoryData>({});
   const [statusData, setStatusData] = useState<StatusType[]>();
+  const theme = useTheme();
 
   const fetchStatus = async (data: API.HistoryDetail[] | undefined) => {
     setStatusData(undefined);
@@ -108,70 +239,65 @@ const History = () => {
     );
   };
 
-  const columns: ColumnsType<API.HistoryDetail & StatusType> = [
-    {
-      title: 'Source Chain',
-      dataIndex: 'srcChain',
-      render: (t: 'BSC' | 'ETH') => {
-        return (
-          <DetailCoin style={{ fontWeight: 500 }}>
-            <img
-              src={get(currencyInfos, [t === 'ETH' ? 'Ethereum' : t, 'chainImageAsset'])}
-              alt=""
-              height={'24px'}
-            />
-            {t === 'ETH' ? 'Ethereum' : t}
-          </DetailCoin>
-        );
+  const columns: ColumnsType<API.HistoryDetail & StatusType> = useMemo(() => {
+    if (theme.breakpointChecks.isMobile) {
+      return [
+        {
+          title: 'Source Chain',
+          dataIndex: 'srcChain',
+          render: (t, r) => {
+            return <HisotryMobileCardItem {...r} />;
+          },
+        },
+      ];
+    }
+    return [
+      {
+        title: 'Source Chain',
+        dataIndex: 'srcChain',
+        render: (t: 'BSC' | 'ETH') => {
+          return <DetailCoinComponent chainName={t} />;
+        },
       },
-    },
-    {
-      title: 'Destination Chain',
-      dataIndex: 'destChain',
-      render: (t) => {
-        return (
-          <DetailCoin style={{ fontWeight: 500 }}>
-            <img
-              src={get(currencyInfos, [t === 'ETH' ? 'Ethereum' : t, 'chainImageAsset'])}
-              alt=""
-              height={'24px'}
-            />
-            {t === 'ETH' ? 'Ethereum' : t}
-          </DetailCoin>
-        );
+      {
+        title: 'Destination Chain',
+        dataIndex: 'destChain',
+        render: (t) => {
+          return <DetailCoinComponent chainName={t} />;
+        },
       },
-    },
-    {
-      title: 'Assets',
-      dataIndex: 'asset',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      render: (t) => numeralStandardFormat_8(divided_18(t)),
-    },
-    {
-      title: 'Fee',
-      dataIndex: 'fee',
-      render: (t) => {
-        return numeralStandardFormat_8(t);
+      {
+        title: 'Assets',
+        dataIndex: 'asset',
       },
-    },
-    {
-      title: 'Time',
-      dataIndex: 'timestamp',
-      render: (t) => moment.unix(+t).format(FORMAT_TIME_STANDARD),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: (t, r) => {
-        return (
-          <StyleStatus status={!!r.status}>{!!r.status ? 'Complete' : 'Processing'}</StyleStatus>
-        );
+      {
+        title: 'Amount',
+        dataIndex: 'amount',
+        render: (t) => numeralStandardFormat_8(divided_18(t)),
       },
-    },
-  ];
+      {
+        title: 'Fee',
+        dataIndex: 'fee',
+        render: (t) => {
+          return numeralStandardFormat_8(t);
+        },
+      },
+      {
+        title: 'Time',
+        dataIndex: 'timestamp',
+        render: (t) => moment.unix(+t).format(FORMAT_TIME_STANDARD),
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (t, r) => {
+          return (
+            <StyleStatus status={!!r.status}>{!!r.status ? 'Complete' : 'Processing'}</StyleStatus>
+          );
+        },
+      },
+    ];
+  }, [theme.breakpointChecks.isMobile]);
 
   useEffect(() => {
     fetchData();

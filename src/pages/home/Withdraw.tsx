@@ -1,4 +1,11 @@
-import { AlertText, Footer, FormHeader, FormWapper, Label } from '@/components/styleComponents';
+import {
+  AlertText,
+  Footer,
+  FormHeader,
+  FormWapper,
+  Label,
+  SubmitButtonWapper,
+} from '@/components/styleComponents';
 import currencyInfos from '@/constants/currencyInfos';
 import { useCountdown, useFetchBalance } from '@/hooks';
 import { currencyState } from '@/model/global';
@@ -200,13 +207,13 @@ export default () => {
   useEffect(() => {
     if (countdown === 0) {
       fetchInitalData();
-      // fetchAndSetCountDown();
+      fetchAndSetCountDown();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown]);
 
   useEffect(() => {
-    // fetchAndSetCountDown();
+    fetchAndSetCountDown();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -228,13 +235,19 @@ export default () => {
             <span>Total Transfer Amount</span>
             <div>{numeral(totalTransferAmount).format('0,0')} PLGR</div>
           </WithdrawBarItem>
+          <div className="divider">
+            <div />
+          </div>
+          <WithdrawBarItem>
+            <span>APY</span>
+            <div>166.67%</div>
+          </WithdrawBarItem>
         </WithdrawBar>
 
         <FlexDiv>
           <WithdrawShowItem>
-            <span>APY</span>
-            <div>166.67% </div>
-            {/* {countdown} */}
+            <span>Current unlock wait time</span>
+            <div>{numeral(countdown).format('00:00:00')}</div>
           </WithdrawShowItem>
           <WithdrawShowItem textAlign="right">
             <span>Lock PLGR</span>
@@ -258,14 +271,17 @@ export default () => {
           value={amount}
         />
         <Balance />
-        <Button
-          type="primary"
-          className='submitButton'
-          onClick={handleClickApprove}
-          loading={approveLoading}
-        >
-          Approve
-        </Button>
+        <SubmitButtonWapper>
+          <Button
+            type="primary"
+            className="submitButton"
+            onClick={handleClickApprove}
+            loading={approveLoading}
+          >
+            Approve
+          </Button>
+        </SubmitButtonWapper>
+
         <AlertText>
           <img src={require('@/assets/images/alert.svg')} alt="" />
           <span>The bridge crossing time is 0:00 UTC every Sunday, please wait 30-60 min</span>

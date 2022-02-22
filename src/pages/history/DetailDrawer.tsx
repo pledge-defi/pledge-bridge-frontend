@@ -1,9 +1,10 @@
 import { DetailCoin, DrawerTitle } from '@/components/styleComponents';
+import CloseIcon from '@/components/Svg/CloseIcon';
 import currencyInfos from '@/constants/currencyInfos';
 import { Drawer, Progress, Steps } from 'antd';
 import { get } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import type { StatusType } from '.';
 import type { TransferredType } from '../typings';
 
@@ -71,6 +72,7 @@ type DetailDrawerProps = {
 
 const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerProps) => {
   const [visible, setVisible] = useState<boolean>();
+  const theme = useTheme();
 
   const onClose = () => {
     setVisible(false);
@@ -129,12 +131,20 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
 
   return (
     <Drawer
-      title={<DrawerTitle>Detail</DrawerTitle>}
+      title={
+        <DrawerTitle>
+          Detail
+          <a onClick={onClose}>
+            <CloseIcon fill={theme.breakpointChecks.isMobile ? '#5D52FF' : '#fff'} />
+          </a>
+        </DrawerTitle>
+      }
       placement="right"
       onClose={onClose}
       visible={visible}
-      width={550}
+      width={theme.breakpointChecks.isMobile ? '100%' : 550}
       closable={false}
+      maskClosable={false}
     >
       <Steps
         direction="vertical"

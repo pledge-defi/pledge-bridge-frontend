@@ -29,6 +29,7 @@ declare namespace API {
     amount?: string;
     fee?: string;
     time?: string;
+    timestamp?: string;
     status?: boolean;
     depositHash?: string;
     bridgeHash?: string;

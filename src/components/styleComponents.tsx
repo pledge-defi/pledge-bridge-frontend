@@ -22,23 +22,11 @@ export const FormWapper = styled.div`
   padding: 0 40px 40px;
   margin: 0 auto;
   margin-top: 28px;
-  .submitButton {
-    width: 100%;
-    height: 60px;
-    margin-top: 24px;
-    font-size: 16px;
-  }
   ${({ theme }) =>
     theme.breakpointChecks.isMobile &&
     css`
       width: 100%;
       padding: 0 20px 30px;
-      .submitButton {
-        width: 100%;
-        height: 40px;
-        margin-top: 20px;
-        font-size: 16px;
-      }
     `};
 `;
 
@@ -260,5 +248,24 @@ export const FormHeader = styled.div`
     theme.breakpointChecks.isMobile &&
     css`
       height: 62px;
+    `};
+`;
+
+export const SubmitButtonWapper = styled.div`
+  .submitButton {
+    width: 100%;
+    height: 60px;
+    margin-top: 24px;
+    font-size: 16px;
+  }
+  ${({ theme }) =>
+    theme.breakpointChecks.isMobile &&
+    css`
+      .submitButton {
+        width: 100%;
+        height: 40px;
+        margin-top: 20px;
+        font-size: 16px;
+      }
     `};
 `;
