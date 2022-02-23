@@ -1,11 +1,11 @@
-import React from 'react';
 import logo from '@/assets/images/logo.svg';
 import logoWithText from '@/assets/images/logoWithText.svg';
-import currencyInfos from '@/constants/currencyInfos';
-import { currencyState } from '@/model/global';
+import type { ChainInfoKeysType } from '@/constants/chainInfos';
+import chainInfos from '@/constants/chainInfos';
+import { chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
 import { useWeb3React } from '@web3-react/core';
-import { find, get } from 'lodash';
+import { find } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
@@ -58,15 +58,18 @@ const UserInfo = styled.div`
 `;
 
 const Header = () => {
-  const [currency, setCurrency] = useRecoilState(currencyState);
+  const [chainInfoKey, setChainInfoKey] = useRecoilState(chainInfoKeyState);
+  const [, setChainInfo] = useRecoilState(chainInfoState);
   const history = useHistory();
   const { chainId } = useWeb3React();
   const [currentChainId, setCurrentChainId] = useState<number>();
 
   const handleClick = async (v: any) => {
-    const netWorkInfo = get(currencyInfos, [v.key, 'netWorkInfo']);
-    await services.evmServer.switchNetwork(netWorkInfo);
-    setCurrency(v.key);
+    const newChainInfo = find(chainInfos, { chainName: v.key });
+    const netWorkInfo = newChainInfo?.netWorkInfo;
+    await services.evmServer.switchNetwork(netWorkInfo!);
+    setChainInfoKey(v.key);
+    setChainInfo(newChainInfo!);
   };
 
   const handleClickLinkToHome = () => {
@@ -76,8 +79,8 @@ const Header = () => {
   useEffect(() => {
     if (chainId !== currentChainId && currentChainId === undefined) {
       setCurrentChainId(chainId);
-      const chainName = find(Object.values(currencyInfos), { chainId })?.chainName;
-      setCurrency(chainName || 'BSC');
+      const chainName = find(chainInfos, { chainId })?.chainName;
+      setChainInfoKey((chainName as ChainInfoKeysType) || 'BSC_Testnet');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);
@@ -90,7 +93,7 @@ const Header = () => {
           <img src={logoWithText} alt="" className="desktop-icon" />
         </Logo>
         <UserInfo>
-          <SwitchNetWork currency={currency} onClick={handleClick} />
+          <SwitchNetWork chainInfoKey={chainInfoKey} onClick={handleClick} />
           <ConnectWallet />
         </UserInfo>
       </div>

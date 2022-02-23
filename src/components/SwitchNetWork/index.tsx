@@ -1,8 +1,8 @@
 import React from 'react';
-import currencyInfos from '@/constants/currencyInfos';
-import type { CurrencyType } from '@/model/global';
+import type { ChainInfoKeysType } from '@/constants/chainInfos';
+import chainInfos from '@/constants/chainInfos';
 import { Dropdown, Menu } from 'antd';
-import { get } from 'lodash';
+import { find, map } from 'lodash';
 import styled from 'styled-components';
 import { HeaderBox } from '../styleComponents';
 
@@ -22,48 +22,36 @@ const SwitchNetWorkHeaderBox = styled(HeaderBox)`
 `;
 
 type SwitchNetWorkProps = {
-  currency: CurrencyType;
+  chainInfoKey: ChainInfoKeysType;
   onClick: (v: any) => void;
 };
 
-function SwitchNetWork({ currency, onClick = () => {} }: SwitchNetWorkProps) {
+function SwitchNetWork({ chainInfoKey, onClick = () => {} }: SwitchNetWorkProps) {
   return (
     <Dropdown
       overlay={
-        <Menu selectedKeys={[currency]} onClick={onClick}>
-          <Menu.Item key={'BSC'}>
-            <FlexDiv>
-              <img
-                src={get(currencyInfos, ['BSC', 'chainImageAsset'])}
-                alt=""
-                width={24}
-                height={24}
-              />
-              <span>BSC</span>
-            </FlexDiv>
-          </Menu.Item>
-          <Menu.Item key={'Ethereum'}>
-            <FlexDiv>
-              <img
-                src={get(currencyInfos, ['Ethereum', 'chainImageAsset'])}
-                alt=""
-                width={24}
-                height={24}
-              />
-              <span>Ethereum</span>
-            </FlexDiv>
-          </Menu.Item>
+        <Menu selectedKeys={[chainInfoKey]} onClick={onClick}>
+          {map(chainInfos, (c) => {
+            return (
+              <Menu.Item key={c.chainName}>
+                <FlexDiv>
+                  <img src={c.chainImageAsset} alt="" width={24} height={24} />
+                  <span>{c.chainName}</span>
+                </FlexDiv>
+              </Menu.Item>
+            );
+          })}
         </Menu>
       }
     >
       <SwitchNetWorkHeaderBox>
         <img
-          src={get(currencyInfos, [currency, 'chainImageAsset'])}
+          src={find(chainInfos, { chainName: chainInfoKey })?.chainImageAsset}
           alt=""
           width={24}
           height={24}
         />
-        <span>{currency}</span>
+        <span>{chainInfoKey}</span>
         <img src={require('@/assets/images/dropDown.svg')} alt="" width={12} />
       </SwitchNetWorkHeaderBox>
     </Dropdown>

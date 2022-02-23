@@ -1,15 +1,16 @@
 import { DetailCoin } from '@/components/styleComponents';
-import currencyInfos from '@/constants/currencyInfos';
+import chainInfos from '@/constants/chainInfos';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
 import { FORMAT_TIME_MOBILE, FORMAT_TIME_STANDARD } from '@/utils/constants';
 import { divided_18, numeralStandardFormat_8 } from '@/utils/public';
 import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
-import { capitalize, forEach, get, map, size } from 'lodash';
+import { capitalize, find, forEach, map, size } from 'lodash';
 import moment from 'moment';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
+import Web3 from 'web3';
 import type { TransferredType } from '../typings';
 import DetailDrawer from './DetailDrawer';
 
@@ -70,7 +71,12 @@ const DetailCoinComponent = ({ chainName }: { chainName: string }) => {
   return (
     <StyledDetailCoinComponent style={{ fontWeight: 500 }}>
       <img
-        src={get(currencyInfos, [chainName === 'ETH' ? 'Ethereum' : chainName, 'chainImageAsset'])}
+        src={
+          find(chainInfos, {
+            // 临时变量
+            chainName: chainName === 'BSC' ? 'BSC-testnet' : 'Ropsent',
+          })?.chainImageAsset
+        }
         alt=""
         height={'24px'}
       />
@@ -186,12 +192,17 @@ const History = () => {
       forEach(data, (d) => {
         const p = new Promise<StatusType>(async (resolve) => {
           const { bridgeHash, depositHash, srcChain } = d;
-          const web3 = get(currencyInfos, [srcChain === 'BSC' ? srcChain : 'Ethereum', 'web3']);
+          const web3Url = find(chainInfos, {
+            // 临时变量
+            chainName: srcChain === 'BSC' ? 'BSC-testnet' : 'Ropsent',
+          })?.web3Url;
           const bridgeStatus = !!bridgeHash;
           let transactionStatus = false;
           if (depositHash) {
-            const transactionReceipt = await web3.eth.getTransactionReceipt(depositHash!);
-            transactionStatus = transactionReceipt.status;
+            const transactionReceipt = await new Web3(web3Url!).eth.getTransactionReceipt(
+              depositHash!,
+            );
+            transactionStatus = !!transactionReceipt?.status;
           }
           const status =
             type === 'deposit' && d.srcChain === 'BSC'

@@ -1,28 +1,34 @@
+import type { ChainInfo, ChainInfoKeysType } from '@/constants/chainInfos';
+import chainInfos, { chainInfoKeys } from '@/constants/chainInfos';
+import { forEach } from 'lodash';
 import { atom } from 'recoil';
 
-export const currencies = ['BSC', 'Ethereum'] as const;
+const defaultChain = chainInfos[0];
 
-export type CurrencyType = typeof currencies[number];
-
-export const currencyState = atom<CurrencyType>({
-  key: 'currencyState',
-  default: 'BSC',
+export const chainInfoKeyState = atom<ChainInfoKeysType>({
+  key: 'chainInfoKeyState',
+  default: defaultChain.chainName as ChainInfoKeysType,
 });
 
-export type BalanceType = Record<CurrencyType, string>;
+export const chainInfoState = atom<ChainInfo>({
+  key: 'chainInfoState',
+  default: defaultChain,
+});
+
+const getDefualt = () => {
+  const newObject = {};
+  forEach(chainInfoKeys, (c) => (newObject[c] = ''));
+  return newObject as Record<ChainInfoKeysType, string>;
+};
+
+export type BalanceType = Record<ChainInfoKeysType, string>;
 export const balanceState = atom<BalanceType>({
   key: 'balanceState',
-  default: {
-    BSC: '',
-    Ethereum: '',
-  },
+  default: getDefualt(),
 });
 
-export type BridgeGasFee = Record<CurrencyType, string>;
+export type BridgeGasFee = Record<ChainInfoKeysType, string>;
 export const bridgeGasFeeState = atom<BridgeGasFee>({
   key: 'bridgeGasFeeState',
-  default: {
-    BSC: '',
-    Ethereum: '',
-  },
+  default: getDefualt(),
 });

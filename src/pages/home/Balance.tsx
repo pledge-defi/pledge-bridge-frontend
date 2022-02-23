@@ -1,8 +1,6 @@
-import currencyInfos from '@/constants/currencyInfos';
-import { balanceState, currencyState } from '@/model/global';
+import { balanceState, chainInfoKeyState, chainInfoState } from '@/model/global';
 import { numeralStandardFormat_4 } from '@/utils/public';
 import { get } from 'lodash';
-import React from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
@@ -18,14 +16,14 @@ const StyleBalance = styled.div`
 
 const Balance = () => {
   const balance = useRecoilValue(balanceState);
-  const currency = useRecoilValue(currencyState);
+  const chainInfoKey = useRecoilValue(chainInfoKeyState);
+  const chainInfo = useRecoilValue(chainInfoState);
 
   return (
     <StyleBalance>
       Balance:{' '}
       <span>
-        {numeralStandardFormat_4(get(balance, [currency]))}{' '}
-        {get(currencyInfos, [currency, 'currencyName'])}
+        {numeralStandardFormat_4(get(balance, [chainInfoKey]))} {chainInfo.currencyName}
       </span>
     </StyleBalance>
   );

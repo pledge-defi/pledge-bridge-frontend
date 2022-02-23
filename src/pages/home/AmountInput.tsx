@@ -1,13 +1,12 @@
-import currencyInfos from '@/constants/currencyInfos';
-import type { CurrencyType } from '@/model/global';
-import { currencyState } from '@/model/global';
+import { Coin, InputDiv } from '@/components/styleComponents';
+import chainInfos from '@/constants/chainInfos';
+import { chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
 import { Dropdown, Menu } from 'antd';
-import { get } from 'lodash';
+import { find, map } from 'lodash';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
-import { Coin, InputDiv } from '@/components/styleComponents';
 
 const StyleAmountInput = styled(InputDiv)`
   display: flex;
@@ -63,48 +62,38 @@ type AmountInputProps = React.DetailedHTMLProps<
 };
 
 const AmountInput = ({ onClickMax, ...inputProps }: AmountInputProps) => {
-  const [currency, setCurrency] = useRecoilState(currencyState);
+  const [chainInfoKey, setChainInfoKey] = useRecoilState(chainInfoKeyState);
+  const [chainInfo, setChainInfo] = useRecoilState(chainInfoState);
 
-  const handleChangeCurrency = async (v: CurrencyType) => {
-    const netWorkInfo = get(currencyInfos, [v, 'netWorkInfo']);
-    await services.evmServer.switchNetwork(netWorkInfo);
-    setCurrency(v);
+  const handleChangeCurrency = async (v: any) => {
+    const newChainInfo = find(chainInfos, { chainName: v });
+    const netWorkInfo = newChainInfo?.netWorkInfo;
+    await services.evmServer.switchNetwork(netWorkInfo!);
+    setChainInfoKey(v);
+    setChainInfo(newChainInfo!);
   };
 
   const coinElement = () => {
     return (
       <Dropdown
         overlay={
-          <Menu
-            selectedKeys={[currency]}
-            onClick={(v) => handleChangeCurrency(v.key as CurrencyType)}
-          >
-            <Menu.Item key={'BSC'}>
-              <Coin>
-                <img
-                  src={get(currencyInfos, ['BSC', 'currencyImageAsset'])}
-                  alt=""
-                  height={'24px'}
-                />
-                <span>{get(currencyInfos, ['BSC', 'currencyName'])}</span>
-              </Coin>
-            </Menu.Item>
-            <Menu.Item key={'Ethereum'}>
-              <Coin>
-                <img
-                  src={get(currencyInfos, ['Ethereum', 'currencyImageAsset'])}
-                  alt=""
-                  height={'24px'}
-                />
-                <span>{get(currencyInfos, ['Ethereum', 'currencyName'])}</span>
-              </Coin>
-            </Menu.Item>
+          <Menu selectedKeys={[chainInfoKey]} onClick={(v) => handleChangeCurrency(v.key)}>
+            {map(chainInfos, (c) => {
+              return (
+                <Menu.Item key={c.chainName}>
+                  <Coin>
+                    <img src={c.currencyImageAsset} alt="" height={'24px'} />
+                    <span>{c.currencyName}</span>
+                  </Coin>
+                </Menu.Item>
+              );
+            })}
           </Menu>
         }
       >
         <Coin>
-          <img src={get(currencyInfos, [currency, 'currencyImageAsset'])} alt="" height={'24px'} />
-          <span>{get(currencyInfos, [currency, 'currencyName'])}</span>
+          <img src={chainInfo.currencyImageAsset} alt="" height={'24px'} />
+          <span>{chainInfo.currencyName}</span>
           <img
             src={require('@/assets/images/dropDownGrey.svg')}
             alt=""

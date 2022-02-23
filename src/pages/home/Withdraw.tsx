@@ -6,9 +6,8 @@ import {
   Label,
   SubmitButtonWapper,
 } from '@/components/styleComponents';
-import currencyInfos from '@/constants/currencyInfos';
 import { useCountdown, useFetchBalance } from '@/hooks';
-import { currencyState } from '@/model/global';
+import { chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
 import { lockedCountdown } from '@/services/pledge/api/lockedCountdown';
 import { divided_18, multiplied_18, numeralStandardFormat_4 } from '@/utils/public';
@@ -91,7 +90,8 @@ const WithdrawShowItem = styled.div<{ textAlign?: 'left' | 'right' }>`
 `;
 
 export default () => {
-  const currency = useRecoilValue(currencyState);
+  const chainInfoKey = useRecoilValue(chainInfoKeyState);
+  const chainInfo = useRecoilValue(chainInfoState);
   const { account } = useWeb3React();
   const [amount, setAmount] = useState<string>();
   const [countdown, setCountdown] = useCountdown();
@@ -170,8 +170,8 @@ export default () => {
     const contractAmount = multiplied_18(amount!)!;
     try {
       await services.evmServer.approve(
-        get(currencyInfos, [currency, 'contractAddress']),
-        get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
+        chainInfo.contractAddress,
+        chainInfo.pledgerBridgeContractAddress,
         contractAmount,
       );
       showDrawerElement();
@@ -186,7 +186,7 @@ export default () => {
   };
 
   const handleClickMax = () => {
-    if (currency === 'BSC') {
+    if (chainInfoKey === 'BSC-testnet') {
       setAmount(plgrAmounts);
     } else {
       setAmount(mplgrAmounts);
@@ -195,14 +195,14 @@ export default () => {
 
   useEffect(() => {
     setAmount('');
-  }, [currency]);
+  }, [chainInfoKey]);
 
   useEffect(() => {
     if (account) {
       fetchInitalData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, currency]);
+  }, [account, chainInfoKey]);
 
   useEffect(() => {
     if (countdown === 0) {
@@ -265,7 +265,7 @@ export default () => {
 
         <Label>Amount</Label>
         <AmountInput
-          // placeholder={`Minimum amount is 0.1 ${get(currencyInfos, [currency, 'currencyName'])}`}
+          // placeholder={`Minimum amount is 0.1 chainInfo.currencyName}`}
           onChange={handleChangeInput}
           onClickMax={handleClickMax}
           value={amount}

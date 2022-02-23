@@ -8,20 +8,20 @@ import {
   TransformerItem,
 } from '@/components/styleComponents';
 import CloseIcon from '@/components/Svg/CloseIcon';
-import currencyInfos from '@/constants/currencyInfos';
+import type { ChainInfoKeysType } from '@/constants/chainInfos';
+import chainInfos from '@/constants/chainInfos';
 import type {
   EstimateGasOptions,
   MethodPayableReturnContext,
   SendOptions,
 } from '@/contracts/newERC20';
-import type { CurrencyType } from '@/model/global';
-import { bridgeGasFeeState, currencyState } from '@/model/global';
+import { bridgeGasFeeState, chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
 import { addTx } from '@/services/pledge/api/addTx';
 import { divided_18, multiplied_18 } from '@/utils/public';
 import { Button, Drawer } from 'antd';
-import { get } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
+import { find, get } from 'lodash';
+import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled, { useTheme } from 'styled-components';
@@ -36,7 +36,6 @@ const DrawerTransformerItem = styled(TransformerItem)`
   padding: unset;
   height: 65px;
 `;
-
 type ConfirmDrawerProps = {
   title?: string;
   amount?: string;
@@ -56,7 +55,8 @@ const ConfirmDrawer = ({
   const theme = useTheme();
   const [visible, setVisible] = useState<boolean>();
   const bridgeGasFee = useRecoilValue(bridgeGasFeeState);
-  const currency = useRecoilValue(currencyState);
+  const chainInfoKey = useRecoilValue(chainInfoKeyState);
+  const chainInfo = useRecoilValue(chainInfoState);
   const [transferredLoading, setTransferredLoading] = useState<boolean>(false);
   const [gasFee, setGasFee] = useState<number>();
   const [contract, setContract] = useState<
@@ -69,12 +69,12 @@ const ConfirmDrawer = ({
   >([]);
 
   const getFromToCurrency = useCallback(
-    (c: CurrencyType) => (
+    (c: ChainInfoKeysType) => (
       <DrawerTransformerItem>
-        <img src={get(currencyInfos, [c, 'chainImageAsset'])} alt="" height={40} />
+        <img src={find(chainInfos, { chainName: c })?.chainImageAsset} alt="" height={40} />
         <div>
-          <div>{get(currencyInfos, [c, 'currencyName'])}</div>
-          <span>{get(currencyInfos, [c, 'chainDesc'])}</span>
+          <div>{find(chainInfos, { chainName: c })?.currencyName}</div>
+          <span>{find(chainInfos, { chainName: c })?.chainDesc}</span>
         </div>
       </DrawerTransformerItem>
     ),
@@ -96,7 +96,7 @@ const ConfirmDrawer = ({
       await addTx({
         address: account as string,
         txType: transferredType === 'deposit' ? 0 : 1,
-        asset: get(currencyInfos, [currency, 'currencyName']),
+        asset: chainInfo.currencyName,
         txHash: get(data, 'transactionHash'),
         amount: contractAmount,
       });
@@ -114,10 +114,10 @@ const ConfirmDrawer = ({
   const getCurrentContract = async () => {
     let newContract;
     const contractAmount = multiplied_18(amount!)!;
-    const gasFeeValue = multiplied_18(get(bridgeGasFee, [currency]));
+    const gasFeeValue = multiplied_18(get(bridgeGasFee, [chainInfoKey]));
     try {
       if (transferredType === 'deposit') {
-        if (currency === 'BSC') {
+        if (chainInfoKey === 'BSC-testnet') {
           newContract = await services.evmServer.deposit_plgr(
             account as string,
             contractAmount,
@@ -131,7 +131,7 @@ const ConfirmDrawer = ({
           );
         }
       } else {
-        if (currency === 'BSC') {
+        if (chainInfoKey === 'BSC-testnet') {
           newContract = await services.evmServer.widthdraw_plgr(contractAmount);
         } else {
           newContract = await services.evmServer.widthdraw_mplgr(contractAmount);
@@ -179,30 +179,30 @@ const ConfirmDrawer = ({
     >
       <Label>Amount</Label>
       <FontWeightBoldDiv>
-        {amount} {get(currencyInfos, [currency, 'currencyName'])}
+        {amount} {chainInfo.currencyName}
       </FontWeightBoldDiv>
       <Label>From</Label>
-      {getFromToCurrency(currency)}
+      {getFromToCurrency(chainInfoKey)}
       <Label>To</Label>
-      {getFromToCurrency(currency === 'BSC' ? 'Ethereum' : 'BSC')}
+      {getFromToCurrency(chainInfoKey === 'BSC-testnet' ? 'Ropsent' : chainInfoKey)}
       <Label>Receiving Address</Label>
       <BlackKey>{account}</BlackKey>
       <Label>Gas Fee</Label>
       <BlackKey>
-        {divided_18(gasFee!)} {get(currencyInfos, [currency, 'symbol'])}
+        {divided_18(gasFee!)} {chainInfo.symbol}
       </BlackKey>
       {transferredType === 'deposit' && <Label>Cross-Chain Fee</Label>}
       {transferredType === 'deposit' && (
         <BlackKey>
-          {get(bridgeGasFee, [currency])} {get(currencyInfos, [currency, 'symbol'])}
+          {get(bridgeGasFee, [chainInfoKey])} {chainInfo.symbol}
         </BlackKey>
       )}
       {transferredType === 'deposit' && (
         <AlertText>
           <img src={require('@/assets/images/alert.svg')} alt="" />
           <span>
-            {get(currencyInfos, [currency, 'currencyName'])} will be released according to the
-            rules, please withdraw to your personal address by yourself
+            {chainInfo.currencyName} will be released according to the rules, please withdraw to
+            your personal address by yourself
           </span>
         </AlertText>
       )}

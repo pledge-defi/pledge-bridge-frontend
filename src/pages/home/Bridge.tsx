@@ -13,17 +13,16 @@ import {
   SubmitButtonWapper,
   TransformerItem,
 } from '@/components/styleComponents';
-import currencyInfos from '@/constants/currencyInfos';
+import type { ChainInfoKeysType } from '@/constants/chainInfos';
+import chainInfos from '@/constants/chainInfos';
 import { useFetchBalance } from '@/hooks';
-import type { CurrencyType } from '@/model/global';
-import { bridgeGasFeeState } from '@/model/global';
-import { balanceState, currencyState } from '@/model/global';
+import { balanceState, bridgeGasFeeState, chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
 import { web3 } from '@/services/web3';
 import { divided_18, multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button, Tooltip } from 'antd';
-import { get } from 'lodash';
+import { find, get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import AmountInput from './AmountInput';
@@ -32,7 +31,8 @@ import ConfirmDrawer from './ConfirmDrawer';
 import LinkToHistory from './LinkToHistory';
 
 export default () => {
-  const currency = useRecoilValue(currencyState);
+  const chainInfoKey = useRecoilValue(chainInfoKeyState);
+  const chainInfo = useRecoilValue(chainInfoState);
   const balance = useRecoilValue(balanceState);
   const bridgeGasFee = useRecoilValue(bridgeGasFeeState);
   const { account } = useWeb3React();
@@ -46,8 +46,8 @@ export default () => {
     const contractAmount = multiplied_18(a)!;
     try {
       const newGasFee = await services.evmServer.approveEstimateGas(
-        get(currencyInfos, [currency, 'contractAddress']),
-        get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
+        chainInfo.contractAddress,
+        chainInfo.pledgerBridgeContractAddress,
         contractAmount,
       );
       setGasFee(newGasFee);
@@ -58,12 +58,12 @@ export default () => {
   };
 
   const getFromToCurrency = useCallback(
-    (c: CurrencyType) => (
+    (c: ChainInfoKeysType) => (
       <TransformerItem>
-        <img src={get(currencyInfos, [c, 'chainImageAsset'])} alt="" />
+        <img src={find(chainInfos, { chainName: c })?.chainImageAsset} alt="" height={40} />
         <div>
-          <div>{get(currencyInfos, [c, 'currencyName'])}</div>
-          <span>{get(currencyInfos, [c, 'chainDesc'])}</span>
+          <div>{find(chainInfos, { chainName: c })?.currencyName}</div>
+          <span>{find(chainInfos, { chainName: c })?.chainDesc}</span>
         </div>
       </TransformerItem>
     ),
@@ -93,8 +93,8 @@ export default () => {
     const contractAmount = multiplied_18(amount!)!;
     try {
       await services.evmServer.approve(
-        get(currencyInfos, [currency, 'contractAddress']),
-        get(currencyInfos, [currency, 'pledgerBridgeContractAddress']),
+        chainInfo.contractAddress,
+        chainInfo.pledgerBridgeContractAddress,
         contractAmount,
       );
       showDrawerElement();
@@ -110,12 +110,12 @@ export default () => {
   };
 
   const handleClickMax = () => {
-    setAmount(get(balance, [currency]));
+    setAmount(get(balance, [chainInfoKey]));
   };
 
   useEffect(() => {
     setAmount('');
-  }, [currency]);
+  }, [chainInfoKey]);
 
   useEffect(() => {
     getGasFee(amount!);
@@ -144,23 +144,19 @@ export default () => {
         <Label />
         <SelectInput>
           <Coin>
-            <img
-              src={get(currencyInfos, [currency, 'currencyImageAsset'])}
-              alt=""
-              height={'24px'}
-            />
-            <span>{get(currencyInfos, [currency, 'currencyName'])}</span>
+            <img src={chainInfo.currencyImageAsset} alt="" height={'24px'} />
+            <span>{chainInfo.currencyName}</span>
           </Coin>
         </SelectInput>
         <NormalFlexBox>
           <div>
             <Label>From</Label>
-            {getFromToCurrency(currency)}
+            {getFromToCurrency(chainInfoKey)}
           </div>
           <img src={require('@/assets/images/arrow.svg')} alt="" style={{ paddingTop: 50 }} />
           <div>
             <Label>To</Label>
-            {getFromToCurrency(currency === 'BSC' ? 'Ethereum' : 'BSC')}
+            {getFromToCurrency(chainInfoKey === 'BSC-testnet' ? 'Ropsent' : 'BSC-testnet')}
           </div>
         </NormalFlexBox>
         <Label>Receiving address</Label>
@@ -185,7 +181,7 @@ export default () => {
                   </Tooltip>
                 </FlexDiv>
                 <span>
-                  {divided_18(gasFee)} {get(currencyInfos, [currency, 'symbol'])}
+                  {divided_18(gasFee)} {chainInfo.symbol}
                 </span>
               </FlexDiv>
               <FlexDiv>
@@ -193,7 +189,7 @@ export default () => {
                   <div style={{ color: '#8B89A3' }}>Cross-chain fee</div>
                 </FlexDiv>
                 <span>
-                  {get(bridgeGasFee, [currency])} {get(currencyInfos, [currency, 'symbol'])}
+                  {get(bridgeGasFee, [chainInfoKey])} {chainInfo.symbol}
                 </span>
               </FlexDiv>
               <FlexDiv>

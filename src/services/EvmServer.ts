@@ -1,5 +1,5 @@
 import type { AddEthereumChainParameter } from '@/constants/ChainBridge.d';
-import type { CurrencyType } from '@/model/global';
+import type { ChainInfoKeysType } from '@/constants/chainInfos';
 import {
   PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
   PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS,
@@ -26,9 +26,9 @@ const EvmServer = {
     return await contract.methods.approve(approveAddress, amount).send(options);
   },
 
-  async bridge_gas_fee(currency: CurrencyType) {
+  async bridge_gas_fee(chainInfoKey: ChainInfoKeysType) {
     const contract =
-      currency === 'BSC'
+      chainInfoKey === 'BSC-testnet'
         ? getPledgerBridgeBSC(PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS)
         : getPledgerBridgeETH(PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS);
     return await contract.methods.bridge_gas_fee().call();
