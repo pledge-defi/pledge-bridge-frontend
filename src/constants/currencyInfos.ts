@@ -36,13 +36,13 @@ const currencyInfos: CurrencyInfos = {
     currencyName: 'PLGR',
     currencyImageAsset: require('@/assets/images/PLGR.svg'),
     chainId: 97,
-    symbol: 'tBNB',
+    symbol: 'BNB',
     netWorkInfo: {
       chainId: web3.utils.toHex(97),
       chainName: 'Binance Smart Chain Testnet',
       nativeCurrency: {
         name: 'BSC',
-        symbol: 'tBNB',
+        symbol: 'BNB',
         decimals: 18,
       },
       rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'],
