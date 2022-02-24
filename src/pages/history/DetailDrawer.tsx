@@ -1,9 +1,9 @@
 import { DetailCoin, DrawerTitle } from '@/components/styleComponents';
 import CloseIcon from '@/components/Svg/CloseIcon';
-import { chainInfoState } from '@/model/global';
+import chainInfos from '@/constants/chainInfos';
 import { Drawer, Progress, Steps } from 'antd';
+import { find } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
 import styled, { useTheme } from 'styled-components';
 import type { StatusType } from '.';
 import type { TransferredType } from '../typings';
@@ -38,14 +38,14 @@ type StepDetailProps = {
 };
 
 const StepDetail = ({ chainName, hash, status }: StepDetailProps) => {
-  const chainInfo = useRecoilValue(chainInfoState);
-  const cName = chainName === 'BSC' ? 'BSC' : 'Ethereum';
+  // 临时变量
+  const cName = chainName === 'BSC' ? 'BSC-testnet' : 'Ropsent';
   const preUrl =
     chainName === 'BSC' ? 'https://testnet.bscscan.com/tx/' : 'https://ropsten.etherscan.io/tx/';
   return (
     <StyleStepDetail>
       <DetailCoin>
-        <img src={chainInfo.chainImageAsset} alt="" height={'24px'} />
+        <img src={find(chainInfos, { chainName: cName })?.chainImageAsset} alt="" height={'24px'} />
         {cName}
       </DetailCoin>
       <div className="progress">

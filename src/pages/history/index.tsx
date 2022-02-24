@@ -80,7 +80,7 @@ const DetailCoinComponent = ({ chainName }: { chainName: string }) => {
         alt=""
         height={'24px'}
       />
-      {chainName === 'ETH' ? 'Ethereum' : chainName}
+      {chainName === 'BSC' ? 'BSC-testnet' : 'Ropsent'}
     </StyledDetailCoinComponent>
   );
 };
