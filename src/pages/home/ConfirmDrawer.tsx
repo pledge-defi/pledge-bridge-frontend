@@ -21,7 +21,7 @@ import { addTx } from '@/services/pledge/api/addTx';
 import { divided_18, multiplied_18 } from '@/utils/public';
 import { Button, Drawer } from 'antd';
 import { filter, find, get } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled, { useTheme } from 'styled-components';
@@ -85,6 +85,12 @@ const ConfirmDrawer = ({
     setVisible(false);
   };
 
+  const srcChain = useMemo(() => {
+    return transferredType === 'deposit'
+      ? chainInfoKey
+      : filter(chainInfoKeys, (c) => c !== chainInfoKey)[0];
+  }, [transferredType, chainInfoKey]);
+
   const handleClickTransferred = async () => {
     setTransferredLoading(true);
     try {
@@ -99,8 +105,8 @@ const ConfirmDrawer = ({
         asset: chainInfo.currencyName,
         txHash: get(data, 'transactionHash'),
         amount: +contractAmount!,
-        srcChain: chainInfoKey,
-        destChain: filter(chainInfoKeys, (c) => c !== chainInfoKey)[0],
+        srcChain,
+        destChain: filter(chainInfoKeys, (c) => c !== srcChain)[0],
       });
 
       history.push(`/history/${transferredType}/${account}`);
@@ -184,9 +190,9 @@ const ConfirmDrawer = ({
         {amount} {chainInfo.currencyName}
       </FontWeightBoldDiv>
       <Label>From</Label>
-      {getFromToCurrency(chainInfoKey)}
+      {getFromToCurrency(srcChain)}
       <Label>To</Label>
-      {getFromToCurrency(filter(chainInfoKeys, (c) => c !== chainInfoKey)[0])}
+      {getFromToCurrency(filter(chainInfoKeys, (c) => c !== srcChain)[0])}
       <Label>Receiving Address</Label>
       <BlackKey>{account}</BlackKey>
       <Label>Gas Fee</Label>

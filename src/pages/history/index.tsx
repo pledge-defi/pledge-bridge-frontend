@@ -191,10 +191,10 @@ const History = () => {
       const promiseAllArray: Promise<StatusType>[] = [];
       forEach(data, (d) => {
         const p = new Promise<StatusType>(async (resolve) => {
-          const { bridgeHash, depositHash, srcChain } = d;
+          const { bridgeHash, depositHash, srcChain, destChain } = d;
           const web3Url = find(chainInfos, {
             // 临时变量
-            chainName: srcChain,
+            chainName: type === 'deposit' ? srcChain : destChain,
           })?.web3Url;
           const bridgeStatus = !!bridgeHash;
           let transactionStatus = false;
