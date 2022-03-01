@@ -2,7 +2,7 @@ import { DetailCoin, DrawerTitle } from '@/components/styleComponents';
 import CloseIcon from '@/components/Svg/CloseIcon';
 import chainInfos from '@/constants/chainInfos';
 import { Drawer, Progress, Steps } from 'antd';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import { useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import type { StatusType } from '.';
@@ -38,15 +38,15 @@ type StepDetailProps = {
 };
 
 const StepDetail = ({ chainName, hash, status }: StepDetailProps) => {
-  // 临时变量
-  const cName = chainName === 'BSC' ? 'BSC-testnet' : 'Ropsent';
-  const preUrl =
-    chainName === 'BSC' ? 'https://testnet.bscscan.com/tx/' : 'https://ropsten.etherscan.io/tx/';
+  const netWorkInfo = find(chainInfos, { chainName })?.netWorkInfo;
+  const blockExplorerUrls = get(netWorkInfo, ['blockExplorerUrls', 0]);
+  const preUrl = `${blockExplorerUrls}/tx/`;
+
   return (
     <StyleStepDetail>
       <DetailCoin>
-        <img src={find(chainInfos, { chainName: cName })?.chainImageAsset} alt="" height={'24px'} />
-        {cName}
+        <img src={find(chainInfos, { chainName })?.chainImageAsset} alt="" height={'24px'} />
+        {chainName}
       </DetailCoin>
       <div className="progress">
         <Progress
@@ -160,8 +160,10 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
               <StyleStepDetail>
                 <Title>Finsh</Title>
                 <div style={{ color: '#4F4E66', fontSize: 14 }}>
-                  {detailData.srcChain === 'BSC' ? 'PLGR' : 'MPLGR'} is now deposited into the
-                  contract,please click withdraw to personal address
+                  {detailData.srcChain === 'BSC' || detailData.srcChain === 'BSC-testnet'
+                    ? 'PLGR'
+                    : 'MPLGR'}{' '}
+                  is now deposited into the contract,please click withdraw to personal address
                 </div>
               </StyleStepDetail>
             }

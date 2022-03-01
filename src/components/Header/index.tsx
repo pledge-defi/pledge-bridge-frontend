@@ -79,8 +79,9 @@ const Header = () => {
   useEffect(() => {
     if (chainId !== currentChainId && currentChainId === undefined) {
       setCurrentChainId(chainId);
-      const chainName = find(chainInfos, { chainId })?.chainName;
-      setChainInfoKey((chainName as ChainInfoKeysType) || 'BSC_Testnet');
+      const newChainInfo = find(chainInfos, { chainId });
+      setChainInfoKey((newChainInfo?.chainName as ChainInfoKeysType) || 'BSC_Testnet');
+      setChainInfo(newChainInfo!);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId]);

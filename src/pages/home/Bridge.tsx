@@ -14,7 +14,7 @@ import {
   TransformerItem,
 } from '@/components/styleComponents';
 import type { ChainInfoKeysType } from '@/constants/chainInfos';
-import chainInfos from '@/constants/chainInfos';
+import chainInfos, { chainInfoKeys } from '@/constants/chainInfos';
 import { useFetchBalance } from '@/hooks';
 import { balanceState, bridgeGasFeeState, chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
@@ -22,7 +22,7 @@ import { web3 } from '@/services/web3';
 import { divided_18, multiplied_18 } from '@/utils/public';
 import { useWeb3React } from '@web3-react/core';
 import { Button, Tooltip } from 'antd';
-import { find, get } from 'lodash';
+import { filter, find, get } from 'lodash';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import AmountInput from './AmountInput';
@@ -156,7 +156,7 @@ export default () => {
           <img src={require('@/assets/images/arrow.svg')} alt="" style={{ paddingTop: 50 }} />
           <div>
             <Label>To</Label>
-            {getFromToCurrency(chainInfoKey === 'BSC-testnet' ? 'Ropsent' : 'BSC-testnet')}
+            {getFromToCurrency(filter(chainInfoKeys, (c) => c !== chainInfoKey)[0])}
           </div>
         </NormalFlexBox>
         <Label>Receiving address</Label>

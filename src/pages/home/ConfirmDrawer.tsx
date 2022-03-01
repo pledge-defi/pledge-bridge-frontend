@@ -9,7 +9,7 @@ import {
 } from '@/components/styleComponents';
 import CloseIcon from '@/components/Svg/CloseIcon';
 import type { ChainInfoKeysType } from '@/constants/chainInfos';
-import chainInfos from '@/constants/chainInfos';
+import chainInfos, { chainInfoKeys } from '@/constants/chainInfos';
 import type {
   EstimateGasOptions,
   MethodPayableReturnContext,
@@ -20,7 +20,7 @@ import services from '@/services';
 import { addTx } from '@/services/pledge/api/addTx';
 import { divided_18, multiplied_18 } from '@/utils/public';
 import { Button, Drawer } from 'antd';
-import { find, get } from 'lodash';
+import { filter, find, get } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -98,7 +98,9 @@ const ConfirmDrawer = ({
         txType: transferredType === 'deposit' ? 0 : 1,
         asset: chainInfo.currencyName,
         txHash: get(data, 'transactionHash'),
-        amount: contractAmount,
+        amount: +contractAmount!,
+        srcChain: chainInfoKey,
+        destChain: filter(chainInfoKeys, (c) => c !== chainInfoKey)[0],
       });
 
       history.push(`/history/${transferredType}/${account}`);
@@ -184,7 +186,7 @@ const ConfirmDrawer = ({
       <Label>From</Label>
       {getFromToCurrency(chainInfoKey)}
       <Label>To</Label>
-      {getFromToCurrency(chainInfoKey === 'BSC-testnet' ? 'Ropsent' : chainInfoKey)}
+      {getFromToCurrency(filter(chainInfoKeys, (c) => c !== chainInfoKey)[0])}
       <Label>Receiving Address</Label>
       <BlackKey>{account}</BlackKey>
       <Label>Gas Fee</Label>

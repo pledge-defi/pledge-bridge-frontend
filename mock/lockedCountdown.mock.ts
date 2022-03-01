@@ -4,8 +4,8 @@ import { Request, Response } from 'express';
 export default {
   'POST /lockedCountdown': (req: Request, res: Response) => {
     res.status(200).send({
-      time: '天育万提委应合心重况改龙油为。',
-      timestamp: '干究将界要当便话所作化品报持术过斗展。',
+      time: '细关际九压使办民点联手条。',
+      timestamp: '如集合可还观马意连主前层构备即风。',
     });
   },
 };

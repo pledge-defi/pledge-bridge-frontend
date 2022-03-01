@@ -29,17 +29,18 @@ declare namespace API {
     amount?: string;
     fee?: string;
     time?: string;
-    timestamp?: string;
-    status?: boolean;
+    status?: string;
     depositHash?: string;
     bridgeHash?: string;
   };
 
   type AddTxRequest = {
+    srcChain?: string;
+    destChain?: string;
     address?: string;
     txType?: number;
     asset?: string;
     txHash?: string;
-    amount?: string;
+    amount?: number;
   };
 }

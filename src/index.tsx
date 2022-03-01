@@ -5,6 +5,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { RecoilRoot } from 'recoil';
 require('./global.less');
+console.log(process.env.NODE_ENV);
 
 function getLibrary(provider: any) {
   const library = new Web3Provider(provider);

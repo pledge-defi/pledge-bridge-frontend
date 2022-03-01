@@ -74,13 +74,13 @@ const DetailCoinComponent = ({ chainName }: { chainName: string }) => {
         src={
           find(chainInfos, {
             // 临时变量
-            chainName: chainName === 'BSC' ? 'BSC-testnet' : 'Ropsent',
+            chainName,
           })?.chainImageAsset
         }
         alt=""
         height={'24px'}
       />
-      {chainName === 'BSC' ? 'BSC-testnet' : 'Ropsent'}
+      {chainName}
     </StyledDetailCoinComponent>
   );
 };
@@ -194,7 +194,7 @@ const History = () => {
           const { bridgeHash, depositHash, srcChain } = d;
           const web3Url = find(chainInfos, {
             // 临时变量
-            chainName: srcChain === 'BSC' ? 'BSC-testnet' : 'Ropsent',
+            chainName: srcChain,
           })?.web3Url;
           const bridgeStatus = !!bridgeHash;
           let transactionStatus = false;
@@ -205,7 +205,7 @@ const History = () => {
             transactionStatus = !!transactionReceipt?.status;
           }
           const status =
-            type === 'deposit' && d.srcChain === 'BSC'
+            type === 'deposit' && (d.srcChain === 'BSC' || d.srcChain === 'BSC-testnet')
               ? transactionStatus && bridgeStatus
               : transactionStatus;
 

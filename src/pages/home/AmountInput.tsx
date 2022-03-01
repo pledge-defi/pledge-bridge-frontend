@@ -64,6 +64,7 @@ type AmountInputProps = React.DetailedHTMLProps<
 const AmountInput = ({ onClickMax, ...inputProps }: AmountInputProps) => {
   const [chainInfoKey, setChainInfoKey] = useRecoilState(chainInfoKeyState);
   const [chainInfo, setChainInfo] = useRecoilState(chainInfoState);
+  console.log(chainInfo);
 
   const handleChangeCurrency = async (v: any) => {
     const newChainInfo = find(chainInfos, { chainName: v });

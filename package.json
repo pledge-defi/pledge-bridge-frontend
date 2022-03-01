@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "mock": "node ./config/mockServer.js",
-    "build": "yarn rmdist && webpack --config ./config/webpack.prod.js",
-    "build:dev": "webpack --config ./config/webpack.dev.js",
+    "build": "yarn rmdist && webpack --config ./config/webpack.build.dev.js",
+    "build:p": "yarn rmdist && webpack --config ./config/webpack.build.prod.js",
     "start": "webpack serve --config ./config/webpack.dev.js",
     "start:prod": "cross-env NODE_ENV=production webpack serve --config ./config/webpack.dev.js",
     "analyze": "webpack --profile --json > stats.json --config ./config/webpack.prod.js && webpack-bundle-analyzer stats.json",
