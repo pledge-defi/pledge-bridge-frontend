@@ -15,7 +15,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Button } from 'antd';
 import { get } from 'lodash';
 import numeral from 'numeral';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import AmountInput from './AmountInput';
@@ -181,17 +181,17 @@ export default () => {
     setApproveLoading(false);
   };
 
-  const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
-    setAmount(v.target.value);
+  const handleChangeInput = (v: string | undefined) => {
+    setAmount(v);
   };
 
-  const handleClickMax = () => {
+  const maxAmount = useMemo(() => {
     if (chainInfoKey === 'BSC-testnet') {
-      setAmount(plgrAmounts);
+      return plgrAmounts;
     } else {
-      setAmount(mplgrAmounts);
+      return mplgrAmounts;
     }
-  };
+  }, [chainInfoKey, mplgrAmounts, plgrAmounts]);
 
   useEffect(() => {
     setAmount('');
@@ -266,8 +266,8 @@ export default () => {
         <Label>Amount</Label>
         <AmountInput
           // placeholder={`Minimum amount is 0.1 chainInfo.currencyName}`}
+          maxAmount={maxAmount}
           onChange={handleChangeInput}
-          onClickMax={handleClickMax}
           value={amount}
         />
         <Balance />

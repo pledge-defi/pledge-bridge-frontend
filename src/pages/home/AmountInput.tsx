@@ -2,7 +2,8 @@ import { Coin, InputDiv } from '@/components/styleComponents';
 import chainInfos from '@/constants/chainInfos';
 import { chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
-import { Dropdown, Menu } from 'antd';
+import { useDebounceEffect } from 'ahooks';
+import { Dropdown, Menu, message } from 'antd';
 import { find, map } from 'lodash';
 import React from 'react';
 import { useRecoilState } from 'recoil';
@@ -54,17 +55,17 @@ const StyleAmountInput = styled(InputDiv)`
   }
 `;
 
-type AmountInputProps = React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
+type AmountInputProps = Omit<
+  React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+  'onChange'
 > & {
-  onClickMax?: () => void;
+  onChange: (e?: string) => void;
+  maxAmount?: string;
 };
 
-const AmountInput = ({ onClickMax, ...inputProps }: AmountInputProps) => {
+const AmountInput = ({ maxAmount, onChange, ...inputProps }: AmountInputProps) => {
   const [chainInfoKey, setChainInfoKey] = useRecoilState(chainInfoKeyState);
   const [chainInfo, setChainInfo] = useRecoilState(chainInfoState);
-  console.log(chainInfo);
 
   const handleChangeCurrency = async (v: any) => {
     const newChainInfo = find(chainInfos, { chainName: v });
@@ -73,6 +74,26 @@ const AmountInput = ({ onClickMax, ...inputProps }: AmountInputProps) => {
     setChainInfoKey(v);
     setChainInfo(newChainInfo!);
   };
+
+  const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (e) => {
+    onChange(e.target.value);
+  };
+
+  const handleClickMax = () => {
+    onChange(maxAmount);
+  };
+
+  useDebounceEffect(
+    () => {
+      if (!!maxAmount && (inputProps.value as string) > maxAmount) {
+        message.warning('Insufficient MPLGR balance');
+      }
+    },
+    [inputProps.value],
+    {
+      wait: 500,
+    },
+  );
 
   const coinElement = () => {
     return (
@@ -107,9 +128,9 @@ const AmountInput = ({ onClickMax, ...inputProps }: AmountInputProps) => {
 
   return (
     <StyleAmountInput>
-      <input type="text" {...inputProps} />
+      <input type="text" {...inputProps} onChange={handleChangeInput} />
       <div>
-        <div className="max" onClick={onClickMax}>
+        <div className="max" onClick={handleClickMax}>
           Max
         </div>
         {coinElement()}

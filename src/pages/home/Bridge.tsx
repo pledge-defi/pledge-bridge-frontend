@@ -104,13 +104,8 @@ export default () => {
     setApproveLoading(false);
   };
 
-  const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (v) => {
-    const value = v.target.value;
-    setAmount(value);
-  };
-
-  const handleClickMax = () => {
-    setAmount(get(balance, [chainInfoKey]));
+  const handleChangeInput = (v: string | undefined) => {
+    setAmount(v);
   };
 
   useEffect(() => {
@@ -164,7 +159,11 @@ export default () => {
           {account && <Key>{`${account?.slice(0, 8)}···${account?.slice(-6)}`}</Key>}
         </GreyBackgroundDiv>
         <Label>Amount</Label>
-        <AmountInput onChange={handleChangeInput} onClickMax={handleClickMax} value={amount} />
+        <AmountInput
+          onChange={handleChangeInput}
+          maxAmount={get(balance, [chainInfoKey])}
+          value={amount}
+        />
         <Balance />
         {gasFee && (
           <GreyBackgroundDiv height="118px">

@@ -77,6 +77,7 @@
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/network-connector": "^6.1.9",
+    "ahooks": "^3.1.13",
     "antd": "^4.16.7",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
