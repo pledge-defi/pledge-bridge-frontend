@@ -86,7 +86,7 @@ const AmountInput = ({ maxAmount, onChange, ...inputProps }: AmountInputProps) =
   useDebounceEffect(
     () => {
       if (!!maxAmount && (inputProps.value as string) > maxAmount) {
-        message.warning('Insufficient MPLGR balance');
+        message.warning('Insufficient balance');
       }
     },
     [inputProps.value],
