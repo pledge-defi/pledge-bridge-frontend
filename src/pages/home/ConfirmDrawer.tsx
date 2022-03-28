@@ -14,7 +14,7 @@ import type {
   EstimateGasOptions,
   MethodPayableReturnContext,
   SendOptions,
-} from '@/contracts/newERC20';
+} from '@/contracts/NewERC20';
 import { bridgeGasFeeState, chainInfoKeyState, chainInfoState } from '@/model/global';
 import services from '@/services';
 import { addTx } from '@/services/pledge/api/addTx';
@@ -101,12 +101,10 @@ const ConfirmDrawer = ({
       const contractAmount = multiplied_18(amount!);
       await addTx({
         address: account as string,
-        txType: transferredType === 'deposit' ? 0 : 1,
+        txType: transferredType === 'deposit' ? '0' : '1',
         asset: chainInfo.currencyName,
         txHash: get(data, 'transactionHash'),
-        amount: +contractAmount!,
-        srcChain,
-        destChain: filter(chainInfoKeys, (c) => c !== srcChain)[0],
+        amount: contractAmount,
       });
 
       history.push(`/history/${transferredType}/${account}`);

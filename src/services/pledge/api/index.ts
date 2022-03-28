@@ -5,8 +5,10 @@
 import * as lockedCountdown from './lockedCountdown';
 import * as txsHistory from './txsHistory';
 import * as addTx from './addTx';
+import * as userAssets from './userAssets';
 export default {
   lockedCountdown,
   txsHistory,
   addTx,
+  userAssets,
 };

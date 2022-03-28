@@ -178,7 +178,7 @@ const History = () => {
   const { type, account } = useParams<{ type: TransferredType; account: string }>();
   const [conditionData, setConditionData] = useState<API.TxsHistoryRequest>({
     ...initialPageSetting,
-    txType: type === 'deposit' ? 0 : 1,
+    txType: type === 'deposit' ? '0' : '1',
     address: account,
   });
   const [{ count = 0, rows = [] }, setData] = useState<API.HistoryData>({});
@@ -255,7 +255,7 @@ const History = () => {
       return [
         {
           title: 'Source Chain',
-          dataIndex: 'srcChain',
+          dataIndex: 'src_chain',
           render: (t, r) => {
             return <HisotryMobileCardItem {...r} />;
           },
@@ -265,14 +265,14 @@ const History = () => {
     return [
       {
         title: 'Source Chain',
-        dataIndex: 'srcChain',
+        dataIndex: 'src_chain',
         render: (t: 'BSC' | 'ETH') => {
           return <DetailCoinComponent chainName={t} />;
         },
       },
       {
         title: 'Destination Chain',
-        dataIndex: 'destChain',
+        dataIndex: 'dest_chain',
         render: (t) => {
           return <DetailCoinComponent chainName={t} />;
         },
@@ -295,7 +295,7 @@ const History = () => {
       },
       {
         title: 'Time',
-        dataIndex: 'timestamp',
+        dataIndex: 'created_at',
         render: (t) => moment.unix(+t).format(FORMAT_TIME_STANDARD),
       },
       {
@@ -322,6 +322,7 @@ const History = () => {
         ...statusData?.[index],
       }));
     }
+    console.log(rows);
     return rows;
   }, [rows, statusData]);
 

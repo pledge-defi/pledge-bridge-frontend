@@ -85,7 +85,7 @@ const AmountInput = ({ maxAmount, onChange, ...inputProps }: AmountInputProps) =
 
   useDebounceEffect(
     () => {
-      if (!!maxAmount && (inputProps.value as string) > maxAmount) {
+      if (!!maxAmount && (Number(inputProps.value) as number) > Number(maxAmount)) {
         message.warning('Insufficient balance');
       }
     },

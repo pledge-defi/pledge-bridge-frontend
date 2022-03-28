@@ -1,5 +1,5 @@
 import type { Erc20 } from '@/contracts/Erc20';
-import type { NewERC20 } from '@/contracts/newERC20';
+import type { NewERC20 } from '@/contracts/NewERC20';
 import type { PledgerBridgeBSC } from '@/contracts/PledgerBridgeBSC';
 import type { PledgerBridgeETH } from '@/contracts/PledgerBridgeETH';
 import { ethers } from 'ethers';

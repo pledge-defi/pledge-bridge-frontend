@@ -22,6 +22,7 @@ import AmountInput from './AmountInput';
 import Balance from './Balance';
 import ConfirmDrawer from './ConfirmDrawer';
 import LinkToHistory from './LinkToHistory';
+import { userAssets } from '@/services/pledge/api/userAssets';
 
 const WithdrawBar = styled.div`
   margin: 30px 0;
@@ -106,7 +107,7 @@ export default () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fetchAndSetCountDown = async () => {
     const result = await lockedCountdown();
-    const newCountDown = get(result, ['timestamp'], 0);
+    const newCountDown = get(result, 'data.timestamp', 0);
     if (newCountDown) {
       setCountdown(newCountDown);
     }
@@ -114,25 +115,33 @@ export default () => {
 
   const fetchInitalData = async () => {
     try {
-      const newMplgrAmounts = await services.evmServer.mplgr_amounts(account!);
-      setMplgrAmounts(divided_18(newMplgrAmounts));
+      const response = await userAssets({ token: account });
+      setLockedPlgr(divided_18(get(response, 'data.locked_plgr', 'amount')));
+      setPlgrAmounts(divided_18(get(response, 'data.plgr_can_withdraw')));
+      setMplgrAmounts(divided_18(get(response, 'data.mplgr_can_withdraw')));
     } catch (error) {
       console.log(error);
     }
+    // try {
+    //   const newMplgrAmounts = await services.evmServer.mplgr_amounts(account!);
+    //   setMplgrAmounts(divided_18(newMplgrAmounts));
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
-    try {
-      const newPlgrAmounts = await services.evmServer.plgr_amounts(account!);
-      setPlgrAmounts(divided_18(newPlgrAmounts));
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   const newPlgrAmounts = await services.evmServer.plgr_amounts(account!);
+    //   setPlgrAmounts(divided_18(newPlgrAmounts));
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
-    try {
-      const locked_plgr_tx = await services.evmServer.locked_plgr_tx(account!);
-      setLockedPlgr(divided_18(get(locked_plgr_tx, 'amount')));
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   const locked_plgr_tx = await services.evmServer.locked_plgr_tx(account!);
+    //   setLockedPlgr(divided_18(get(locked_plgr_tx, 'amount')));
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
     try {
       const newTotalTransferAmount = await services.evmServer.totalTransferAmount();
