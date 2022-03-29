@@ -105,6 +105,7 @@ const ConfirmDrawer = ({
         asset: chainInfo.currencyName,
         txHash: get(data, 'transactionHash'),
         amount: contractAmount,
+        fee: String(get(data, 'gasUsed')),
       });
 
       history.push(`/history/${transferredType}/${account}`);

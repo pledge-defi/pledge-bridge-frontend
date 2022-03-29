@@ -23,15 +23,15 @@ declare namespace API {
   };
 
   type HistoryDetail = {
-    srcChain?: string;
-    destChain?: string;
+    src_chain?: string;
+    dest_chain?: string;
     asset?: string;
     amount?: string;
     fee?: string;
-    time?: string;
-    status?: string;
-    depositHash?: string;
-    bridgeHash?: string;
+    created_at?: string;
+    status?: string | boolean;
+    deposit_hash?: string;
+    bridge_hash?: string;
   };
 
   type AddTxRequest = {
@@ -42,6 +42,7 @@ declare namespace API {
     asset?: string;
     txHash?: string;
     amount?: string;
+    fee?: string;
   };
 
   type userAssets = {

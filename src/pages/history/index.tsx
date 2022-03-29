@@ -1,7 +1,7 @@
 import { DetailCoin } from '@/components/styleComponents';
 import chainInfos from '@/constants/chainInfos';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
-import { FORMAT_TIME_MOBILE, FORMAT_TIME_STANDARD } from '@/utils/constants';
+import { FORMAT_TIME_SIMPLE } from '@/utils/constants';
 import { divided_18, numeralStandardFormat_8 } from '@/utils/public';
 import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
@@ -126,26 +126,26 @@ const StyledHisotryMobileCardItem = styled.div`
 `;
 
 const HisotryMobileCardItem = ({
-  srcChain,
-  destChain,
+  src_chain,
+  dest_chain,
   asset,
   amount,
-  timestamp,
+  created_at,
   fee,
   status,
-}: API.HistoryDetail & StatusType) => {
+}: RowType) => {
   return (
     <StyledHisotryMobileCardItem>
       <div>
-        <div className="time">{moment.unix(+timestamp!).format(FORMAT_TIME_MOBILE)}</div>
+        <div className="time">{moment(created_at!).format(FORMAT_TIME_SIMPLE)}</div>
         <StyleStatus status={!!status}>{!!status ? 'Complete' : 'Processing'}</StyleStatus>
       </div>
       <div>
-        <DetailCoinComponent chainName={srcChain!} />
+        <DetailCoinComponent chainName={src_chain!} />
         <div className="arrow">
           <img src={require('@/assets/images/arrow_mobile.svg')} alt="" />
         </div>
-        <DetailCoinComponent chainName={destChain!} />
+        <DetailCoinComponent chainName={dest_chain!} />
       </div>
       <div>
         <LabelItem textAlign="left">
@@ -158,7 +158,7 @@ const HisotryMobileCardItem = ({
         </LabelItem>
         <LabelItem textAlign="right">
           <div className="name">Fee</div>
-          <div className="value">{numeralStandardFormat_8(fee)}</div>
+          <div className="value">{fee | 0}</div>
         </LabelItem>
       </div>
     </StyledHisotryMobileCardItem>
@@ -166,6 +166,7 @@ const HisotryMobileCardItem = ({
 };
 
 export type StatusType = { transactionStatus: boolean; bridgeStatus: boolean; status: boolean };
+export type RowType = API.HistoryDetail & StatusType;
 
 const initialPageSetting = {
   page: 1,
@@ -191,34 +192,40 @@ const History = () => {
       const promiseAllArray: Promise<StatusType>[] = [];
       forEach(data, (d) => {
         const p = new Promise<StatusType>(async (resolve) => {
-          const { bridgeHash, depositHash, srcChain, destChain } = d;
+          const { bridge_hash, deposit_hash, src_chain, dest_chain } = d;
+          console.log(d);
           const web3Url = find(chainInfos, {
             // 临时变量
-            chainName: type === 'deposit' ? srcChain : destChain,
+            chainName: type === 'deposit' ? src_chain : dest_chain,
           })?.web3Url;
-          const bridgeStatus = !!bridgeHash;
+          const bridgeStatus = !!bridge_hash;
           let transactionStatus = false;
-          if (depositHash) {
-            const transactionReceipt = await new Web3(web3Url!).eth.getTransactionReceipt(
-              depositHash!,
-            );
-            transactionStatus = !!transactionReceipt?.status;
+          if (deposit_hash) {
+            (async () => {
+              const transactionReceipt = await new Web3(web3Url!).eth.getTransactionReceipt(
+                deposit_hash!,
+              );
+              transactionStatus = !!transactionReceipt?.status;
+            })();
           }
           const status =
-            type === 'deposit' && (d.srcChain === 'BSC' || d.srcChain === 'BSC-testnet')
+            type === 'deposit' && (d.src_chain === 'BSC' || d.src_chain === 'BSC-testnet')
               ? transactionStatus && bridgeStatus
               : transactionStatus;
-
+          console.log(transactionStatus, bridgeStatus, status);
           resolve({
             transactionStatus,
             bridgeStatus,
             status,
           });
         });
+        console.log(p);
         promiseAllArray.push(p);
       });
       setLoading(true);
+      console.log(1 + 'jinlaile', promiseAllArray);
       const res = await Promise.all(promiseAllArray);
+      console.log(1);
       setLoading(false);
       setStatusData(res);
     }
@@ -226,7 +233,9 @@ const History = () => {
 
   const fetchData = async () => {
     setLoading(true);
+    console.log(2 + 'jinlaiule');
     const response = await txsHistory(conditionData);
+    console.log(2);
     setLoading(false);
     if (response) {
       setData(response.data || {});
@@ -250,7 +259,7 @@ const History = () => {
     );
   };
 
-  const columns: ColumnsType<API.HistoryDetail & StatusType> = useMemo(() => {
+  const columns: ColumnsType<RowType> = useMemo(() => {
     if (theme.breakpointChecks.isMobile) {
       return [
         {
@@ -290,13 +299,13 @@ const History = () => {
         title: 'Fee',
         dataIndex: 'fee',
         render: (t) => {
-          return numeralStandardFormat_8(t);
+          return t | 0;
         },
       },
       {
         title: 'Time',
         dataIndex: 'created_at',
-        render: (t) => moment.unix(+t).format(FORMAT_TIME_STANDARD),
+        render: (t) => moment(t).format(FORMAT_TIME_SIMPLE),
       },
       {
         title: 'Status',
@@ -315,7 +324,7 @@ const History = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionData]);
 
-  const dataSource: (API.HistoryDetail & StatusType)[] = useMemo(() => {
+  const dataSource: RowType[] = useMemo(() => {
     if (size(statusData)) {
       return map(rows, (r, index) => ({
         ...r,

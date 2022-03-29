@@ -11,4 +11,6 @@ export const PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS = '0xae120367a2b2985d1e43965b10
 /** 标准时间格式 YYYY-MM-DD HH:mm:ss  2021-06-30 00:00:00 */
 export const FORMAT_TIME_STANDARD = 'YYYY-MM-DD HH:mm:ss';
 
+export const FORMAT_TIME_SIMPLE = 'YYYY-MM-DD';
+
 export const FORMAT_TIME_MOBILE = 'YYYY/MM/DD HH:mm:ss';
