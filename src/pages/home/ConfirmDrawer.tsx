@@ -100,6 +100,8 @@ const ConfirmDrawer = ({
       // await services.evmServer.execute_upkeep();
       const contractAmount = multiplied_18(amount!);
       await addTx({
+        src_chain: srcChain,
+        dest_chain: filter(chainInfoKeys, (c) => c !== srcChain)[0],
         address: account as string,
         txType: transferredType === 'deposit' ? '0' : '1',
         asset: chainInfo.currencyName,

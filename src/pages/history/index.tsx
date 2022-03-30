@@ -158,7 +158,7 @@ const HisotryMobileCardItem = ({
         </LabelItem>
         <LabelItem textAlign="right">
           <div className="name">Fee</div>
-          <div className="value">{fee | 0}</div>
+          <div className="value">{fee}</div>
         </LabelItem>
       </div>
     </StyledHisotryMobileCardItem>
@@ -193,7 +193,6 @@ const History = () => {
       forEach(data, (d) => {
         const p = new Promise<StatusType>(async (resolve) => {
           const { bridge_hash, deposit_hash, src_chain, dest_chain } = d;
-          console.log(d);
           const web3Url = find(chainInfos, {
             // 临时变量
             chainName: type === 'deposit' ? src_chain : dest_chain,
@@ -201,31 +200,25 @@ const History = () => {
           const bridgeStatus = !!bridge_hash;
           let transactionStatus = false;
           if (deposit_hash) {
-            (async () => {
-              const transactionReceipt = await new Web3(web3Url!).eth.getTransactionReceipt(
-                deposit_hash!,
-              );
-              transactionStatus = !!transactionReceipt?.status;
-            })();
+            const transactionReceipt = await new Web3(web3Url!).eth.getTransactionReceipt(
+              deposit_hash!,
+            );
+            transactionStatus = !!transactionReceipt?.status;
           }
           const status =
             type === 'deposit' && (d.src_chain === 'BSC' || d.src_chain === 'BSC-testnet')
               ? transactionStatus && bridgeStatus
               : transactionStatus;
-          console.log(transactionStatus, bridgeStatus, status);
           resolve({
             transactionStatus,
             bridgeStatus,
             status,
           });
         });
-        console.log(p);
         promiseAllArray.push(p);
       });
       setLoading(true);
-      console.log(1 + 'jinlaile', promiseAllArray);
       const res = await Promise.all(promiseAllArray);
-      console.log(1);
       setLoading(false);
       setStatusData(res);
     }
@@ -233,9 +226,7 @@ const History = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    console.log(2 + 'jinlaiule');
     const response = await txsHistory(conditionData);
-    console.log(2);
     setLoading(false);
     if (response) {
       setData(response.data || {});
@@ -331,7 +322,7 @@ const History = () => {
         ...statusData?.[index],
       }));
     }
-    console.log(rows);
+    // console.log(rows);
     return rows;
   }, [rows, statusData]);
 

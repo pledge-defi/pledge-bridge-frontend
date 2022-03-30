@@ -35,8 +35,8 @@ declare namespace API {
   };
 
   type AddTxRequest = {
-    srcChain?: string;
-    destChain?: string;
+    src_chain?: string;
+    dest_chain?: string;
     address?: string;
     txType?: string;
     asset?: string;

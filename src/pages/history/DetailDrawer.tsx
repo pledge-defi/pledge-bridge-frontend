@@ -86,8 +86,8 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
         title={
           <StepDetail
             status={statusType.transactionStatus}
-            chainName={type === 'deposit' ? detailData.srcChain : detailData.destChain}
-            hash={detailData.depositHash}
+            chainName={type === 'deposit' ? detailData.src_chain : detailData.dest_chain}
+            hash={detailData.deposit_hash}
           />
         }
       />,
@@ -160,7 +160,7 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
               <StyleStepDetail>
                 <Title>Finsh</Title>
                 <div style={{ color: '#4F4E66', fontSize: 14 }}>
-                  {detailData.srcChain === 'BSC' || detailData.srcChain === 'BSC-testnet'
+                  {detailData.src_chain === 'BSC' || detailData.src_chain === 'BSC-testnet'
                     ? 'PLGR'
                     : 'MPLGR'}{' '}
                   is now deposited into the contract,please click withdraw to personal address
