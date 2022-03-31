@@ -153,7 +153,7 @@ export default () => {
 
   const resetState = () => {
     setAmount('');
-    fetchInitalData();
+    // fetchInitalData();
     fetchBalance();
   };
 

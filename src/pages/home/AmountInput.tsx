@@ -76,7 +76,6 @@ const AmountInput = ({ maxAmount, onChange, ...inputProps }: AmountInputProps) =
   };
 
   const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (e) => {
-    console.log(e.target.value);
     onChange(e.target.value);
   };
 
