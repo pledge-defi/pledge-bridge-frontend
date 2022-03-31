@@ -83,6 +83,7 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
     const bridgeStatus = statusType.bridgeStatus;
     const steps = [
       <Step
+        key="hash"
         title={
           <StepDetail
             status={statusType.transactionStatus}
@@ -92,6 +93,7 @@ const DetailDrawer = ({ type, detailData, statusType, account }: DetailDrawerPro
         }
       />,
       <Step
+        key="hash"
         title={
           <StyleStepDetail>
             <DetailCoin>

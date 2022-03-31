@@ -8,6 +8,7 @@ import { find, map } from 'lodash';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
+import { Input } from 'antd';
 
 const StyleAmountInput = styled(InputDiv)`
   display: flex;
@@ -66,7 +67,6 @@ type AmountInputProps = Omit<
 const AmountInput = ({ maxAmount, onChange, ...inputProps }: AmountInputProps) => {
   const [chainInfoKey, setChainInfoKey] = useRecoilState(chainInfoKeyState);
   const [chainInfo, setChainInfo] = useRecoilState(chainInfoState);
-
   const handleChangeCurrency = async (v: any) => {
     const newChainInfo = find(chainInfos, { chainName: v });
     const netWorkInfo = newChainInfo?.netWorkInfo;
@@ -76,6 +76,7 @@ const AmountInput = ({ maxAmount, onChange, ...inputProps }: AmountInputProps) =
   };
 
   const handleChangeInput: React.InputHTMLAttributes<HTMLInputElement>['onChange'] = (e) => {
+    console.log(e.target.value);
     onChange(e.target.value);
   };
 
@@ -128,7 +129,12 @@ const AmountInput = ({ maxAmount, onChange, ...inputProps }: AmountInputProps) =
 
   return (
     <StyleAmountInput>
-      <input type="text" {...inputProps} onChange={handleChangeInput} />
+      {/* <input type="text" {...inputProps} onChange={handleChangeInput} /> */}
+      <Input
+        style={{ width: '100%', padding: '0' }}
+        onChange={handleChangeInput}
+        bordered={false}
+      />
       <div>
         <div className="max" onClick={handleClickMax}>
           Max

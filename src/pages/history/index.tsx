@@ -340,6 +340,7 @@ const History = () => {
             current: conditionData.page,
           }}
           dataSource={dataSource}
+          rowKey="deposit_hash"
           columns={columns}
           onRow={(r) => {
             const { transactionStatus, bridgeStatus, status, ...detail } = r;
