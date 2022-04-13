@@ -4,6 +4,7 @@ import {
   PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
   PLEDGER_BRIDGE_ETH_CONTRACT_ADDRESS,
   PLGR_CONTRACT_ADDRESS,
+  INFURA_KEY,
 } from '@/utils/constants';
 import { filter, map } from 'lodash';
 import type { AddEthereumChainParameter } from './ChainBridge.d';
@@ -64,10 +65,10 @@ const chainInfos = [
         symbol: 'ETH',
         decimals: 18,
       },
-      rpcUrls: ['https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+      rpcUrls: [`https://ropsten.infura.io/v3/${INFURA_KEY}`],
       blockExplorerUrls: ['https://ropsten.etherscan.io'],
     },
-    web3Url: 'https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+    web3Url: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
   },
   {
     chainName: 'BSC',
@@ -81,7 +82,7 @@ const chainInfos = [
     pledgerBridgeContractAddress: PLEDGER_BRIDGE_BSC_CONTRACT_ADDRESS,
     netWorkInfo: {
       chainId: web3.utils.toHex(56),
-      chainName: 'Binance Smart Chain Testnet',
+      chainName: 'Binance',
       nativeCurrency: {
         name: 'BSC',
         symbol: 'BNB',
@@ -110,10 +111,10 @@ const chainInfos = [
         symbol: 'ETH',
         decimals: 18,
       },
-      rpcUrls: ['https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+      rpcUrls: [`https://mainnet.infura.io/v3/${INFURA_KEY}`],
       blockExplorerUrls: ['https://etherscan.io'],
     },
-    web3Url: 'https://mainnet.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+    web3Url: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
   },
 ] as const;
 

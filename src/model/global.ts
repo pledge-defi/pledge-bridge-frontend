@@ -15,6 +15,11 @@ export const chainInfoState = atom<ChainInfo>({
   default: defaultChain,
 });
 
+export const walletModalOpen = atom<boolean>({
+  key: 'walletModalOpen',
+  default: false,
+});
+
 const getDefualt = () => {
   const newObject = {};
   forEach(chainInfoKeys, (c) => (newObject[c] = ''));

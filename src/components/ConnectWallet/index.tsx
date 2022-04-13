@@ -1,4 +1,6 @@
-import ChainBridge from '@/constants/ChainBridge';
+// import ChainBridge from '@/constants/ChainBridge';
+import { chainInfoState, walletModalOpen } from '@/model/global';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import services from '@/services';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import type { InjectedConnector } from '@web3-react/injected-connector';
@@ -9,6 +11,8 @@ import { injected } from './connector';
 import { useEagerConnect, useInactiveListener } from './WalletHooks';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { HeaderBox } from '../styleComponents';
+import WalletModal from '../WalletModal';
+// import { modal } from
 
 const WalletInfo = styled.div`
   width: 160px;
@@ -70,21 +74,23 @@ export interface IConnectWallet {}
 
 const ConnectWallet: React.FC<IConnectWallet> = () => {
   const triedEager = useEagerConnect();
+  const chainInfo = useRecoilValue(chainInfoState);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { connector, chainId, account, activate, deactivate, error } = useWeb3React();
   const [activatingConnector, setActivatingConnector] = useState<InjectedConnector>();
+
+  const setWalletModalOpen = useSetRecoilState(walletModalOpen);
 
   async function activatingConnectorFn() {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
     } else {
       if (error instanceof UnsupportedChainIdError) {
-        console.log(error);
-        const fraNetworkDefault = ChainBridge.chains
-          .filter((item) => item.type === 'Ethereum')
-          .find((item) => item.networkId === 525);
+        // const fraNetworkDefault = ChainBridge.chains
+        //   .filter((item) => item.type === 'Ethereum')
+        //   .find((item) => item.networkId === 525);
         try {
-          await services.evmServer.switchNetwork(fraNetworkDefault);
+          await services.evmServer.switchNetwork(chainInfo.netWorkInfo);
         } catch {
           notification.warning({
             message: error?.name,
@@ -105,16 +111,16 @@ const ConnectWallet: React.FC<IConnectWallet> = () => {
   const connected = injected === connector;
   // const disabled = !triedEager || !!activatingConnector || !!error;
   const isDisconnect = !error && chainId;
-
   useInactiveListener(!triedEager || !!activatingConnector);
 
   function handleOnCLickConnectWallet() {
-    if (!isDisconnect) {
-      setActivatingConnector(injected);
-      activate(injected);
-    } else {
-      // deactivate();
-    }
+    setWalletModalOpen(true);
+    // if (!isDisconnect) {
+    //   setActivatingConnector(injected);
+    //   activate(injected);
+    // } else {
+    //   // deactivate();
+    // }
   }
 
   function ButtonSwitchComponent() {
@@ -153,7 +159,11 @@ const ConnectWallet: React.FC<IConnectWallet> = () => {
       return <WalletNoConnected>Connecting</WalletNoConnected>;
     }
     return (
-      <WalletNoConnected onClick={handleOnCLickConnectWallet}>Connect Wallet</WalletNoConnected>
+      <>
+        <WalletNoConnected onClick={handleOnCLickConnectWallet}>Connect Wallet</WalletNoConnected>
+        <WalletModal />
+        {/* {!!error?<WalletNoConnected>Wrong Network</WalletNoConnected>:<WalletNoConnected onClick={handleOnCLickConnectWallet}>Connect Wallet</WalletNoConnected>} */}
+      </>
     );
   }
   return <>{ButtonSwitchComponent()}</>;
