@@ -23,6 +23,8 @@ const OptionCard = styled(InfoCard as any)`
 `;
 
 const OptionCardLeft = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
   justify-content: center;
   height: 100%;
 `;
@@ -37,33 +39,19 @@ const OptionCardClickable = styled(OptionCard as any)<{ clickable?: boolean }>`
   opacity: ${({ disabled }) => (disabled ? '0.5' : '1')};
 `;
 
-// const GreenCircle = styled.div`
-//   justify-content: center;
-//   align-items: center;
-
-//   &:first-child {
-//     height: 8px;
-//     width: 8px;
-//     margin-right: 8px;
-//     border-radius: 50%;
-//   }
-// `
-
-// const CircleWrapper = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `
-
 const HeaderText = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  color: ${(props) => (props.color === 'blue' ? '#E8006F' : '#000000')};
   font-size: 1rem;
   font-weight: 500;
 `;
 
 const SubHeader = styled.div`
-  color: ${({ theme }) => theme.text1};
+  color: #000000;
   margin-top: 10px;
   font-size: 12px;
+  text-align: left;
 `;
 const IconWrapper = styled.div<{ size?: number | null }>`
   align-items: center;

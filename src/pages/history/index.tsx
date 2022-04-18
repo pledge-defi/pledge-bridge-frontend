@@ -1,7 +1,7 @@
 import { DetailCoin } from '@/components/styleComponents';
 import chainInfos from '@/constants/chainInfos';
 import { txsHistory } from '@/services/pledge/api/txsHistory';
-import { FORMAT_TIME_SIMPLE } from '@/utils/constants';
+import { FORMAT_TIME_STANDARD } from '@/utils/constants';
 import { divided_18, numeralStandardFormat_8 } from '@/utils/public';
 import { Table } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/lib/table/interface.d';
@@ -137,7 +137,7 @@ const HisotryMobileCardItem = ({
   return (
     <StyledHisotryMobileCardItem>
       <div>
-        <div className="time">{moment(created_at!).format(FORMAT_TIME_SIMPLE)}</div>
+        <div className="time">{moment(created_at!).format(FORMAT_TIME_STANDARD)}</div>
         <StyleStatus status={!!status}>{!!status ? 'Complete' : 'Processing'}</StyleStatus>
       </div>
       <div>
@@ -296,7 +296,7 @@ const History = () => {
       {
         title: 'Time',
         dataIndex: 'created_at',
-        render: (t) => moment(t).format(FORMAT_TIME_SIMPLE),
+        render: (t) => moment(t).format(FORMAT_TIME_STANDARD),
       },
       {
         title: 'Status',

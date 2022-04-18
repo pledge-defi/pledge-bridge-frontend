@@ -4,7 +4,7 @@ import { ALL_SUPPORTED_CHAIN_IDS, SupportedChainId } from '../constants/chains';
 // import chainInfos from '@/constants/chainInfos';
 // import { map } from 'lodash';
 import { INFURA_NETWORK_URLS } from '../constants/infura';
-// import { InjectedConnector } from '@web3-react/injected-connector'
+import { InjectedConnector } from '@web3-react/injected-connector';
 // import { PortisConnector } from '@web3-react/portis-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
@@ -27,9 +27,9 @@ import UNISWAP_LOGO_URL from '../assets/images/logo-link.svg';
 //   return (networkLibrary = networkLibrary ?? getLibrary(network.provider))
 // }
 
-// export const injected = new InjectedConnector({
-//   supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
-// })
+export const injected = new InjectedConnector({
+  supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
+});
 
 // export const gnosisSafe = new SafeAppConnector()
 

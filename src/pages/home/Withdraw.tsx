@@ -242,15 +242,15 @@ export default () => {
         <WithdrawBar>
           <WithdrawBarItem>
             <span>Total Transfer Amount</span>
-            <div>{numeral(totalTransferAmount).format('0,0')} PLGR</div>
+            <div>{numeral(totalTransferAmount).format('0,0')} MPLGR</div>
           </WithdrawBarItem>
-          <div className="divider">
+          {/* <div className="divider">
             <div />
-          </div>
-          <WithdrawBarItem>
+          </div> */}
+          {/* <WithdrawBarItem>
             <span>APY</span>
             <div>166.67%</div>
-          </WithdrawBarItem>
+          </WithdrawBarItem> */}
         </WithdrawBar>
 
         <FlexDiv>
